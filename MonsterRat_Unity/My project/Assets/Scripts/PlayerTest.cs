@@ -15,7 +15,10 @@ public class PlayerTest : MonoBehaviour
 
     [Header("Raycast")]
     public float distance = 3f;
+    public float ratDistance = 8f;
+    public float ratAimRadius = 0.15f;
     public LayerMask interactMask;
+    public LayerMask ratMask;
 
     [Header("Grab")]
     public float grabHoldDistance = 3f;
@@ -28,6 +31,7 @@ public class PlayerTest : MonoBehaviour
     [Header("PollutionCleaning")]
     public int cleaningTime = 0;
     public float coolTime = 1;
+    public GameObject pollutionPreb;
 
     private CharacterController control;
     private Vector3 vel;
@@ -105,11 +109,10 @@ public class PlayerTest : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, distance, interactMask, QueryTriggerInteraction.Ignore))
             lookTarget = hit.collider.gameObject;
-        else 
+        else
             lookTarget = null;
     }
 
-    // 물체 잡기
     void HandleGrabInput()
     {
         if (Input.GetMouseButtonDown(1))
@@ -125,10 +128,26 @@ public class PlayerTest : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
+            bool didAction = false;
+
             if (lookTarget != null && lookTarget.layer == 6 && canCleaning)
             {
-                cleaningTime++;
+                PollutionControl pol = lookTarget.GetComponentInParent<PollutionControl>();
+                if (pol != null)
+                    pol.CleanOnce();
+
                 StartCoroutine(CleaningCoolTime());
+                didAction = true;
+            }
+
+            if (TryShootRat())
+            {
+                didAction = true;
+            }
+
+            if (!didAction)
+            {
+                TrySpawnPollutionAtHit();
             }
         }
     }
@@ -158,7 +177,7 @@ public class PlayerTest : MonoBehaviour
         lastGrabVel = Vector3.zero;
     }
 
-    // 잡기 취소
+    // 놓기
     void Release()
     {
         if (targetRb == null) return;
@@ -199,5 +218,55 @@ public class PlayerTest : MonoBehaviour
         canCleaning = false;
         yield return new WaitForSeconds(coolTime);
         canCleaning = true;
+    }
+
+    // 쥐잡기
+    bool TryShootRat()
+    {
+        if (cam == null) return false;
+
+        Ray ray = new Ray(cam.position, cam.forward);
+
+        if (Physics.SphereCast(ray, ratAimRadius, out RaycastHit hit, ratDistance, ratMask, QueryTriggerInteraction.Ignore))
+        {
+            GameObject hitObj = hit.collider.gameObject;
+            RatController rat = hitObj.GetComponentInParent<RatController>();
+
+            if (rat != null)
+                Destroy(rat.gameObject);
+            else
+                Destroy(hitObj.transform.root.gameObject);
+
+            if (lookTarget == hitObj) lookTarget = null;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    // 총을 쐈는데 벽에 맞으면 오염물질 생성
+    bool TrySpawnPollutionAtHit()
+    {
+        if (pollutionPreb == null || cam == null) return false;
+
+        Ray ray = new Ray(cam.position, cam.forward);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, ratDistance, ~0, QueryTriggerInteraction.Ignore))
+        {
+            if (hit.collider == null) return false;
+
+            int layer = hit.collider.gameObject.layer;
+
+            if (layer == 3 || layer == 6 || layer == 8) return false;
+
+            Vector3 pos = hit.point;
+            Quaternion rot = Quaternion.FromToRotation(Vector3.up, hit.normal);
+
+            Instantiate(pollutionPreb, pos, rot);
+            return true;
+        }
+
+        return false;
     }
 }

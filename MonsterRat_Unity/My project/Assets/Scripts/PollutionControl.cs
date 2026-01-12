@@ -7,34 +7,30 @@ using UnityEngine;
 
 public class PollutionControl : MonoBehaviour
 {
-    public PlayerTest player;
     public Material[] polstep;
 
     MeshRenderer render;
+    int cleanCount = 0;
 
-    private void Awake()
+    void Awake()
     {
         render = GetComponent<MeshRenderer>();
     }
 
     void Start()
     {
-        render.material = polstep[0];
+        if (polstep != null && polstep.Length > 0)
+            render.material = polstep[0];
     }
 
-    void Update()
+    public void CleanOnce()
     {
-        switch (player.cleaningTime)
-        {
-            case 1:
-                render.material = polstep[1];
-                break;
-            case 2:
-                render.material = polstep[2];
-                break;
-            case 3:
-                Destroy(gameObject);
-                break;
-        }
+        cleanCount++;
+
+        if (polstep != null && cleanCount < polstep.Length)
+            render.material = polstep[cleanCount];
+
+        if (cleanCount >= 3)
+            Destroy(transform.root.gameObject);
     }
 }
