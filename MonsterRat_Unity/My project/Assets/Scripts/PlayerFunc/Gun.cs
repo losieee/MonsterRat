@@ -1,0 +1,91 @@
+using UnityEngine;
+
+public class Gun : InvenBase
+{
+    public override ToolType Type => ToolType.Gun;
+
+    [Header("Rat")]
+    public float ratDistance = 8f;
+    public float ratAimRadius = 0.15f;
+    public LayerMask ratMask;
+
+    [Header("Prefabs")]
+    public GameObject bloodPreb;
+    public GameObject pollutionPreb;
+
+    public override void Tick()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (!TryShootRat())
+                TrySpawnPollutionAtHit();
+        }
+    }
+
+    // 쥐 잡기
+    bool TryShootRat()
+    {
+        if (interactor == null) return false;
+
+        if (interactor.SphereCast(ratAimRadius, ratDistance, ratMask, out RaycastHit hit))
+        {
+            GameObject hitObj = hit.collider.gameObject;
+            RatController rat = hitObj.GetComponentInParent<RatController>();
+            GameObject ratObj = rat != null ? rat.gameObject : hitObj.transform.root.gameObject;
+
+            RatController rc = ratObj.GetComponent<RatController>();
+            if (rc != null) rc.enabled = false;
+
+            if (bloodPreb != null)
+            {
+                Vector3 pos = ratObj.transform.position;
+                pos.y = 0;
+                Instantiate(bloodPreb, pos, Quaternion.identity);
+            }
+
+            Rigidbody rb = ratObj.GetComponent<Rigidbody>();
+            if (rb == null) rb = ratObj.AddComponent<Rigidbody>();
+            rb.useGravity = true;
+            rb.isKinematic = false;
+            rb.freezeRotation = false;
+
+            if (ratObj.GetComponent<Collider>() == null)
+                ratObj.AddComponent<CapsuleCollider>();
+
+            SetLayerRecursively(ratObj, 3);
+
+            interactor.ForceSetLookTarget(ratObj);
+            return true;
+        }
+
+        return false;
+    }
+
+    // 쥐 말고 다른곳 맞았을 때 프리팹 소환
+    bool TrySpawnPollutionAtHit()
+    {
+        if (interactor == null) return false;
+        if (pollutionPreb == null) return false;
+
+        if (interactor.RaycastWorld(ratDistance, out RaycastHit hit))
+        {
+            int layer = hit.collider.gameObject.layer;
+
+            if (layer == 3 || layer == 6 || layer == 8) return false;
+
+            Vector3 pos = hit.point;
+            Quaternion rot = Quaternion.FromToRotation(Vector3.up, hit.normal);
+            Instantiate(pollutionPreb, pos, rot);
+            return true;
+        }
+
+        return false;
+    }
+
+    void SetLayerRecursively(GameObject obj, int layer)
+    {
+        obj.layer = layer;
+        for (int i = 0; i < obj.transform.childCount; i++)
+            SetLayerRecursively(obj.transform.GetChild(i).gameObject, layer);
+    }
+}
