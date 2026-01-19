@@ -17,4 +17,10 @@ public class StoreUI : MonoBehaviour
         if (inventory == null) return;
         inventory.AddTool(ToolType.Mop);
     }
+
+    public void BuyDeGassing()
+    {
+        if (inventory == null) return;
+        inventory.AddTool(ToolType.DeGassing);
+    }
 }

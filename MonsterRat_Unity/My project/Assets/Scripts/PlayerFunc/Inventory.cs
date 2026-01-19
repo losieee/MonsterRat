@@ -5,7 +5,8 @@ public enum ToolType
 {
     Hand,   // 맨손
     Gun,    // 총
-    Mop     // 대걸레
+    Mop,     // 대걸레
+    DeGassing,  // 가스제거기
 }
 
 public class Inventory : MonoBehaviour
