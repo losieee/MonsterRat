@@ -26,6 +26,33 @@ public class GasControl : MonoBehaviour
         ps.Play();
     }
 
+    // 플레이어 주변에 파티클이 몇개 있는지 세는 함수
+    public int CountParticlesNearWorldPos(Vector3 worldPos, float radius)
+    {
+        int alive = ps.GetParticles(buffer);
+        if (alive <= 0) return 0;
+
+        float r2 = radius * radius;
+
+        var main = ps.main;
+        bool isLocal = (main.simulationSpace == ParticleSystemSimulationSpace.Local);
+
+        int count = 0;
+
+        for (int i = 0; i < alive; i++)
+        {
+            // 파티클 위치를 월드 좌표로 통일
+            Vector3 pWorld = isLocal ? transform.TransformPoint(buffer[i].position) : buffer[i].position;
+
+            // 플레이어와 거리 체크
+            Vector3 diff = pWorld - worldPos;
+            if (diff.sqrMagnitude <= r2)
+                count++;
+        }
+
+        return count;
+    }
+
     public void Suck(Vector3 nozzleWorldPos, Vector3 nozzleForward, float radius, int removeCount, float dt, float aimAngle)
     {
         int alive = ps.GetParticles(buffer);
