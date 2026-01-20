@@ -5,7 +5,7 @@ public class GasControl : MonoBehaviour
     public int initialParticles = 800;      // 처음 시작할 때 채워둘 양
     public float pullStr = 6f;              // 빨려오는 힘
     public float destroyDis = 0.2f;         // 삭제될 거리
-    public float maxMovePerFrame = 0.05f;   // 최대 
+    public float maxMovePerFrame = 0.05f;   // 최대
 
     ParticleSystem ps;
     ParticleSystem.Particle[] buffer;

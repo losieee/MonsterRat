@@ -5,7 +5,7 @@ public class GasAbsorb : MonoBehaviour
     [Header("Ref")]
     public Transform cam;
     public Transform nozzle;                // 빨아들일 위치
-    public ParticleSystem vacuumFx;       // 빨아들이는 이펙트 (나중에)
+    public ParticleSystem vacuumFx;         // 빨아들이는 이펙트 (나중에 추가 예정)
 
     [Header("Suck")]
     public float range = 8f;
@@ -102,14 +102,5 @@ public class GasAbsorb : MonoBehaviour
     {
         if (vacuumFx != null && vacuumFx.isPlaying)
             vacuumFx.Stop();
-    }
-
-    // 흡입 범위
-    private void OnDrawGizmosSelected()
-    {
-        if (nozzle == null) return;
-
-        Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(nozzle.position, suckRadius);
     }
 }

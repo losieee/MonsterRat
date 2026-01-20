@@ -40,7 +40,7 @@ public class PlayerRaycast : MonoBehaviour
             lookTarget = null;
     }
 
-    // 도구가 "월드 전체(~0)" 대상으로 레이캐스트를 하고 싶을 때 사용하는 함수
+    // 레이캐스트를 하고 싶을 때 사용하는 함수
     public bool RaycastWorld(float maxDist, out RaycastHit hit)
     {
         hit = default;
@@ -50,7 +50,7 @@ public class PlayerRaycast : MonoBehaviour
         return Physics.Raycast(ray, out hit, maxDist, ~0, QueryTriggerInteraction.Ignore);
     }
 
-    // 도구가 SphereCast(예: 쥐 조준 반경)를 하고 싶을 때 사용하는 함수
+    // 쥐 조준 반경을 잡고 싶을 때 사용하는 함수
     public bool SphereCast(float radius, float maxDist, LayerMask mask, out RaycastHit hit)
     {
         hit = default;

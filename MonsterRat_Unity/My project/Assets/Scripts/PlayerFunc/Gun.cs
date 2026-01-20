@@ -43,14 +43,10 @@ public class Gun : InvenBase
                 Instantiate(bloodPreb, pos, Quaternion.identity);
             }
 
-            Rigidbody rb = ratObj.GetComponent<Rigidbody>();
-            if (rb == null) rb = ratObj.AddComponent<Rigidbody>();
+            Rigidbody rb = ratObj.GetComponentInChildren<Rigidbody>();
             rb.useGravity = true;
             rb.isKinematic = false;
             rb.freezeRotation = false;
-
-            if (ratObj.GetComponent<Collider>() == null)
-                ratObj.AddComponent<CapsuleCollider>();
 
             SetLayerRecursively(ratObj, 3);
 

@@ -33,6 +33,11 @@ public class HandGrab : InvenBase
         {
             Release();
         }
+
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            Interaction();
+        }
     }
 
     public override void FixedTick()
@@ -103,5 +108,20 @@ public class HandGrab : InvenBase
         lastGrabVel = (newPos - lastGrabPos) / Time.fixedDeltaTime;
         lastGrabPos = newPos;
         targetRb.MovePosition(newPos);
+    }
+
+    void Interaction()
+    {
+        if(interactor.RaycastWorld(grabHoldDistance,out RaycastHit hit))
+        {
+            int layer = hit.collider.gameObject.layer;
+            if (layer != 10) return;
+
+            DeleteObject btn = hit.collider.GetComponent<DeleteObject>();
+            if (btn != null)
+            {
+                btn.CanDelete();
+            }
+        }
     }
 }
