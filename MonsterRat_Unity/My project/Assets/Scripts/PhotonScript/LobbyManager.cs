@@ -38,7 +38,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         if (string.IsNullOrEmpty(nicknameInput.text)) return;
         PlayerPrefs.SetString("PlayerName", nicknameInput.text);
         // 플레이어 이름 설정하면 그 닉네임을 계속 사용할 수 있게끔 했습니다. 
-        // 게임 다시 시작하면 물론 다시 입력해야합니다.
+        // 게임 다시 시작하면 물론 다시 입력해야합니다. 
 
         LoginPanel.SetActive(false);
         MainPanel.SetActive(true);
