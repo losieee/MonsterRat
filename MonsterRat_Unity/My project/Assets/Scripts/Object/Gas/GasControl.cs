@@ -1,6 +1,7 @@
 using UnityEngine;
+using System.Collections;
 
-public class GasControl : MonoBehaviour
+public class GasControl : MonoBehaviour, IClearTarget
 {
     public int initialParticles = 800;      // 처음 시작할 때 채워둘 양
     public float pullStr = 6f;              // 빨려오는 힘
@@ -10,20 +11,52 @@ public class GasControl : MonoBehaviour
     ParticleSystem ps;
     ParticleSystem.Particle[] buffer;
 
+    int initialAliveCount;
+
+    // 가스가 얼마나 남았나 게이지 정보
+    public float Remain01 => GetRemainAmount();
+
     void Awake()
     {
         ps = GetComponent<ParticleSystem>();
 
-        int max = ps.main.maxParticles;
-        if (max < initialParticles) max = initialParticles;
-        buffer = new ParticleSystem.Particle[max];
+        // maxParticles가 initialParticles보다 작으면 늘려줌
+        var main = ps.main;
+        if (main.maxParticles < initialParticles)
+            main.maxParticles = initialParticles;
+
+        buffer = new ParticleSystem.Particle[main.maxParticles];
     }
 
     void Start()
     {
+        if (ClearManager.Instance != null)
+            ClearManager.Instance.Register(this);
+
         ps.Clear();
         ps.Emit(initialParticles);
         ps.Play();
+
+        initialAliveCount = ps.particleCount;
+        if (initialAliveCount <= 0)
+            StartCoroutine(FixInitialAliveNextFrame());
+    }
+
+    IEnumerator FixInitialAliveNextFrame()
+    {
+        yield return null;
+        initialAliveCount = ps.particleCount;
+    }
+
+    void OnDestroy()
+    {
+        if (ClearManager.Instance != null)
+            ClearManager.Instance.Unregister(this);
+    }
+
+    public bool IsEmpty()
+    {
+        return ps.particleCount <= 0;
     }
 
     // 플레이어 주변에 파티클이 몇개 있는지 세는 함수
@@ -113,15 +146,15 @@ public class GasControl : MonoBehaviour
         ps.SetParticles(buffer, alive);
     }
 
-
-    public bool IsEmpty()
-    {
-        return ps.particleCount <= 0;
-    }
-
     public void SetEmission(bool on)
     {
         var em = ps.emission;
         em.enabled = on;
+    }
+
+    public float GetRemainAmount()
+    {
+        if (initialParticles <= 0) return 0f;
+        return Mathf.Clamp01((float)ps.particleCount / initialParticles);
     }
 }

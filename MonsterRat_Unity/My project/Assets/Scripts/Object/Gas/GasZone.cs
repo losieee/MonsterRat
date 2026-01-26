@@ -23,15 +23,15 @@ public class GasZone : MonoBehaviour
         if (player == null) return;
         if (gas == null) return;
 
-            // 검사 주기
+        // 검사 주기
         timer -= Time.deltaTime;
         if (timer > 0f) return;
         timer = checkInterval;
 
-            // 주변 파티클 수 체크
+        // 주변 파티클 수 체크
         int nearCount = gas.CountParticlesNearWorldPos(player.transform.position, checkRadius);
 
-            // 30개 이상이면 오염 증가
+        // 30개 이상이면 오염 증가
         if (nearCount >= minParticleCount)
         {
             player.AddExposure(exposurePerSec * checkInterval);
