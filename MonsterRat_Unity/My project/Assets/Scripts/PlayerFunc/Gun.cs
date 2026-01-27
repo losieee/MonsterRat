@@ -8,6 +8,8 @@ public class Gun : InvenBase
     public float ratDistance = 8f;
     public float ratAimRadius = 0.15f;
     public LayerMask ratMask;
+    public LayerMask roachMask;
+    public LayerMask targetMask;
 
     [Header("Prefabs")]
     public GameObject bloodPreb;
@@ -15,11 +17,47 @@ public class Gun : InvenBase
 
     public override void Tick()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (!Input.GetMouseButtonDown(0)) return;
+
+        if (TryShootRat()) return;
+        if (TryShootRoach()) return;
+        if (TryShootTarget()) return;
+        TrySpawnPollutionAtHit();
+    }
+
+    // πŸƒ˚ ¿‚±‚
+    bool TryShootRoach()
+    {
+        if (interactor == null) return false;
+
+        if (interactor.SphereCast(ratAimRadius, ratDistance, roachMask, out RaycastHit hit))
         {
-            if (!TryShootRat())
-                TrySpawnPollutionAtHit();
+            GameObject hitObj = hit.collider.gameObject;
+            RoachController coach = hitObj.GetComponentInParent<RoachController>();
+            GameObject CoachObj = coach != null ? coach.gameObject : hitObj.transform.root.gameObject;
+
+            RoachController rc = CoachObj.GetComponent<RoachController>();
+            if (rc != null) rc.enabled = false;
+
+            if (bloodPreb != null)
+            {
+                Vector3 pos = CoachObj.transform.position;
+                pos.y = 0;
+                Instantiate(bloodPreb, pos, Quaternion.identity);
+            }
+
+            Rigidbody rb = CoachObj.GetComponentInChildren<Rigidbody>();
+            rb.useGravity = true;
+            rb.isKinematic = false;
+            rb.freezeRotation = false;
+
+            SetLayerRecursively(CoachObj, 3);
+
+            interactor.ForceSetLookTarget(CoachObj);
+            return true;
         }
+
+        return false;
     }
 
     // ¡„ ¿‚±‚
@@ -51,6 +89,24 @@ public class Gun : InvenBase
             SetLayerRecursively(ratObj, 3);
 
             interactor.ForceSetLookTarget(ratObj);
+            return true;
+        }
+
+        return false;
+    }
+
+    // ≤…, ¡ª∫Ò, ∏ÛΩ∫≈Õ µÓµÓ
+    bool TryShootTarget()
+    {
+        if (interactor == null) return false;
+
+        if (interactor.SphereCast(ratAimRadius, ratDistance, targetMask, out RaycastHit hit))
+        {
+            ShootTarget target = hit.collider.GetComponentInParent<ShootTarget>();
+            if (target == null) return false;
+
+            target.ApplyHit();
+            interactor.ForceSetLookTarget(target.gameObject);
             return true;
         }
 
