@@ -1,156 +1,163 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Fusion;
-using Fusion.Sockets;
-using System;
+using Photon.Pun;
+using Photon.Realtime;
+using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
 
-public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
+public class LobbyManager : MonoBehaviourPunCallbacks
 {
     [Header("UI 패널입니다")]
-    public GameObject LoginPanel;      //닉네임이에요
-    public GameObject MainPanel;       //버튼 3개 있을 패널 게임시작이랑 옵션 , 나가기 버튼
-    public GameObject RoomListPanel;   //이제 게임 시작하기 누르면 리썰컴퍼니처럼 게임목록이 나옵니다
-    public GameObject CreateRoomPanel; //방만들기 패널이에여
+    public GameObject LoginPanel;      // 닉네임 입력 패널
+    public GameObject MainPanel;       // 메인 메뉴 패널
+    public GameObject RoomListPanel;   // 방 목록 패널
+    public GameObject CreateRoomPanel; // 방 만들기 패널
 
     [Header("입력 UI랑 프리팹 등등")]
-    public TMP_InputField nicknameInput; // 닉네임 입력 UI
-    public TMP_InputField roomnameInput; // 방 제목 입력 ㅕㅑ
-    public Transform roomlistContent;    // 스크롤 뷰에 있는 content
-    public GameObject roomItemPrefab;    // 방 목록에서 참가버튼 아이템프리팹입니다. 이건 프리팹 파일에 포톤파일에 있습니다
-
-    private NetworkRunner _runner;
+    //public Button StartButton;
+    public Button goToRoomListButton;
+    public TMP_InputField nicknameInput;
+    public TMP_InputField roomnameInput;
+    public Transform roomlistContent;
+    public GameObject roomItemPrefab;
 
     void Start()
     {
-        // 시작 시 초기화
+
+        if (goToRoomListButton != null)
+        {
+            goToRoomListButton.interactable = false;
+        }
+
         LoginPanel.SetActive(true);
         MainPanel.SetActive(false);
         RoomListPanel.SetActive(false);
-        CreateRoomPanel.SetActive(false); // 팝업창은 꺼둠
+        CreateRoomPanel.SetActive(false);
+
+        PhotonNetwork.AutomaticallySyncScene = true;
     }
 
+    #region UI Buttons
     public void OnClick_SubmitNickname()
     {
         if (string.IsNullOrEmpty(nicknameInput.text)) return;
-        PlayerPrefs.SetString("PlayerName", nicknameInput.text);
-        // 플레이어 이름 설정하면 그 닉네임을 계속 사용할 수 있게끔 했습니다. 
-        // 게임 다시 시작하면 물론 다시 입력해야합니다. 
+
+        string name = nicknameInput.text;
+        PlayerPrefs.SetString("PlayerName", name);
+        PhotonNetwork.NickName = name;  
+
+        PhotonNetwork.ConnectUsingSettings();
 
         LoginPanel.SetActive(false);
         MainPanel.SetActive(true);
     }
 
-    //게임 시작누르면 룸리스트로 이동하는 함수
     public void OnClick_GoToRoomList()
     {
+        if (!PhotonNetwork.IsConnectedAndReady)
+        {
+            Debug.LogWarning("이 로그가 뜨는 이유는 아직 마스터 클라이언트 서버가 연결이 되지 않았다는 뜻");
+            return;
+        }
+
         MainPanel.SetActive(false);
         RoomListPanel.SetActive(true);
-        JoinLobby(); // 로비접속 
+
+        if (!PhotonNetwork.InLobby)
+        {
+            PhotonNetwork.JoinLobby();
+        }
     }
 
     public void OnClick_OpenCreateRoomPanel()
     {
-        // 방만들기 패널 활성화
         CreateRoomPanel.SetActive(true);
-
-        // 이전에 쓴 방 이름 초기화
         roomnameInput.text = "";
     }
 
-    //이건 방만들다가 취소할때 쓸 함수입니다
     public void OnClick_CancelCreateRoom()
     {
         CreateRoomPanel.SetActive(false);
     }
 
-    // 방 만들기 버튼 누르면 리썰컴퍼니 처럼 게임대기룸으로 이동합니다.
-    public async void OnClick_ConfirmCreateRoom()
+    public void OnClick_ConfirmCreateRoom()
     {
-        if (_runner == null) _runner = gameObject.AddComponent<NetworkRunner>();
-        _runner.AddCallbacks(this);
+        if (!PhotonNetwork.IsConnectedAndReady)
+        {
+            Debug.LogWarning("서버 접속중 디버그 로그에요 놀라지마십쇼");
+            return;
+        }
 
-        // 이건 GPT가 알려줬습니다. 이렇게 하면 편하다네요 
         string roomName = string.IsNullOrEmpty(roomnameInput.text)
-            ? $"{PlayerPrefs.GetString("PlayerName")}'s Room"
+            ? $"{PhotonNetwork.NickName}'s Room"
             : roomnameInput.text;
 
-        
-        var sceneIndex = SceneUtility.GetBuildIndexByScenePath("GameRoomScene"); // 여기가 리썰컴퍼니 함선 대기실처럼 만들어질 대기룸 씬
-        var sceneRef = SceneRef.FromIndex(sceneIndex);
+        RoomOptions roomOptions = new RoomOptions();
+        roomOptions.MaxPlayers = 2; // 이거 방 인원수 입니다. 혹시 팀장님이 2인에서 4인으로 바꾼다고 하면 저거 변수 바꿔주세요
 
-        Debug.Log($"방 생성 시작ㄱ: {roomName}");
-
-        await _runner.StartGame(new StartGameArgs()
-        {
-            GameMode = GameMode.Host,
-            SessionName = roomName,
-            PlayerCount = 2, // 이거 혹시 나중에 팀장님이 4인용으로 만들 수 도 있어서 방 인원 제한은 여기에서 바꿀 수 있도록 했습니다.
-                                // 나중에 원하시면 변수로 만들어서 그냥 편하게 바꿀 수 있도록 할게요
-            Scene = sceneRef, // 게임룸으로 이동
-            SceneManager = _runner.GetComponent<NetworkSceneManagerDefault>() ?? _runner.gameObject.AddComponent<NetworkSceneManagerDefault>()
-        });
+        PhotonNetwork.CreateRoom(roomName, roomOptions);
     }
 
     public void OnClick_Quit() => Application.Quit();
 
-    // ---------------- Fusion 로직 ---------------- 여기도 Fusion 전용 스크립트라 AI도움을 받았습니다.
+    #endregion
 
-    async void JoinLobby()
-    {
-        if (_runner == null) _runner = gameObject.AddComponent<NetworkRunner>();
-        _runner.AddCallbacks(this);
-        await _runner.JoinSessionLobby(SessionLobby.ClientServer);
-    }
+    #region Photon Callbacks
 
-    public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
+
+    public override void OnConnectedToMaster()
     {
-        foreach (Transform child in roomlistContent) Destroy(child.gameObject);
-        foreach (SessionInfo session in sessionList)
+        Debug.Log("버튼 입력 완료 마스터 서버 입장시도 ");
+
+        if (goToRoomListButton != null)
         {
-            if (session.PlayerCount >= session.MaxPlayers || !session.IsVisible) continue;
-            GameObject newItem = Instantiate(roomItemPrefab, roomlistContent);
-            newItem.GetComponent<RoomItem>().Setup(session, this);
+            goToRoomListButton.interactable = true;
         }
     }
 
-    public async void JoinRoom(string roomName)
+    public override void OnJoinedLobby()
     {
-        if (_runner == null) _runner = gameObject.AddComponent<NetworkRunner>();
-        _runner.AddCallbacks(this);
-
-        var sceneIndex = SceneUtility.GetBuildIndexByScenePath("GameRoomScene");
-        var sceneRef = SceneRef.FromIndex(sceneIndex);
-
-        await _runner.StartGame(new StartGameArgs()
-        {
-            GameMode = GameMode.Client,
-            SessionName = roomName,
-            Scene = sceneRef, // 게임룸으로 이동
-            SceneManager = _runner.GetComponent<NetworkSceneManagerDefault>() ?? _runner.gameObject.AddComponent<NetworkSceneManagerDefault>()
-        });
+        Debug.Log("로비 접속 시도 완료했습니다. 아마 1초에서 2초뒤 방 목록 보일겁니다.");
     }
 
-    // 필수 인터페이스 건들지마세요!! 저도 이거 건들면 고칠 수 있을지 모르겠어요
-    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) { }
-    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
-    public void OnInput(NetworkRunner runner, NetworkInput input) { }
-    public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
-    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
-    public void OnConnectedToServer(NetworkRunner runner) { }
-    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { }
-    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
-    public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
-    public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }
-    public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
-    public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) { }
-    public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ArraySegment<byte> data) { }
-    public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress) { }
-    public void OnSceneLoadDone(NetworkRunner runner) { }
-    public void OnSceneLoadStart(NetworkRunner runner) { }
-    public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
-    public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
+    public override void OnRoomListUpdate(List<RoomInfo> roomList) // ㅅ새로고침
+    {
+        foreach (Transform child in roomlistContent)
+        {
+            Destroy(child.gameObject);
+        }
+
+        foreach (RoomInfo info in roomList)
+        {
+            if (info.RemovedFromList) continue;
+
+            GameObject newItem = Instantiate(roomItemPrefab, roomlistContent);
+            newItem.GetComponent<RoomItem>().Setup(info, this);
+        }
+    }
+
+    // 
+    public override void OnJoinedRoom()
+    {
+        Debug.Log("이 로그가 떴다면 방 입장 성공했다는 뜻입니다.");
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.LoadLevel("GameRoomScene");
+        }
+    }
+
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        Debug.LogError($"방 생성 실패: {message}");
+        CreateRoomPanel.SetActive(false);
+    }
+
+    #endregion
+
+    public void JoinRoom(string roomName)
+    {
+        PhotonNetwork.JoinRoom(roomName);
+    }
 }

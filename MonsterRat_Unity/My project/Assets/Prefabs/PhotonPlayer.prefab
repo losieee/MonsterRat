@@ -137,8 +137,8 @@ GameObject:
   - component: {fileID: 8530268398172651629}
   - component: {fileID: 4674141786600159524}
   - component: {fileID: 5640987916540059667}
-  - component: {fileID: 6651686031312276992}
   - component: {fileID: 7476109830845528692}
+  - component: {fileID: 2850112388469667637}
   m_Layer: 0
   m_Name: PhotonPlayer
   m_TagString: Untagged
@@ -256,26 +256,9 @@ MonoBehaviour:
   Flags: 262145
   NestedObjects: []
   NetworkedBehaviours:
-  - {fileID: 6651686031312276992}
   - {fileID: 7476109830845528692}
+  - {fileID: 2850112388469667637}
   ForceRemoteRenderTimeframe: 0
---- !u!114 &6651686031312276992
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8289719037013333509}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _stateAuthorityChangeErrorCorrectionDelta: 0
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  DisableSharedModeInterpolation: 0
 --- !u!114 &7476109830845528692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -291,6 +274,25 @@ MonoBehaviour:
   playerCamera: {fileID: 6059536017928890074}
   moveSpeed: 5
   sensitivity: 2
+--- !u!114 &2850112388469667637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8289719037013333509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 378411a89480da345945c2f888327a2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _stateAuthorityChangeErrorCorrectionDelta: 0
+  gravity: -20
+  jumpImpulse: 8
+  acceleration: 10
+  braking: 10
+  maxSpeed: 5
+  rotationSpeed: 0
 --- !u!1 &8637643389979290067
 GameObject:
   m_ObjectHideFlags: 0
