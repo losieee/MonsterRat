@@ -31,6 +31,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             goToRoomListButton.interactable = false;
         }
 
+
         LoginPanel.SetActive(true);
         MainPanel.SetActive(false);
         RoomListPanel.SetActive(false);
