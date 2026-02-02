@@ -49,6 +49,6 @@ public class ShootTarget : MonoBehaviour, IClearTarget
             Instantiate(remainPrefab, pos, transform.rotation);
         }
 
-        Destroy(gameObject);
+        Destroy(transform.parent.gameObject);
     }
 }

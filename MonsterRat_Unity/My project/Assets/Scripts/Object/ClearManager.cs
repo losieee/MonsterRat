@@ -17,34 +17,35 @@ public class ClearManager : MonoBehaviour
     public Text clearGaugeText;
 
     [System.Serializable]
-    public class StepSpawn
+    public class RandomAction
     {
-        [Range(10, 90)] public int step;
-        public GameObject spawnPrefab;
+        [Header("Objects")]
+        public GameObject prefab;      // 프리팹 소환
         public Transform spawnPoint;
-        public bool spawnOnce = true;
+
+        [Header("Events")]
+        public UnityEvent onInvoke;    // 다른 스크립트 함수 호출
+
+        [Header("Percent")]
+        public float weight = 1;         // 확률
+    }
+
+    [System.Serializable]
+    public class PhaseRandom
+    {
+        public string name;
+        [Range(0, 90)] public int minStep;
+        [Range(0, 90)] public int maxStep;
+        public List<RandomAction> actions = new List<RandomAction>();        // 랜덤하게 실행 할 목록
     }
 
     public Transform spawnRoot;
-    public List<StepSpawn> stepSpawns = new List<StepSpawn>();
-
-    [System.Serializable]
-    public class StepEvent
-    {
-        [Range(10, 90)] public int step;
-        public UnityEvent onReached;
-        public bool invokeOnce = true;
-    }
-
-    public List<StepEvent> stepEvents = new List<StepEvent>();
+    public List<PhaseRandom> phases = new List<PhaseRandom>();
 
     // 클리어 대상 목록
     private readonly List<IClearTarget> targets = new List<IClearTarget>();
     private float baselineTotal = 0f;
-
     private int lastStep = 0;
-    private readonly HashSet<int> spawnedSteps = new HashSet<int>();
-    private readonly HashSet<int> invokedSteps = new HashSet<int>();
 
     void Awake()
     {
@@ -64,17 +65,10 @@ public class ClearManager : MonoBehaviour
         if (baselineTotal <= 0) baselineTotal = 1;
 
         lastStep = 0;
-        spawnedSteps.Clear();
-        invokedSteps.Clear();
 
-        if (clearGaugeFill != null)
-            clearGaugeFill.fillAmount = 0f;
-
-        if (clearGaugeText != null)
-            clearGaugeText.text = "0%";
-
-        if (spawnRoot == null)
-            spawnRoot = transform;
+        if (clearGaugeFill != null) clearGaugeFill.fillAmount = 0f;
+        if (clearGaugeText != null) clearGaugeText.text = "0%";
+        if (spawnRoot == null) spawnRoot = transform;
     }
 
     void Update()
@@ -143,58 +137,81 @@ public class ClearManager : MonoBehaviour
         {
             if (s >= 10 && s <= 90)
             {
-                TrySpawnAtStep(s);
-                TryInvokeStepEvent(s);
+                RunRandomFromPhase(s);
             }
         }
-
         lastStep = step;
     }
 
-    void TrySpawnAtStep(int step)
+    // 랜덤 소환
+    void RunRandomFromPhase(int step)
     {
-        // stepSpawns에서 해당 step 찾기
-        for (int i = 0; i < stepSpawns.Count; i++)
+        PhaseRandom phase = FindPhase(step);
+        if (phase == null) return;
+        if (phase.actions == null || phase.actions.Count == 0) return;
+
+        RandomAction pick = PickWeightedRandom(phase.actions);
+        if (pick == null) return;
+
+        // 프리팹 소환
+        if (pick.prefab != null)
         {
-            var entry = stepSpawns[i];
-            if (entry == null) continue;
-            if (entry.step != step) continue;
-            if (entry.spawnPrefab == null) continue;
-
-            // 중복 방지
-            if (entry.spawnOnce && spawnedSteps.Contains(step))
-                return;
-
-            Transform point = entry.spawnPoint != null ? entry.spawnPoint : spawnRoot;
+            Transform point = pick.spawnPoint != null ? pick.spawnPoint : spawnRoot;
             if (point == null) point = transform;
 
-            Instantiate(entry.spawnPrefab, point.position, point.rotation);
-
-            if (entry.spawnOnce)
-                spawnedSteps.Add(step);
-
-            return;
+            Instantiate(pick.prefab, point.position, point.rotation);
         }
+
+        // 이벤트 실행
+        pick.onInvoke?.Invoke();
     }
 
-    // 이벤트 소환
-    void TryInvokeStepEvent(int step)
+    PhaseRandom FindPhase(int step)
     {
-        for (int i = 0; i < stepEvents.Count; i++)
+        for (int i = 0; i < phases.Count; i++)
         {
-            var entry = stepEvents[i];
-            if (entry == null) continue;
-            if (entry.step != step) continue;
-
-            if (entry.invokeOnce && invokedSteps.Contains(step))
-                return;
-
-            entry.onReached?.Invoke();
-
-            if (entry.invokeOnce)
-                invokedSteps.Add(step);
-
-            return;
+            var p = phases[i];
+            if (p == null) continue;
+            if (step < p.minStep || step > p.maxStep) continue;
+            return p;
         }
+        return null;
+    }
+
+    RandomAction PickWeightedRandom(List<RandomAction> list)
+    {
+        float total = 0;
+
+        // 총 확률의 합
+        for (int i = 0; i < list.Count; i++)
+        {
+            var a = list[i];
+            if (a == null) continue;
+
+            // 프리팹도 없고 이벤트도 없으면 후보에서 제외
+            bool hasSomething = (a.prefab != null) || (a.onInvoke != null);
+            if (!hasSomething) continue;
+
+            total += Mathf.Max(0, a.weight);
+        }
+
+        if (total <= 0) return null;
+
+        float r = Random.Range(0, total);
+
+        for (int i = 0; i < list.Count; i++)
+        {
+            var a = list[i];
+            if (a == null) continue;
+
+            bool hasSomething = (a.prefab != null) || (a.onInvoke != null);
+            if (!hasSomething) continue;
+
+            float w = Mathf.Max(0, a.weight);
+            r -= w;
+            if (r < 0) return a;
+        }
+
+        return null;
     }
 }

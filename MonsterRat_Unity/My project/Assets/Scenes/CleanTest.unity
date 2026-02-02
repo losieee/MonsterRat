@@ -516,7 +516,7 @@ Transform:
   m_GameObject: {fileID: 57588839}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.62, y: -1.5824, z: 14.8}
+  m_LocalPosition: {x: -0.62, y: -1.5824, z: 32.06}
   m_LocalScale: {x: 32.126595, y: 7.716066, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1570,8 +1570,8 @@ Transform:
   m_GameObject: {fileID: 392429213}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.65, y: 0.99, z: 0}
-  m_LocalScale: {x: 1, y: 0.48594007, z: 1}
+  m_LocalPosition: {x: -1.65, y: 0.99, z: 10.23}
+  m_LocalScale: {x: 1, y: 0.48594007, z: 1.4278206}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1623,7 +1623,9 @@ MonoBehaviour:
     m_Bits: 8256
   rayDistance: 20
   checkRadius: 0.2
-  targetPrefab: {fileID: 3746059961616271515, guid: 8f1b3ee189223a044a049197cdee1806, type: 3}
+  plantPrefab: {fileID: 3746059961616271515, guid: 8f1b3ee189223a044a049197cdee1806, type: 3}
+  zombiePrefab: {fileID: 4351208653060843658, guid: ca9078eda7d1a484cbdf1311fdd61793, type: 3}
+  monsterPrefab: {fileID: 3382355246623532821, guid: 0b2123acffcff6f4aaf05083702c0f36, type: 3}
   spawnPlantCount: 3
   plantMask:
     serializedVersion: 2
@@ -1643,66 +1645,139 @@ MonoBehaviour:
   clearGaugeFill: {fileID: 683129739}
   clearGaugeText: {fileID: 35999479}
   spawnRoot: {fileID: 392429215}
-  stepSpawns:
-  - step: 10
-    spawnPrefab: {fileID: 441206952623887286, guid: 973b9c908ae320b4d9cb1ac9b6b7f82f, type: 3}
-    spawnPoint: {fileID: 2144422222}
-    spawnOnce: 1
-  - step: 20
-    spawnPrefab: {fileID: 2902136620076325771, guid: 4409e47a2adcda941bba1bbbe352cfd6, type: 3}
-    spawnPoint: {fileID: 2144422222}
-    spawnOnce: 1
-  - step: 40
-    spawnPrefab: {fileID: 2619658312577506786, guid: 52c659c48c4739040b12c2bfe19d7a85, type: 3}
-    spawnPoint: {fileID: 100694450}
-    spawnOnce: 1
-  - step: 60
-    spawnPrefab: {fileID: 2619658312577506786, guid: 52c659c48c4739040b12c2bfe19d7a85, type: 3}
-    spawnPoint: {fileID: 1534044283}
-    spawnOnce: 1
-  - step: 70
-    spawnPrefab: {fileID: 4351208653060843658, guid: ca9078eda7d1a484cbdf1311fdd61793, type: 3}
-    spawnPoint: {fileID: 2144422222}
-    spawnOnce: 1
-  - step: 80
-    spawnPrefab: {fileID: 3382355246623532821, guid: 0b2123acffcff6f4aaf05083702c0f36, type: 3}
-    spawnPoint: {fileID: 2144422222}
-    spawnOnce: 1
-  stepEvents:
-  - step: 30
-    onReached:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 392429217}
-          m_TargetAssemblyTypeName: PollutionSpawner, Assembly-CSharp
-          m_MethodName: PollutionSpawnOnce
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    invokeOnce: 1
-  - step: 50
-    onReached:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 392429217}
-          m_TargetAssemblyTypeName: PollutionSpawner, Assembly-CSharp
-          m_MethodName: TargetSpawnOnce
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    invokeOnce: 1
+  phases:
+  - name: 0~30
+    minStep: 10
+    maxStep: 30
+    actions:
+    - prefab: {fileID: 2902136620076325771, guid: 4409e47a2adcda941bba1bbbe352cfd6, type: 3}
+      spawnPoint: {fileID: 2144422222}
+      onInvoke:
+        m_PersistentCalls:
+          m_Calls: []
+      weight: 1
+    - prefab: {fileID: 441206952623887286, guid: 973b9c908ae320b4d9cb1ac9b6b7f82f, type: 3}
+      spawnPoint: {fileID: 2144422222}
+      onInvoke:
+        m_PersistentCalls:
+          m_Calls: []
+      weight: 1
+  - name: ~60
+    minStep: 31
+    maxStep: 60
+    actions:
+    - prefab: {fileID: 2902136620076325771, guid: 4409e47a2adcda941bba1bbbe352cfd6, type: 3}
+      spawnPoint: {fileID: 2144422222}
+      onInvoke:
+        m_PersistentCalls:
+          m_Calls: []
+      weight: 0.5
+    - prefab: {fileID: 441206952623887286, guid: 973b9c908ae320b4d9cb1ac9b6b7f82f, type: 3}
+      spawnPoint: {fileID: 2144422222}
+      onInvoke:
+        m_PersistentCalls:
+          m_Calls: []
+      weight: 0.5
+    - prefab: {fileID: 2619658312577506786, guid: 52c659c48c4739040b12c2bfe19d7a85, type: 3}
+      spawnPoint: {fileID: 100694450}
+      onInvoke:
+        m_PersistentCalls:
+          m_Calls: []
+      weight: 1
+    - prefab: {fileID: 0}
+      spawnPoint: {fileID: 0}
+      onInvoke:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 392429217}
+            m_TargetAssemblyTypeName: PollutionSpawner, Assembly-CSharp
+            m_MethodName: TargetSpawnOnce
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+      weight: 1
+    - prefab: {fileID: 2619658312577506786, guid: 52c659c48c4739040b12c2bfe19d7a85, type: 3}
+      spawnPoint: {fileID: 1534044283}
+      onInvoke:
+        m_PersistentCalls:
+          m_Calls: []
+      weight: 1
+  - name: ~90
+    minStep: 61
+    maxStep: 80
+    actions:
+    - prefab: {fileID: 2619658312577506786, guid: 52c659c48c4739040b12c2bfe19d7a85, type: 3}
+      spawnPoint: {fileID: 100694450}
+      onInvoke:
+        m_PersistentCalls:
+          m_Calls: []
+      weight: 0.3
+    - prefab: {fileID: 0}
+      spawnPoint: {fileID: 0}
+      onInvoke:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 392429217}
+            m_TargetAssemblyTypeName: PollutionSpawner, Assembly-CSharp
+            m_MethodName: TargetSpawnOnce
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+      weight: 0.3
+    - prefab: {fileID: 2619658312577506786, guid: 52c659c48c4739040b12c2bfe19d7a85, type: 3}
+      spawnPoint: {fileID: 1534044283}
+      onInvoke:
+        m_PersistentCalls:
+          m_Calls: []
+      weight: 0.3
+    - prefab: {fileID: 0}
+      spawnPoint: {fileID: 0}
+      onInvoke:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 392429217}
+            m_TargetAssemblyTypeName: PollutionSpawner, Assembly-CSharp
+            m_MethodName: ZombieSpawnOnce
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+      weight: 1
+    - prefab: {fileID: 0}
+      spawnPoint: {fileID: 0}
+      onInvoke:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 392429217}
+            m_TargetAssemblyTypeName: PollutionSpawner, Assembly-CSharp
+            m_MethodName: MonsterSpawnOnce
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+      weight: 1
 --- !u!1 &417971584
 GameObject:
   m_ObjectHideFlags: 0
@@ -2125,8 +2200,8 @@ Transform:
   m_GameObject: {fileID: 519295069}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -13.3, y: -1.5824, z: 0}
-  m_LocalScale: {x: 32.126595, y: 7.716066, z: 1}
+  m_LocalPosition: {x: -13.3, y: -1.5824, z: 8.0895}
+  m_LocalScale: {x: 48.305546, y: 7.716066, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1782688487}
@@ -4126,7 +4201,7 @@ Transform:
   m_GameObject: {fileID: 1534044282}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.53, y: 1.11, z: 9.14}
+  m_LocalPosition: {x: -1.53, y: 1.11, z: 20.34}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4310,8 +4385,8 @@ Transform:
   m_GameObject: {fileID: 1732468775}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 10.1, y: -1.5824, z: -0}
-  m_LocalScale: {x: 32.126595, y: 7.716066, z: 1}
+  m_LocalPosition: {x: 10.1, y: -1.5824, z: 8.0895}
+  m_LocalScale: {x: 48.305546, y: 7.716066, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1782688487}

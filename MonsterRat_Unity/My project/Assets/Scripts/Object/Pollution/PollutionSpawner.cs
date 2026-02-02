@@ -13,12 +13,13 @@ public class PollutionSpawner : MonoBehaviour
     public float checkRadius = 0.2f;
 
     [Header("Target")]
-    public GameObject targetPrefab;
+    public GameObject plantPrefab;
+    public GameObject zombiePrefab;
+    public GameObject monsterPrefab;
     public int spawnPlantCount = 3;
     public LayerMask plantMask = ~0;
 
     bool pollutionSpawnedOnce = false;
-    bool plantSpawnedOnce = false;
 
     void Start() 
     { 
@@ -34,9 +35,17 @@ public class PollutionSpawner : MonoBehaviour
 
     public void TargetSpawnOnce()
     {
-        if (plantSpawnedOnce) return;
-        plantSpawnedOnce = true;
         SpawnRandomPlant(spawnPlantCount);
+    }
+
+    public void ZombieSpawnOnce()
+    {
+        SpawnZombie();
+    }
+
+    public void MonsterSpawnOnce()
+    {
+        SpawnMonster();
     }
 
     void SpawnRandomPollution(int count)
@@ -85,7 +94,7 @@ public class PollutionSpawner : MonoBehaviour
 
     void SpawnRandomPlant(int count)
     {
-        if (targetPrefab == null || spawnArea == null) return;
+        if (plantPrefab == null || spawnArea == null) return;
 
         int spawned = 0;
         int tryCount = 0;
@@ -108,9 +117,43 @@ public class PollutionSpawner : MonoBehaviour
             {
                 Vector3 pos = hit.point;
                 Quaternion rot = Quaternion.identity;
-                Instantiate(targetPrefab, pos, rot);
+                Instantiate(plantPrefab, pos, rot);
                 spawned++;
             }
+        }
+    }
+
+    void SpawnZombie()
+    {
+        Vector3 center = spawnArea.transform.TransformPoint(spawnArea.center);
+        float topY = center.y + (spawnArea.size.y * 0.5f);
+
+        Vector3 randomPoint = GetRandomPointInBox(spawnArea);
+        Vector3 origin = new Vector3(randomPoint.x, topY + 1f, randomPoint.z);
+        Vector3 dir = Vector3.down;
+
+        if (Physics.Raycast(origin, dir, out RaycastHit hit, rayDistance, plantMask, QueryTriggerInteraction.Ignore))
+        {
+            Vector3 pos = hit.point;
+            Quaternion rot = Quaternion.identity;
+            Instantiate(zombiePrefab, pos, rot);
+        }
+    }
+
+    void SpawnMonster()
+    {
+        Vector3 center = spawnArea.transform.TransformPoint(spawnArea.center);
+        float topY = center.y + (spawnArea.size.y * 0.5f);
+
+        Vector3 randomPoint = GetRandomPointInBox(spawnArea);
+        Vector3 origin = new Vector3(randomPoint.x, topY + 1f, randomPoint.z);
+        Vector3 dir = Vector3.down;
+
+        if (Physics.Raycast(origin, dir, out RaycastHit hit, rayDistance, plantMask, QueryTriggerInteraction.Ignore))
+        {
+            Vector3 pos = hit.point;
+            Quaternion rot = Quaternion.identity;
+            Instantiate(monsterPrefab, pos, rot);
         }
     }
 
