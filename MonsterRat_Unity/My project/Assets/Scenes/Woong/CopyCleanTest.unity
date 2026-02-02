@@ -1123,6 +1123,7 @@ GameObject:
   - component: {fileID: 392429217}
   - component: {fileID: 392429216}
   - component: {fileID: 392429218}
+  - component: {fileID: 392429219}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -1287,6 +1288,21 @@ MonoBehaviour:
             m_BoolArgument: 0
           m_CallState: 2
     invokeOnce: 1
+--- !u!114 &392429219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 392429213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dbb31f9772c3084e9814e8bca412b5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerPrefabName: PhotonPlayer
+  spawnPoints:
+  - {fileID: 1633831615}
 --- !u!1 &417971584
 GameObject:
   m_ObjectHideFlags: 0
@@ -3764,6 +3780,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1595023345}
   m_CullTransparentMesh: 1
+--- !u!1 &1633831614
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1633831615}
+  m_Layer: 0
+  m_Name: Spawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1633831615
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1633831614}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.65129316, y: 1.31, z: 2.81}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1732468775
 GameObject:
   m_ObjectHideFlags: 0
@@ -4833,3 +4880,4 @@ SceneRoots:
   - {fileID: 2144422222}
   - {fileID: 100694450}
   - {fileID: 1534044283}
+  - {fileID: 1633831615}
