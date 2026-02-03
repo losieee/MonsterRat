@@ -3,10 +3,11 @@ using UnityEngine;
 
 public enum ToolType
 {
-    Hand,   // 맨손
-    Gun,    // 총
-    Mop,     // 대걸레
-    DeGassing,  // 가스제거기
+    Hand,           // 맨손
+    Gun,            // 총
+    Mop,            // 대걸레
+    DeGassing,      // 가스제거기
+    Spanner,        // 스패너
 }
 
 public class Inventory : MonoBehaviour

@@ -23,4 +23,10 @@ public class StoreUI : MonoBehaviour
         if (inventory == null) return;
         inventory.AddTool(ToolType.DeGassing);
     }
+
+    public void BuySpanner()
+    {
+        if (inventory == null) return;
+        inventory.AddTool(ToolType.Spanner);
+    }
 }
