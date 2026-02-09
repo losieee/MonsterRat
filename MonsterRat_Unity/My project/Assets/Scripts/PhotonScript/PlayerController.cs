@@ -1,7 +1,7 @@
 using UnityEngine;
 using Photon.Pun;
 
-public class PlayerController : MonoBehaviourPun
+public class PlayerController : MonoBehaviourPun  // 전에 프로젝트에서 사용하던 방식을 가져왔습니다.
 {
     [Header("속도 설정")]
     public float moveSpeed = 5f;
@@ -17,12 +17,11 @@ public class PlayerController : MonoBehaviourPun
     {
         rb = GetComponent<Rigidbody>();
 
-        // [중요] 내 캐릭터일 때만 카메라와 조작을 활성화
+       
         if (photonView.IsMine)
         {
             myCamObj.SetActive(true); // 내 카메라는 켠다
 
-            // 마우스 커서 숨기고 고정하기 (게임 시작 시)
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
@@ -30,7 +29,6 @@ public class PlayerController : MonoBehaviourPun
         {
             myCamObj.SetActive(false); // 남의 카메라는 끈다
 
-            // 남의 캐릭터에 있는 리지드바디가 물리 연산으로 제멋대로 움직이지 않게 (선택사항)
             rb.isKinematic = true;
 
             // 남의 캐릭터에 AudioListener가 켜져 있으면 에러 나거나 소리가 겹침 -> 끈다
@@ -41,13 +39,11 @@ public class PlayerController : MonoBehaviourPun
 
     void Update()
     {
-        // 내 것이 아니면 조작 불가
         if (!photonView.IsMine) return;
 
         Move();
         Look();
 
-        // ESC 누르면 마우스 커서 다시 보이기 (테스트용)
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Cursor.lockState = CursorLockMode.None;
@@ -55,7 +51,7 @@ public class PlayerController : MonoBehaviourPun
         }
     }
 
-    // 캐릭터 이동 (WASD)
+    // 캐릭터 이동 
     void Move()
     {
         float x = Input.GetAxisRaw("Horizontal");
@@ -63,8 +59,6 @@ public class PlayerController : MonoBehaviourPun
 
         // 내가 바라보는 방향 기준으로 이동 벡터 계산
         Vector3 moveDir = (transform.right * x + transform.forward * z).normalized;
-
-        // 이동 적용 (Translate 방식이 간단함)
         transform.Translate(moveDir * moveSpeed * Time.deltaTime, Space.World);
     }
 
@@ -74,10 +68,10 @@ public class PlayerController : MonoBehaviourPun
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
 
-        // 1. 좌우 회전 (캐릭터 몸통 전체를 돌림 -> Y축 회전)
+        //  좌우 회전  
         transform.Rotate(Vector3.up * mouseX);
 
-        // 2. 위아래 회전 (카메라만 돌림 -> X축 회전)
+        //  위아래 회전  
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f); // 고개가 뒤로 꺾이지 않게 제한
 

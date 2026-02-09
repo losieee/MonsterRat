@@ -161,4 +161,14 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.JoinRoom(roomName);
     }
+
+    public override void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
+    {
+        // 2/3일 추가
+        if (newMasterClient.IsLocal)
+        {
+            Debug.Log("내가 새로운 방장이 되었습니다!");
+           
+        }
+    }
 }
