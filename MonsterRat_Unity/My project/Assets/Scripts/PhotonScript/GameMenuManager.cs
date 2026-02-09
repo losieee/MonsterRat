@@ -35,21 +35,23 @@ public class GameMenuManager : MonoBehaviourPunCallbacks
 
     public void OnClick_LeaveGame()
     {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            photonView.RPC("RPC_KickAllPlayers", RpcTarget.All);
-        }
-        else
-        {
-            PhotonNetwork.LeaveRoom();
-        }
+        PhotonNetwork.LeaveRoom();
+        //이건 호스트 나가면 방폭파
+        // if (PhotonNetwork.IsMasterClient)
+        // {
+        //     photonView.RPC("RPC_KickAllPlayers", RpcTarget.All);
+        // }
+        // else
+        // {
+        //     PhotonNetwork.LeaveRoom();
+        // }
     }
 
-    [PunRPC]
-    void RPC_KickAllPlayers()
-    {
-        PhotonNetwork.LeaveRoom();
-    }
+   // [PunRPC]
+    //void RPC_KickAllPlayers()
+    //{
+    //    PhotonNetwork.LeaveRoom();
+    //}
 
     public override void OnLeftRoom()
     {
