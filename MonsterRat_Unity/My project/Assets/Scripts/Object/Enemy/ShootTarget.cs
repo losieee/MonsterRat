@@ -5,6 +5,7 @@ using UnityEngine;
 public class ShootTarget : MonoBehaviour, IClearTarget
 {
     public int maxHits = 3;
+    public float weight = 1f;
     public bool destroyOnDeath = true;
     public GameObject remainPrefab;
     public bool snapToGround = true;
@@ -14,6 +15,7 @@ public class ShootTarget : MonoBehaviour, IClearTarget
     private bool dead = false;
 
     public float Remain01 => dead ? 0f : 1f;
+    public float Weight => weight;
 
     void OnEnable()
     {

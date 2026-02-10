@@ -429,7 +429,7 @@ GameObject:
   - component: {fileID: 57588842}
   - component: {fileID: 57588841}
   - component: {fileID: 57588840}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Wall (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -774,7 +774,7 @@ GameObject:
   - component: {fileID: 254192538}
   - component: {fileID: 254192537}
   m_Layer: 5
-  m_Name: Flamethrower_Button
+  m_Name: Cutter_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -843,7 +843,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 254192538}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 885903824}
+        m_TargetAssemblyTypeName: StoreUI, Assembly-CSharp
+        m_MethodName: BuyCutter
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &254192538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -894,7 +906,7 @@ GameObject:
   - component: {fileID: 259086857}
   - component: {fileID: 259086856}
   - component: {fileID: 259086855}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Wall (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1139,6 +1151,7 @@ GameObject:
   - component: {fileID: 355794696}
   - component: {fileID: 355794697}
   - component: {fileID: 355794698}
+  - component: {fileID: 355794699}
   m_Layer: 11
   m_Name: Player
   m_TagString: Untagged
@@ -1292,7 +1305,7 @@ MonoBehaviour:
   distance: 3
   interactMask:
     serializedVersion: 2
-    m_Bits: 22348
+    m_Bits: 87884
 --- !u!114 &355794689
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1463,6 +1476,26 @@ MonoBehaviour:
   distance: 1
   fixTime: 5
   fixGauge: {fileID: 1285847367}
+--- !u!114 &355794699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 355794680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 304ea2e83bd2981498389a44245256af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  woodMask:
+    serializedVersion: 2
+    m_Bits: 65536
+  cutRange: 3
+  smallScale: 0.1
+  pieces: 5
+  scatterRadius: 0.25
+  popForce: 2
 --- !u!1 &382922404
 GameObject:
   m_ObjectHideFlags: 0
@@ -1630,18 +1663,19 @@ MonoBehaviour:
   spawnArea: {fileID: 392429216}
   pollutionMask:
     serializedVersion: 2
-    m_Bits: 129
+    m_Bits: 32897
   blockHitMask:
     serializedVersion: 2
-    m_Bits: 16204
+    m_Bits: 81740
   overlapBlockMask:
     serializedVersion: 2
-    m_Bits: 8256
+    m_Bits: 73792
   rayDistance: 20
   checkRadius: 0.2
   plantPrefab: {fileID: 3746059961616271515, guid: 8f1b3ee189223a044a049197cdee1806, type: 3}
   zombiePrefab: {fileID: 4351208653060843658, guid: ca9078eda7d1a484cbdf1311fdd61793, type: 3}
   monsterPrefab: {fileID: 3382355246623532821, guid: 0b2123acffcff6f4aaf05083702c0f36, type: 3}
+  woodPrefab: {fileID: 8400609172242118547, guid: e4aa3b6d96eb89e4bac1552177ec9c17, type: 3}
   spawnPlantCount: 3
   plantMask:
     serializedVersion: 2
@@ -1677,6 +1711,24 @@ MonoBehaviour:
       onInvoke:
         m_PersistentCalls:
           m_Calls: []
+      weight: 1
+    - prefab: {fileID: 0}
+      spawnPoint: {fileID: 0}
+      onInvoke:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 392429217}
+            m_TargetAssemblyTypeName: PollutionSpawner, Assembly-CSharp
+            m_MethodName: WoodSpawnOnce
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
       weight: 1
   - name: ~60
     minStep: 31
@@ -2130,7 +2182,7 @@ GameObject:
   - component: {fileID: 519295072}
   - component: {fileID: 519295071}
   - component: {fileID: 519295070}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Wall (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4046,6 +4098,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f28b6bc4afee7347bcdbbe22e7d2efd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weight: 1
 --- !u!1 &1495355047
 GameObject:
   m_ObjectHideFlags: 0
@@ -4544,7 +4597,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uAC00\uC704"
+  m_Text: "\uC808\uB2E8\uAE30"
 --- !u!222 &1595023348
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4698,7 +4751,7 @@ GameObject:
   - component: {fileID: 1732468778}
   - component: {fileID: 1732468777}
   - component: {fileID: 1732468776}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Wall (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5315,7 +5368,7 @@ GameObject:
   - component: {fileID: 2014111912}
   - component: {fileID: 2014111911}
   - component: {fileID: 2014111910}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5420,7 +5473,7 @@ GameObject:
   - component: {fileID: 2022661616}
   - component: {fileID: 2022661615}
   - component: {fileID: 2022661614}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}

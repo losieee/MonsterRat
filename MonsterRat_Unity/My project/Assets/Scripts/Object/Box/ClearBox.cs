@@ -2,7 +2,9 @@ using UnityEngine;
 
 public class ClearBox : MonoBehaviour, IClearTarget
 {
+    public float weight = 1f;
     public float Remain01 => 1f;
+    public float Weight => Mathf.Max(0f, weight);
 
     void Start()
     {

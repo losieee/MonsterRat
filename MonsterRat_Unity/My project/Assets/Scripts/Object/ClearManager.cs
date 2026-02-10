@@ -8,6 +8,9 @@ public interface IClearTarget
 {
     // 1-아직 남아있음, 0-다 제거됨
     float Remain01 { get; }
+
+    // 게이지에 차지하는 비중
+    float Weight { get; }
 }
 
 public class ClearManager : MonoBehaviour
@@ -61,8 +64,7 @@ public class ClearManager : MonoBehaviour
     {
         yield return null;
 
-        baselineTotal = targets.Count;
-        if (baselineTotal <= 0) baselineTotal = 1;
+        RebuildBaseline();
 
         lastStep = 0;
 
@@ -83,7 +85,8 @@ public class ClearManager : MonoBehaviour
         if (targets.Contains(target)) return;
         targets.Add(target);
 
-        baselineTotal += 1f;
+        baselineTotal += Mathf.Max(0f, target.Weight);
+        if (baselineTotal <= 0f) baselineTotal = 1f;
     }
 
     // 오브젝트가 사라질 때
@@ -108,7 +111,8 @@ public class ClearManager : MonoBehaviour
                 continue;
             }
 
-            remainTotal += Mathf.Clamp01(targets[i].Remain01);
+            float w = Mathf.Max(0f, targets[i].Weight);
+            remainTotal += Mathf.Clamp01(targets[i].Remain01) * w;
         }
 
         // 진행률 = 1 - (현재 남은량 / 처음 총량)
@@ -122,6 +126,16 @@ public class ClearManager : MonoBehaviour
             clearGaugeText.text = $"{(clearRatio * 100f):F0}%";
 
         CheckStep(clearRatio);
+    }
+
+    // weight에 맞게 게이지 다시 계산
+    public void RebuildBaseline()
+    {
+        baselineTotal = 0f;
+        for (int i = 0; i < targets.Count; i++)
+            baselineTotal += Mathf.Max(0f, targets[i].Weight);
+
+        if (baselineTotal <= 0f) baselineTotal = 1f;
     }
 
     void CheckStep(float clearRatio01)

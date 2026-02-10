@@ -29,4 +29,10 @@ public class StoreUI : MonoBehaviour
         if (inventory == null) return;
         inventory.AddTool(ToolType.Spanner);
     }
+
+    public void BuyCutter()
+    {
+        if (inventory == null) return;
+        inventory.AddTool(ToolType.Cutter);
+    }
 }

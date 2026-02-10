@@ -16,6 +16,7 @@ public class PollutionSpawner : MonoBehaviour
     public GameObject plantPrefab;
     public GameObject zombiePrefab;
     public GameObject monsterPrefab;
+    public GameObject woodPrefab;
     public int spawnPlantCount = 3;
     public LayerMask plantMask = ~0;
 
@@ -33,6 +34,11 @@ public class PollutionSpawner : MonoBehaviour
         SpawnRandomPollution(spawnPollutionCount);
     }
 
+    public void WoodSpawnOnce()
+    {
+        SpawnRandomWood();
+    }
+
     public void TargetSpawnOnce()
     {
         SpawnRandomPlant(spawnPlantCount);
@@ -48,6 +54,7 @@ public class PollutionSpawner : MonoBehaviour
         SpawnMonster();
     }
 
+    // ¿À¿°¹°Áú ·£´ý »ý¼º
     void SpawnRandomPollution(int count)
     {
         if (pollutionPrefab == null || spawnArea == null) return;
@@ -92,6 +99,25 @@ public class PollutionSpawner : MonoBehaviour
         }
     }
 
+    // ³ª¹« ·£´ý »ý¼º
+    void SpawnRandomWood()
+    {
+        Vector3 center = spawnArea.transform.TransformPoint(spawnArea.center);
+        float topY = center.y + (spawnArea.size.y * 0.5f);
+
+        Vector3 randomPoint = GetRandomPointInBox(spawnArea);
+        Vector3 origin = new Vector3(randomPoint.x, topY + 1f, randomPoint.z);
+        Vector3 dir = Vector3.down;
+
+        if (Physics.Raycast(origin, dir, out RaycastHit hit, rayDistance, plantMask, QueryTriggerInteraction.Ignore))
+        {
+            Vector3 pos = hit.point;
+            Quaternion rot = Quaternion.identity;
+            Instantiate(woodPrefab, pos, rot);
+        }
+    }
+
+    // ½Ä¹° ·£´ý »ý¼º
     void SpawnRandomPlant(int count)
     {
         if (plantPrefab == null || spawnArea == null) return;
@@ -123,6 +149,7 @@ public class PollutionSpawner : MonoBehaviour
         }
     }
 
+    // Á»ºñ ·£´ý »ý¼º
     void SpawnZombie()
     {
         Vector3 center = spawnArea.transform.TransformPoint(spawnArea.center);
@@ -140,6 +167,7 @@ public class PollutionSpawner : MonoBehaviour
         }
     }
 
+    // ±«¹° ·£´ý »ý¼º
     void SpawnMonster()
     {
         Vector3 center = spawnArea.transform.TransformPoint(spawnArea.center);
@@ -157,6 +185,7 @@ public class PollutionSpawner : MonoBehaviour
         }
     }
 
+    // ·£´ý ¹üÀ§ ÁöÁ¤
     Vector3 GetRandomPointInBox(BoxCollider box)
     {
         Vector3 center = box.transform.TransformPoint(box.center);

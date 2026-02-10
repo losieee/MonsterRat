@@ -13,6 +13,7 @@ public class PollutionControl : MonoBehaviour, IClearTarget
     int cleanCount = 0;
 
     public float Remain01 => 1f;
+    public float Weight => 1f;
 
     void Awake()
     {

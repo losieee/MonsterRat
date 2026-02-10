@@ -8,6 +8,8 @@ public enum ToolType
     Mop,            // 대걸레
     DeGassing,      // 가스제거기
     Spanner,        // 스패너
+    Cutter,         // 절단기
+    Flame,          // 화염방사기
 }
 
 public class Inventory : MonoBehaviour
