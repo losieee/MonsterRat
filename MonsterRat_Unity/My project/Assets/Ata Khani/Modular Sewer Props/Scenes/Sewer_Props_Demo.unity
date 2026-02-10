@@ -13,7 +13,7 @@ OcclusionCullingSettings:
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 10
+  serializedVersion: 9
   m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
@@ -42,8 +42,8 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 13
-  m_BakeOnSceneLoad: 0
+  serializedVersion: 12
+  m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -66,6 +66,9 @@ LightmapSettings:
     m_LightmapParameters: {fileID: 0}
     m_LightmapsBakeMode: 1
     m_TextureCompression: 1
+    m_FinalGather: 0
+    m_FinalGatherFiltering: 1
+    m_FinalGatherRayCount: 256
     m_ReflectionCompression: 2
     m_MixedBakeMode: 2
     m_BakeBackend: 1
@@ -144,8 +147,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
   m_Enabled: 1
-  serializedVersion: 11
+  serializedVersion: 10
   m_Type: 1
+  m_Shape: 0
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
   m_Intensity: 1
   m_Range: 10
@@ -195,12 +199,8 @@ Light:
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
-  m_ForceVisible: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
-  m_LightUnit: 1
-  m_LuxAtDistance: 1
-  m_EnableSpotReflector: 1
 --- !u!4 &705507995
 Transform:
   m_ObjectHideFlags: 0
@@ -415,6 +415,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5958102430360119099, guid: 92ef1f14bbbd3ce4a9eb54b584933455, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 8820652504764115336, guid: 92ef1f14bbbd3ce4a9eb54b584933455, type: 3}
       propertyPath: m_Name
       value: Barrel_B_05
@@ -507,6 +511,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1449361590}
     m_Modifications:
+    - target: {fileID: 609411371489154365, guid: e3908e7f0b112b247852bbf30644d6a0, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 6481421174139414303, guid: e3908e7f0b112b247852bbf30644d6a0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 6
@@ -753,6 +761,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8924833070696355797, guid: 9d90850e8ff2d794f937efd877bd98b3, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -811,6 +823,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5408596874681062373, guid: 9a3dd16c3aba08147ac2216168949f77, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 5805576901230597953, guid: 9a3dd16c3aba08147ac2216168949f77, type: 3}
       propertyPath: m_Name
       value: Lamp_Hanging_4M
@@ -903,6 +919,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1449361590}
     m_Modifications:
+    - target: {fileID: 2079441126309570711, guid: b875624437ee84e43977039a4637f88b, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 2458207089323826041, guid: b875624437ee84e43977039a4637f88b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 4
@@ -1075,6 +1095,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5867328661928728152, guid: b9197d7aaf0bad6489ee674c020b2c2b, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 5886960430779320904, guid: b9197d7aaf0bad6489ee674c020b2c2b, type: 3}
       propertyPath: m_Name
       value: Lamp_Hanging_2M
@@ -1149,6 +1173,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9037838509445395562, guid: 302aa2e3cb6558049ba5172d84b87aec, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1233,6 +1261,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1449361590}
     m_Modifications:
+    - target: {fileID: 2492884385843470349, guid: 7fbef595612f4674ea32ca79a549445f, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 3783732827998284154, guid: 7fbef595612f4674ea32ca79a549445f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 31.27743
@@ -1365,6 +1397,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1449361590}
     m_Modifications:
+    - target: {fileID: 3504924516216320540, guid: 70589b4a0ce24254c93702a02bf0afe0, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 3815287239288363834, guid: 70589b4a0ce24254c93702a02bf0afe0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 17.030819
@@ -1471,6 +1507,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4891838194945776239, guid: f17a6d2f96ba3de4c98c3b29460b5a04, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 8450838127750379029, guid: f17a6d2f96ba3de4c98c3b29460b5a04, type: 3}
       propertyPath: m_Name
       value: Barrel_Box_02
@@ -1537,6 +1577,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1571080730700225508, guid: 25fd96055b0018343ae9adcc332bc087, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 7297627444577166541, guid: 25fd96055b0018343ae9adcc332bc087, type: 3}
       propertyPath: m_Name
       value: Barrel_Box_01
@@ -1571,6 +1615,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1826775187137707263, guid: 02e4b5b5828d4314f81eb7111d4fd493, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 6412779910424965784, guid: 02e4b5b5828d4314f81eb7111d4fd493, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1
@@ -1695,6 +1743,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1449361590}
     m_Modifications:
+    - target: {fileID: 2088043935539063105, guid: 713881d767100444d8dabc94c32052db, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 2966789727329206831, guid: 713881d767100444d8dabc94c32052db, type: 3}
       propertyPath: m_LocalPosition.x
       value: 16.030819
@@ -1769,6 +1821,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4475383569361149820, guid: 74def9fe88265c94faa220e781e8e1b7, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 8636031731153359799, guid: 74def9fe88265c94faa220e781e8e1b7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 8
@@ -1827,6 +1883,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1449361590}
     m_Modifications:
+    - target: {fileID: 2768008433909279718, guid: 34f6e9f21f0df5d45b0f6aed172e51e7, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 3022180522881791253, guid: 34f6e9f21f0df5d45b0f6aed172e51e7, type: 3}
       propertyPath: m_Name
       value: Wooden_Plank_05
@@ -1967,6 +2027,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5491488919655998593, guid: 8630a488ba558fa47ab8f8ba7696c258, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 7531193161253147977, guid: 8630a488ba558fa47ab8f8ba7696c258, type: 3}
       propertyPath: m_LocalPosition.x
       value: 20.814415
@@ -2033,6 +2097,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3619705141803185105, guid: 60445e0432799db4f96cafeb08b866e5, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 6153876665748659579, guid: 60445e0432799db4f96cafeb08b866e5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 29.27743
@@ -2131,6 +2199,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3338340909376381181, guid: bd2fdf45ee79adf4fab4930f5852c261, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 8617581843788410381, guid: bd2fdf45ee79adf4fab4930f5852c261, type: 3}
       propertyPath: m_Name
       value: Wooden_Plank_01
@@ -2165,6 +2237,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2488776970821290303, guid: c133cab668eef33439bbc01ab3b8d5b8, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 6912501237270268984, guid: c133cab668eef33439bbc01ab3b8d5b8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 16
