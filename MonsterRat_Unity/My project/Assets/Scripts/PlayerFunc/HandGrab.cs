@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEditor.UIElements;
 using UnityEngine;
 
@@ -115,12 +116,23 @@ public class HandGrab : InvenBase
         if(interactor.RaycastWorld(grabHoldDistance,out RaycastHit hit))
         {
             int layer = hit.collider.gameObject.layer;
-            if (layer != 10) return;
+            if (layer != 10 && layer != 17) return;
 
-            DeleteObject btn = hit.collider.GetComponent<DeleteObject>();
-            if (btn != null)
+            if (layer == 10)
             {
-                btn.CanDelete();
+                DeleteObject btn = hit.collider.GetComponent<DeleteObject>();
+                if (btn != null)
+                {
+                    btn.CanDelete();
+                }
+            }
+            if (layer == 17)
+            {
+                ElevatorBtn btn = hit.collider.GetComponent<ElevatorBtn>();
+                if(btn != null)
+                {
+                    btn.ClickEvBtn();
+                }
             }
         }
     }

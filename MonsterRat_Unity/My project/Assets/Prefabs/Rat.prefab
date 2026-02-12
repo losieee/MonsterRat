@@ -30,8 +30,8 @@ Transform:
   m_GameObject: {fileID: 1996114305215177707}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.1, z: 0}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
+  m_LocalPosition: {x: 0, y: 0.2, z: 0}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8154681948967786344}
@@ -148,6 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f28b6bc4afee7347bcdbbe22e7d2efd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weight: 1
 --- !u!1 &2902136620076325771
 GameObject:
   m_ObjectHideFlags: 0
@@ -174,7 +175,7 @@ Transform:
   m_GameObject: {fileID: 2902136620076325771}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.08, y: 0, z: 4.81}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -193,16 +194,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb6280f244d716c4bb75339c5dc5c7d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speedMin: 5
-  speedMax: 8
-  directionChangeIntervalMin: 0.5
-  directionChangeIntervalMax: 3
+  playerTag: Player
+  speed: 3.5
+  rotateSpeed: 10
+  stopDistance: 0.7
   wallCheckDistance: 0.6
   obstacleMask:
     serializedVersion: 2
     m_Bits: 127
-  idleChance: 0.6
-  idleTimeMin: 1.2
-  idleTimeMax: 3
-  pollutuinPreb: {fileID: 3999510559161058140, guid: abc8d33c3698a8641bc0a0e88477af2d, type: 3}
-  pollutionSpawnThreshold: 1.6

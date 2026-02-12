@@ -4,9 +4,14 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMov : MonoBehaviour
 {
+    static PlayerMov instance;
+
     [Header("Move")]
     public float speed = 5f;
     public float gravity = -9.81f;
+
+    [Header("Jump")]
+    public float jumpForce = 1.5f;
 
     [Header("Look")]
     public Transform cam;
@@ -21,6 +26,15 @@ public class PlayerMov : MonoBehaviour
 
     void Awake()
     {
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        instance = this;
+        DontDestroyOnLoad(gameObject);
+
         control = GetComponent<CharacterController>();
         ui = GetComponent<PlayerUIState>();
 
@@ -54,6 +68,11 @@ public class PlayerMov : MonoBehaviour
 
         if (control.isGrounded && vel.y < 0f)
             vel.y = -2f;
+
+        if(control.isGrounded && Input.GetKeyDown(KeyCode.Space))
+        {
+            vel.y = Mathf.Sqrt(jumpForce * -2f * gravity);
+        }
 
         vel.y += gravity * Time.deltaTime;
         control.Move(vel * Time.deltaTime);

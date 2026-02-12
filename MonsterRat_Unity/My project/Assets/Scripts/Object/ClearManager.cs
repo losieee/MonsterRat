@@ -1,4 +1,5 @@
 using System.Collections;
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -60,8 +61,24 @@ public class ClearManager : MonoBehaviour
         Instance = this;
     }
 
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        BindUI();
+    }
+
     IEnumerator Start()
     {
+        BindUI();
         yield return null;
 
         RebuildBaseline();
@@ -71,6 +88,18 @@ public class ClearManager : MonoBehaviour
         if (clearGaugeFill != null) clearGaugeFill.fillAmount = 0f;
         if (clearGaugeText != null) clearGaugeText.text = "0%";
         if (spawnRoot == null) spawnRoot = transform;
+    }
+
+    void BindUI()
+    {
+        if (clearGaugeFill != null && clearGaugeText != null) return;
+
+        // DontDestroy된 Player에서 PlayerHUD 찾기
+        PlayerHUD hud = FindFirstObjectByType<PlayerHUD>();
+        if (hud == null) return;
+
+        clearGaugeFill = hud.clearGaugeFill;
+        clearGaugeText = hud.clearGaugeText;
     }
 
     void Update()

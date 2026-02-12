@@ -42,8 +42,8 @@ public class Gun : InvenBase
             if (bloodPreb != null)
             {
                 Vector3 pos = CoachObj.transform.position;
-                pos.y = 0;
-                Instantiate(bloodPreb, pos, Quaternion.identity);
+                Quaternion rot = Quaternion.FromToRotation(Vector3.up, hit.normal);
+                Instantiate(bloodPreb, pos, rot);
             }
 
             Rigidbody rb = CoachObj.GetComponentInChildren<Rigidbody>();
@@ -77,8 +77,8 @@ public class Gun : InvenBase
             if (bloodPreb != null)
             {
                 Vector3 pos = ratObj.transform.position;
-                pos.y = 0;
-                Instantiate(bloodPreb, pos, Quaternion.identity);
+                Quaternion rot = Quaternion.FromToRotation(Vector3.up, hit.normal); // 표면 노말 기준
+                Instantiate(bloodPreb, pos, rot);
             }
 
             Rigidbody rb = ratObj.GetComponentInChildren<Rigidbody>();

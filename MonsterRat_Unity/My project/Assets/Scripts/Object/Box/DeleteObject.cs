@@ -31,6 +31,7 @@ public class DeleteObject : MonoBehaviour
 
         var copy = new List<GameObject>(deleteBoxes);
 
+        
         foreach (var box in copy)
         {
             if (box == null) continue;
