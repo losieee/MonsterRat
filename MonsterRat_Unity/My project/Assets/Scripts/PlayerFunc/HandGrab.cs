@@ -128,10 +128,10 @@ public class HandGrab : InvenBase
             }
             if (layer == 17)
             {
-                ElevatorBtn btn = hit.collider.GetComponent<ElevatorBtn>();
+                SafeZone_Door btn = hit.collider.GetComponent<SafeZone_Door>();
                 if(btn != null)
                 {
-                    btn.ClickEvBtn();
+                    btn.OpenDoor();
                 }
             }
         }
