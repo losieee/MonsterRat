@@ -10,12 +10,14 @@ public class StoreUI : MonoBehaviour
 
         // 이미 총을 갖고 있으면 아무 일도 안 일어남
         inventory.AddTool(ToolType.Gun);
+        inventory.hasGun = true;
     }
 
     public void BuyMop()
     {
         if (inventory == null) return;
         inventory.AddTool(ToolType.Mop);
+        inventory.hasMop = true;
     }
 
     public void BuyDeGassing()
@@ -28,6 +30,7 @@ public class StoreUI : MonoBehaviour
     {
         if (inventory == null) return;
         inventory.AddTool(ToolType.Spanner);
+        inventory.hasSpanner = true;
     }
 
     public void BuyCutter()

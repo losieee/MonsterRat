@@ -7,6 +7,7 @@ public class Gun : InvenBase
     [Header("Rat")]
     public float ratDistance = 8f;
     public float ratAimRadius = 0.15f;
+    public LayerMask groundMask;
     public LayerMask ratMask;
     public LayerMask roachMask;
     public LayerMask targetMask;
@@ -76,9 +77,17 @@ public class Gun : InvenBase
 
             if (bloodPreb != null)
             {
-                Vector3 pos = ratObj.transform.position;
-                Quaternion rot = Quaternion.FromToRotation(Vector3.up, hit.normal); // 표면 노말 기준
-                Instantiate(bloodPreb, pos, rot);
+                Vector3 start = hit.point + Vector3.up * 0.3f;
+                if (Physics.Raycast(start, Vector3.down, out RaycastHit groundHit, 5f, groundMask, QueryTriggerInteraction.Ignore))
+                {
+                    Vector3 pos = groundHit.point;
+                    Quaternion rot = Quaternion.FromToRotation(Vector3.up, groundHit.normal);
+                    Instantiate(bloodPreb, pos, rot);
+                }
+                else
+                {
+                    Instantiate(bloodPreb, hit.point, Quaternion.identity);
+                }
             }
 
             Rigidbody rb = ratObj.GetComponentInChildren<Rigidbody>();

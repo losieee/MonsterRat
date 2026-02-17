@@ -1351,6 +1351,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxSlots: 5
+  hasMop: 0
+  hasGun: 0
+  hasSpanner: 0
 --- !u!114 &355794692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1402,6 +1405,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ratDistance: 30
   ratAimRadius: 0.15
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 0
   ratMask:
     serializedVersion: 2
     m_Bits: 256

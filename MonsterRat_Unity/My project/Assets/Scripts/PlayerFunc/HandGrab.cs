@@ -116,7 +116,7 @@ public class HandGrab : InvenBase
         if(interactor.RaycastWorld(grabHoldDistance,out RaycastHit hit))
         {
             int layer = hit.collider.gameObject.layer;
-            if (layer != 10 && layer != 17) return;
+            if (layer != 10 && layer != 17 && layer != 18) return;
 
             if (layer == 10)
             {
@@ -132,6 +132,14 @@ public class HandGrab : InvenBase
                 if(btn != null)
                 {
                     btn.OpenDoor();
+                }
+            }
+            if (layer == 18)
+            {
+                SafeZone_Door btn = hit.collider.GetComponentInParent<SafeZone_Door>();
+                if (btn != null)
+                {
+                    btn.OpenClearDoor();
                 }
             }
         }

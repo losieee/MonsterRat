@@ -22,10 +22,10 @@ public class PollutionSpawner : MonoBehaviour
 
     bool pollutionSpawnedOnce = false;
 
-    void Start() 
+    /*void Start() 
     { 
         SpawnRandomPollution(spawnPollutionCount); 
-    }
+    }*/
 
     public void PollutionSpawnOnce()
     {
