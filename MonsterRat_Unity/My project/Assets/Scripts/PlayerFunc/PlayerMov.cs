@@ -26,14 +26,7 @@ public class PlayerMov : MonoBehaviour
 
     void Awake()
     {
-        if (instance != null && instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
         instance = this;
-        DontDestroyOnLoad(gameObject);
 
         control = GetComponent<CharacterController>();
         ui = GetComponent<PlayerUIState>();
