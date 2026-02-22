@@ -4,7 +4,8 @@ using Photon.Pun;
 public class PlayerController : MonoBehaviourPun  // 전에 프로젝트에서 사용하던 방식을 가져왔습니다.
 {
     [Header("속도 설정")]
-    public float moveSpeed = 5f;
+    public float moveSpeed = 3.0f;
+    public float runSpeed = 6.0f;
     public float mouseSensitivity = 2f; // 마우스 감도
 
     [Header("연결 요소")]
@@ -12,12 +13,14 @@ public class PlayerController : MonoBehaviourPun  // 전에 프로젝트에서 사용하던 
 
     private Rigidbody rb;
     private float xRotation = 0f; // 위아래 시야각 제한용
+    private Animator animator;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        animator = GetComponentInChildren<Animator>();
 
-       
+
         if (photonView.IsMine)
         {
             myCamObj.SetActive(true); // 내 카메라는 켠다
@@ -56,10 +59,20 @@ public class PlayerController : MonoBehaviourPun  // 전에 프로젝트에서 사용하던 
     {
         float x = Input.GetAxisRaw("Horizontal");
         float z = Input.GetAxisRaw("Vertical");
-
+        bool isRunning = Input.GetKey(KeyCode.LeftShift);
         // 내가 바라보는 방향 기준으로 이동 벡터 계산
+        float currentSpeed = isRunning ? runSpeed : moveSpeed;
+
         Vector3 moveDir = (transform.right * x + transform.forward * z).normalized;
-        transform.Translate(moveDir * moveSpeed * Time.deltaTime, Space.World);
+        transform.Translate(moveDir * currentSpeed * Time.deltaTime, Space.World);
+
+        if (animator != null)
+        {
+            float animMultiplier = isRunning ? 1.0f : 0.5f;
+            animator.SetFloat("MoveX", x * animMultiplier, 0.1f, Time.deltaTime);
+            animator.SetFloat("MoveY", z * animMultiplier, 0.1f, Time.deltaTime);
+        }
+
     }
 
     // 마우스 시야 회전
