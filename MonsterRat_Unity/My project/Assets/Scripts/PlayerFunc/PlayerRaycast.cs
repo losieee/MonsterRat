@@ -35,7 +35,7 @@ public class PlayerRaycast : MonoBehaviour
         Ray ray = new Ray(cam.position, cam.forward);
 
         if (Physics.Raycast(ray, out RaycastHit hit, distance, interactMask, QueryTriggerInteraction.Ignore))
-            lookTarget = hit.collider.gameObject;
+            lookTarget = hit.collider.gameObject; 
         else
             lookTarget = null;
     }

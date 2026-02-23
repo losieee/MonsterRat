@@ -128,7 +128,7 @@ public class HandGrab : InvenBase
             }
             if (layer == 17)
             {
-                SafeZone_Door btn = hit.collider.GetComponent<SafeZone_Door>();
+                SafeZone_Door btn = hit.collider.GetComponentInParent<SafeZone_Door>();
                 if(btn != null)
                 {
                     btn.OpenDoor();

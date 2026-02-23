@@ -30,6 +30,11 @@ public class TutorialManager : MonoBehaviour
     public GameObject spannerPos;
     public GameObject barrier;
 
+    // 가이드라인
+    public GameObject guaid1;
+    public GameObject guaid2;
+    public GameObject guaid3;
+
     void Update()
     {
         CheckCleaningTool();
@@ -65,6 +70,8 @@ public class TutorialManager : MonoBehaviour
                 if (!tutorial2Clear)
                 {
                     tutorial2Clear = true;
+                    guaid1.SetActive(false);
+                    guaid2.SetActive(true);
                     inventory.UnlockTool(ToolType.Mop);
                     StartCoroutine(Tutorial2Tmi());
                 }
@@ -74,6 +81,7 @@ public class TutorialManager : MonoBehaviour
                 if (!tutorial3Clear)
                 {
                     tutorial3Clear = true;
+                    guaid2.SetActive(false);
                     inventory.UnlockTool(ToolType.Gun);
                     StartCoroutine(Tutorial3Tmi());
                 }
@@ -83,6 +91,7 @@ public class TutorialManager : MonoBehaviour
                 if (!tutorial4Clear)
                 {
                     tutorial4Clear = true;
+                    guaid3.SetActive(true);
                     inventory.UnlockTool(ToolType.Spanner);
                     StartCoroutine(Tutorial4Tmi());
                 }
@@ -92,6 +101,7 @@ public class TutorialManager : MonoBehaviour
                 if (!tutorial5Clear)
                 {
                     tutorial5Clear = true;
+                    guaid3.SetActive(false);
                     StartCoroutine(Tutorial5Tmi());
                 }
                 break;
@@ -145,6 +155,5 @@ public class TutorialManager : MonoBehaviour
         yield return null;
         gasAction1.SetActive(false);
         gasAction2.SetActive(false);
-        spannerPos.SetActive(false);
     }
 }
