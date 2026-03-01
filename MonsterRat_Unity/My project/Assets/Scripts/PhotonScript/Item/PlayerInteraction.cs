@@ -94,7 +94,8 @@ public class PlayerInteraction : MonoBehaviour
 
         inventory.AddItem(currentInteractableItem.itemData);
 
-        if (itemPhotonView != null)
+        //  ViewID가 0이 아닐 때만 포톤으로 삭제
+        if (itemPhotonView != null && itemPhotonView.ViewID != 0)
         {
             if (itemPhotonView.IsMine || PhotonNetwork.IsMasterClient)
             {
@@ -107,8 +108,10 @@ public class PlayerInteraction : MonoBehaviour
         }
         else
         {
+            // ViewID가 0인 씬 큐브 PhotonView가 없는 오브젝트는 기본 Destroy 사용
             Destroy(currentInteractableItem.gameObject);
         }
+
         currentInteractableItem = null;
     }
 

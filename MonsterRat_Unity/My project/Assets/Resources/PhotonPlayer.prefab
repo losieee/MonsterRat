@@ -365,6 +365,9 @@ GameObject:
   - component: {fileID: -1778505242161784514}
   - component: {fileID: 9155193349448811738}
   - component: {fileID: 232426663093574612}
+  - component: {fileID: 4749760051242417402}
+  - component: {fileID: 8912150048000606042}
+  - component: {fileID: 3341103897251282659}
   m_Layer: 0
   m_Name: PhotonPlayer
   m_TagString: Player
@@ -679,6 +682,58 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c7f91564bb89864f80a72da6ad9b8a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4749760051242417402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8289719037013333509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f242250e3e03714087aab7616a21e73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxSlots: 5
+  hasMop: 0
+  hasGun: 0
+  hasSpanner: 0
+--- !u!114 &8912150048000606042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8289719037013333509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f228614475808141b447a63df57a3ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickupRadius: 2
+  itemLayer:
+    serializedVersion: 2
+    m_Bits: 524288
+  pickupKey: 101
+--- !u!114 &3341103897251282659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8289719037013333509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f86b73f7745c0b4693f8fd9e143e789, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inventoryPanel: {fileID: 8614311244138643895}
+  inventorySlots:
+  - {fileID: 375911695283469902}
+  - {fileID: 2510374554134100176}
+  - {fileID: 8742757236924643656}
+  - {fileID: 6898925720979987067}
+  dropPoint: {fileID: 7515643468641692121}
 --- !u!1 &8614311244138643895
 GameObject:
   m_ObjectHideFlags: 0
