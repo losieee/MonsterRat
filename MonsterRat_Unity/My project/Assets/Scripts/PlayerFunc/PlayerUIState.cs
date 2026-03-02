@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 public class PlayerUIState : MonoBehaviour
 {
@@ -7,6 +8,9 @@ public class PlayerUIState : MonoBehaviour
     bool uiOpen;
 
     public bool IsUIOpen => uiOpen;
+
+    public event Action OnStoreOpened;
+    public event Action OnStoreClosed;
 
     void Update()
     {
@@ -23,11 +27,15 @@ public class PlayerUIState : MonoBehaviour
             {
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
+
+                OnStoreOpened?.Invoke();
             }
             else
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
+
+                OnStoreClosed?.Invoke();
             }
         }
     }
@@ -51,5 +59,7 @@ public class PlayerUIState : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        OnStoreClosed?.Invoke();
     }
 }

@@ -73,7 +73,13 @@ public class Gun : InvenBase
             GameObject ratObj = rat != null ? rat.gameObject : hitObj.transform.root.gameObject;
 
             RatController rc = ratObj.GetComponent<RatController>();
+            if (rc != null)
+            {
+                if (!rc.enabled) return false;
+                rc.enabled = false;
+            }
             if (rc != null) rc.enabled = false;
+            ratObj.transform.GetChild(1).gameObject.SetActive(false);
 
             if (bloodPreb != null)
             {
@@ -96,6 +102,9 @@ public class Gun : InvenBase
             rb.freezeRotation = false;
 
             SetLayerRecursively(ratObj, 3);
+
+            var tm = FindObjectOfType<TutorialManager>();
+            if (tm != null) tm.NotifyRatKilled(ratObj);
 
             interactor.ForceSetLookTarget(ratObj);
             return true;

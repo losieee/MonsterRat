@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,6 +26,8 @@ public class Inventory : MonoBehaviour
 
     // 튜토리얼 전용 사용 잠금
     private HashSet<ToolType> unlocked = new HashSet<ToolType>();
+
+    public event Action<ToolType> OnToolAdded;
 
     void Awake()
     {
@@ -69,6 +72,13 @@ public class Inventory : MonoBehaviour
         if (slots.Count >= maxSlots) return false;
 
         slots.Add(tool);
+
+        if (tool == ToolType.Mop) hasMop = true;
+        else if (tool == ToolType.Gun) hasGun = true;
+        else if (tool == ToolType.Spanner) hasSpanner = true;
+
+        OnToolAdded?.Invoke(tool);
+
         return true;
     }
 
@@ -83,4 +93,6 @@ public class Inventory : MonoBehaviour
     }
 
     public IReadOnlyList<ToolType> GetSlots() => slots;
+
+    public bool HasAllTutorialTools() => hasMop && hasGun && hasSpanner;
 }
