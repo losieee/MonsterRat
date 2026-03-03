@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TutorialStep : MonoBehaviour
 {
@@ -9,6 +10,9 @@ public class TutorialStep : MonoBehaviour
     public GameObject storeOutLine;
     public GameObject btnOutLine;
     public BoxCollider storeRange;
+    public Button mopBtn;
+    public Button gunBtn;
+    public Button spannerBtn;
 
     private int _pausedIndex = -999;
 
@@ -48,6 +52,15 @@ public class TutorialStep : MonoBehaviour
             {
                 storeOutLine.SetActive(true);
                 storeRange.enabled = true;
+            }
+        }
+        else if(idx == 9)
+        {
+            if(mopBtn != null && gunBtn != null && spannerBtn != null)
+            {
+                mopBtn.enabled = true;
+                gunBtn.enabled = true;
+                spannerBtn.enabled = true;
             }
         }
         else if(idx == 11)

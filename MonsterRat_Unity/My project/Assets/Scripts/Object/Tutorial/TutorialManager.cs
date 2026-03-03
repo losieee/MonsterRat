@@ -99,11 +99,8 @@ public class TutorialManager : MonoBehaviour
             case 4:     // ∏ÛΩ∫≈Õ
                 if (!tutorial4Clear)
                 {
-                    tutorial4Clear = true;
-                    guaid3.SetActive(true);
-                    inventory.UnlockTool(ToolType.Spanner);
                     dialogue.ResumeAuto();
-                    StartCoroutine(Tutorial4Tmi());
+                    StartCase4();
                 }
                 break;
 
@@ -195,13 +192,13 @@ public class TutorialManager : MonoBehaviour
             case3Started = false;
             gaugeStep = 4;
             dialogue.ResumeAuto();
-            StartCase4();
         }
     }
 
     void StartCase4()
     {
         if (tutorial4Clear) return;
+        tutorial4Clear = true;
 
         guaid3.SetActive(true);
         inventory.UnlockTool(ToolType.Spanner);

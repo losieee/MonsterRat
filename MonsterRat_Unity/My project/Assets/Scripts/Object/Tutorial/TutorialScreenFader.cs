@@ -18,7 +18,7 @@ public class TutorialScreenFader : MonoBehaviour
         if (group == null) group = GetComponentInChildren<CanvasGroup>();
 
         // 처음은 투명
-        group.alpha = 0f;
+        //group.alpha = 0f;
         group.interactable = false;
         group.blocksRaycasts = false;
     }

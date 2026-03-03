@@ -61,10 +61,7 @@ public class TutorialDialogueSystem : MonoBehaviour
 
     private void Start()
     {
-        StartDialogue(startIndex);
-
-        if (autoPlay)
-            StartAuto();
+        StartCoroutine(WaitStart());
     }
 
     public void StartDialogue(int index)
@@ -256,6 +253,20 @@ public class TutorialDialogueSystem : MonoBehaviour
                 nextIndex = next
             };
         }
+    }
+
+    private IEnumerator WaitStart()
+    {
+        TutorialScreenFader.Instance.StartFade(1f, 0f, blockInput: true);
+
+        yield return new WaitForSeconds(1f);
+
+        TutorialScreenFader.Instance.FadeIn();
+
+        StartDialogue(startIndex);
+
+        if (autoPlay)
+            StartAuto();
     }
 
 

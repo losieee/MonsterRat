@@ -8203,7 +8203,7 @@ MonoBehaviour:
   betweenDelay: 0.15
   baseStayTime: 1
   secondsPerChar: 0.04
-  minStayTime: 1.2
+  minStayTime: 2
   maxStayTime: 6
   pauseIndices: 07000000090000000a0000000b0000000c0000000d0000000f00000010000000120000001300000014000000
 --- !u!4 &455368185
@@ -12874,7 +12874,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 746211017}
   m_Enabled: 1
-  m_Alpha: 0
+  m_Alpha: 1
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -12929,7 +12929,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   group: {fileID: 746211020}
-  defaultDuration: 0.5
+  defaultDuration: 1
 --- !u!1001 &747182866
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13961,6 +13961,9 @@ MonoBehaviour:
   storeOutLine: {fileID: 501258765}
   btnOutLine: {fileID: 1697029459}
   storeRange: {fileID: 2119711241}
+  mopBtn: {fileID: 1597322818}
+  gunBtn: {fileID: 886420458}
+  spannerBtn: {fileID: 1925431663}
 --- !u!4 &825810786
 Transform:
   m_ObjectHideFlags: 0
@@ -14796,7 +14799,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 886420456}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
@@ -27792,7 +27795,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1597322816}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
@@ -33603,7 +33606,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1925431661}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
@@ -90643,8 +90646,8 @@ Transform:
   m_GameObject: {fileID: 8324301217112567604}
   serializedVersion: 2
   m_LocalRotation: {x: 0.000000021854579, y: 0.99994844, z: 2.2201774e-10, w: -0.010155319}
-  m_LocalPosition: {x: 39.9, y: 0, z: 19.51}
-  m_LocalScale: {x: 2.7783692, y: 1, z: 1}
+  m_LocalPosition: {x: 38.5191, y: -0.358, z: 19.5381}
+  m_LocalScale: {x: 2.0876665, y: 1.0716, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2133281146}
