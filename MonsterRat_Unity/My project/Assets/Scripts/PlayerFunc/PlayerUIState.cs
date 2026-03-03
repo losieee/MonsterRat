@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 public class PlayerUIState : MonoBehaviour
 {
@@ -8,28 +9,50 @@ public class PlayerUIState : MonoBehaviour
 
     public bool IsUIOpen => uiOpen;
 
+    public event Action OnStoreOpened;
+    public event Action OnStoreClosed;
+
     void Update()
     {
         if (!inStoreZone) return;
 
+        if (uiOpen && Input.GetKeyDown(KeyCode.Escape))
+        {
+            CloseStore();
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.E))
         {
-            uiOpen = !uiOpen;
-
-            if (storePanel != null)
-                storePanel.SetActive(uiOpen);
-
-            if (uiOpen)
-            {
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-            }
-            else
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-            }
+            if (uiOpen) CloseStore();
+            else OpenStore();
         }
+    }
+
+    void OpenStore()
+    {
+        uiOpen = true;
+
+        if (storePanel != null)
+            storePanel.SetActive(true);
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        OnStoreOpened?.Invoke();
+    }
+
+    void CloseStore()
+    {
+        uiOpen = false;
+
+        if (storePanel != null)
+            storePanel.SetActive(false);
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        OnStoreClosed?.Invoke();
     }
 
     void OnTriggerEnter(Collider other)
@@ -44,12 +67,12 @@ public class PlayerUIState : MonoBehaviour
 
         inStoreZone = false;
 
-        uiOpen = false;
-
-        if (storePanel != null)
-            storePanel.SetActive(false);
-
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        if (uiOpen)
+            CloseStore();
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 }

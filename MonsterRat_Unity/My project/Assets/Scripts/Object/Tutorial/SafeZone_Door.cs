@@ -7,6 +7,8 @@ public class SafeZone_Door : MonoBehaviour
     Animator anim;
 
     public bool canWork = false;
+    public GameObject btnOutLine;
+    public GameObject clearDoorOutLine;
 
     bool canOpen = true;    
 
@@ -23,6 +25,7 @@ public class SafeZone_Door : MonoBehaviour
         anim.SetTrigger("DoorOpen");
 
         StartCoroutine(WaitCool(3f));
+        btnOutLine.SetActive(false);
     }
 
     IEnumerator WaitCool(float val)
@@ -34,6 +37,7 @@ public class SafeZone_Door : MonoBehaviour
     public void OpenClearDoor()
     {
         anim.SetTrigger("ClearDoorOpen");
+        clearDoorOutLine.SetActive(false);
         StartCoroutine(ClearTutorial());
     }
 

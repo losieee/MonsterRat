@@ -10,9 +10,6 @@ public class PlayerMov : MonoBehaviour
     public float speed = 5f;
     public float gravity = -9.81f;
 
-    [Header("Jump")]
-    public float jumpForce = 1.5f;
-
     [Header("Look")]
     public Transform cam;
     public float sensitiv = 2f;
@@ -61,11 +58,6 @@ public class PlayerMov : MonoBehaviour
 
         if (control.isGrounded && vel.y < 0f)
             vel.y = -2f;
-
-        if(control.isGrounded && Input.GetKeyDown(KeyCode.Space))
-        {
-            vel.y = Mathf.Sqrt(jumpForce * -2f * gravity);
-        }
 
         vel.y += gravity * Time.deltaTime;
         control.Move(vel * Time.deltaTime);

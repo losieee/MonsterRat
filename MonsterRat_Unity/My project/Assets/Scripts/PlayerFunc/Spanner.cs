@@ -33,7 +33,6 @@ public class Spanner : InvenBase
 
             if(t.layer == 14)
             {
-                Debug.Log("14");
                 currentTime += Time.deltaTime;
 
                 if (currentTime <= fixTime)
