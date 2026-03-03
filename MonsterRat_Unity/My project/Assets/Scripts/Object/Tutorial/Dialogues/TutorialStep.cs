@@ -13,11 +13,13 @@ public class TutorialStep : MonoBehaviour
     public Button mopBtn;
     public Button gunBtn;
     public Button spannerBtn;
+    public GameObject exitRange;
 
     private int _pausedIndex = -999;
 
     private void OnEnable()
     {
+        dialogue.OnLineShown += HandleLineShown;
         dialogue.OnPausedAtIndex += HandlePause;
 
         if (playerUIState != null)
@@ -31,12 +33,13 @@ public class TutorialStep : MonoBehaviour
 
     private void OnDisable()
     {
+        dialogue.OnLineShown -= HandleLineShown;
         dialogue.OnPausedAtIndex -= HandlePause;
 
         if (playerUIState != null)
         {
-            playerUIState.OnStoreOpened += HandleStoreOpened;
-            playerUIState.OnStoreClosed += HandleStoreClosed;
+            playerUIState.OnStoreOpened -= HandleStoreOpened;
+            playerUIState.OnStoreClosed -= HandleStoreClosed;
         }
         if (inventory != null)
             inventory.OnToolAdded -= HandleToolAdded;
@@ -67,6 +70,15 @@ public class TutorialStep : MonoBehaviour
         {
             if(btnOutLine != null)
                 btnOutLine.SetActive(true);
+        }
+    }
+
+    void HandleLineShown(int idx)
+    {
+        if (idx == 22)
+        {
+            if (exitRange != null) 
+                exitRange.SetActive(true);
         }
     }
 

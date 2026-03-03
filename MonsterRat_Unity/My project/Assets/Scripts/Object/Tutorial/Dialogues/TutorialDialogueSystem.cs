@@ -27,10 +27,11 @@ public class TutorialDialogueSystem : MonoBehaviour
     public float maxStayTime = 6.0f;        // 최대 시간
 
     // 자동 진행 멈출 인덱스
-    public List<int> pauseIndices = new List<int>() { 7, 9 };
+    public List<int> pauseIndices = new List<int>() { };
 
     // 멈출 때 외부에서 호출 할거 
     public event Action<int> OnPausedAtIndex;
+    public event Action<int> OnLineShown;
 
     // 내부 데이터
     private readonly Dictionary<int, Line> _lines = new Dictionary<int, Line>();
@@ -110,6 +111,8 @@ public class TutorialDialogueSystem : MonoBehaviour
 
         if (dialogueText != null)
             dialogueText.text = line.dialogue;
+
+        OnLineShown?.Invoke(_currentIndex);
     }
 
     // 텍스트 자동 진행 루틴
@@ -261,12 +264,43 @@ public class TutorialDialogueSystem : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
-        TutorialScreenFader.Instance.FadeIn();
-
         StartDialogue(startIndex);
-
         if (autoPlay)
             StartAuto();
+
+        yield return StartCoroutine(FadeDialogueOnly(0f, 1f, 0.6f));
+
+        yield return new WaitForSeconds(1.5f);
+
+        TutorialScreenFader.Instance.FadeIn(2f);
+
+        yield return new WaitForSeconds(1f);
+
+        
+    }
+
+    private IEnumerator FadeDialogueOnly(float from, float to, float duration)
+    {
+        if (dialogueText == null) yield break;
+
+        float t = 0f;
+        var c = dialogueText.color;
+        c.a = from;
+        dialogueText.color = c;
+
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            float f = Mathf.Clamp01(t / duration);
+            c = dialogueText.color;
+            c.a = Mathf.SmoothStep(from, to, f);
+            dialogueText.color = c;
+            yield return null;
+        }
+
+        c = dialogueText.color;
+        c.a = to;
+        dialogueText.color = c;
     }
 
 

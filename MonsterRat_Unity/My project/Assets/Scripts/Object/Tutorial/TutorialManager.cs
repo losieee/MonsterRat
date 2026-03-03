@@ -35,7 +35,7 @@ public class TutorialManager : MonoBehaviour
     // 가스 연출
     public GameObject gasAction1;
     public GameObject gasAction2;
-    public GameObject spannerPos;
+    public GameObject spannerOutLine;
     public GameObject barrier;
 
     // 가이드라인
@@ -210,10 +210,6 @@ public class TutorialManager : MonoBehaviour
     IEnumerator Tutorial4Tmi()
     {
         yield return new WaitForSeconds(3);
-
-        gasAction1.SetActive(true);
-        gasAction2.SetActive(true);
-        spannerPos.SetActive(true);
         barrier.SetActive(false);
     }
 
@@ -221,6 +217,7 @@ public class TutorialManager : MonoBehaviour
     IEnumerator Tutorial5Tmi()
     {
         yield return null;
+        spannerOutLine.SetActive(false);
         gasAction1.SetActive(false);
         gasAction2.SetActive(false);
     }
