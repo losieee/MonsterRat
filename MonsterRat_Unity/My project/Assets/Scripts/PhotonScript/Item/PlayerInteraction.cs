@@ -3,7 +3,7 @@ using Photon.Pun;
 using System.Linq;
 
  
-[RequireComponent(typeof(Inventory))]  
+[RequireComponent(typeof(PhotonInventory))]  
 public class PlayerInteraction : MonoBehaviour
 {
     [Header("아이템 줍기 설정 (E 키)")]  
@@ -55,8 +55,8 @@ public class PlayerInteraction : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha2)) { inventory.DropItem(1); }
         if (Input.GetKeyDown(KeyCode.Alpha3)) { inventory.DropItem(2); }
         if (Input.GetKeyDown(KeyCode.Alpha4)) { inventory.DropItem(3); }
-        if (Input.GetKeyDown(KeyCode.Alpha5)) { inventory.DropItem(4); }
-        if (Input.GetKeyDown(KeyCode.Alpha6)) { inventory.DropItem(5); }
+       // if (Input.GetKeyDown(KeyCode.Alpha5)) { inventory.DropItem(4); }
+       // if (Input.GetKeyDown(KeyCode.Alpha6)) { inventory.DropItem(5); }
     }
 
     // --- [기존 아이템 줍기 함수들] ---
