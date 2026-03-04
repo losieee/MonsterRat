@@ -55,6 +55,9 @@ public class SafeZoneTrigger : MonoBehaviourPun
         }
         */
         if (isEvacuating) return;
+
+        
+        isEvacuating = true; // Å×½ºÆ® 
         if (PhotonNetwork.IsMasterClient)
         {
             StartEvacuation();

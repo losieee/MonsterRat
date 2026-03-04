@@ -86,29 +86,33 @@ public class PlayerInteraction : MonoBehaviour
         currentInteractableItem = closestItem;
     }
 
+    // 여기 부분 복잡해서 AI에게 도움을 받았습니다
     private void TryPickupItem()
     {
         if (currentInteractableItem == null) return;
 
         PhotonView itemPhotonView = currentInteractableItem.GetComponent<PhotonView>();
 
+        // 인벤토리에 아이템 추가
         inventory.AddItem(currentInteractableItem.itemData);
 
-        //  ViewID가 0이 아닐 때만 포톤으로 삭제
+        // 네트워크 상에서 아이템 오브젝트 삭제
         if (itemPhotonView != null && itemPhotonView.ViewID != 0)
         {
-            if (itemPhotonView.IsMine || PhotonNetwork.IsMasterClient)
+            // 내가 이 아이템의 주인이면 (또는 주인이 나가서 방장인 내가 소유권을 넘겨받았다면) 직접 삭제
+            if (itemPhotonView.IsMine)
             {
                 PhotonNetwork.Destroy(currentInteractableItem.gameObject);
             }
+            // 내가 주인이 아니면, 방장이 아니라 '해당 아이템의 진짜 주인'에게 지워달라고 부탁
             else
             {
-                photonView.RPC("RPC_RequestDestroyItem", RpcTarget.MasterClient, itemPhotonView.ViewID);
+                photonView.RPC("RPC_RequestDestroyItem", itemPhotonView.Owner, itemPhotonView.ViewID);
             }
         }
         else
         {
-            // ViewID가 0인 씬 큐브 PhotonView가 없는 오브젝트는 기본 Destroy 사용
+            // 에디터 임시 큐브 (ViewID가 0인 경우)
             Destroy(currentInteractableItem.gameObject);
         }
 
@@ -118,14 +122,14 @@ public class PlayerInteraction : MonoBehaviour
     [PunRPC]
     void RPC_RequestDestroyItem(int itemPhotonViewID)
     {
-        if (!PhotonNetwork.IsMasterClient) return;
-
         PhotonView itemPV = PhotonView.Find(itemPhotonViewID);
-        if (itemPV != null)
+
+       
+        if (itemPV != null && itemPV.IsMine)
         {
             PhotonNetwork.Destroy(itemPV.gameObject);
         }
     }
 
-     
+
 }
