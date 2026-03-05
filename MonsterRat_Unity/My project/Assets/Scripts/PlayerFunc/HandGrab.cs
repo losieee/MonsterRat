@@ -10,8 +10,8 @@ public class HandGrab : InvenBase
     public float grabMoveSpeed = 15f;
     public float throwBoost = 2.5f;
     public LayerMask grabBlock;
-    public float grabPadding = 0.05f;       // ¹°Ã¼¿Í º® »çÀÌ °Å¸®
-    public float minHoldDistance = 0.6f;    // ÇÃ·¹ÀÌ¾î¿Í ¹°Ã¼ ÃÖ¼Ò °Å¸®
+    public float grabPadding = 0.05f;       // ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½
+    public float minHoldDistance = 0.6f;    // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ ï¿½ï¿½Ã¼ ï¿½Ö¼ï¿½ ï¿½Å¸ï¿½
 
     Rigidbody targetRb;
     Vector3 lastGrabPos;
@@ -79,8 +79,8 @@ public class HandGrab : InvenBase
 
         targetRb.freezeRotation = false;
         targetRb.useGravity = true;
-        // ¹°Ã¼ ´øÁö±â
-        targetRb.velocity = lastGrabVel + interactor.cam.forward * throwBoost;
+        // ï¿½ï¿½Ã¼ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        targetRb.linearVelocity = lastGrabVel + interactor.cam.forward * throwBoost;
         targetRb = null;
     }
 
@@ -94,17 +94,17 @@ public class HandGrab : InvenBase
         if (Physics.SphereCast(interactor.cam.position, grabbedRadius, interactor.cam.forward,
             out RaycastHit hit, desiredDist, grabBlock, QueryTriggerInteraction.Ignore))
         {
-            // ¹°Ã¼¿ÍÀÇ °Å¸® ÁÙÀÓ
+            // ï¿½ï¿½Ã¼ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ ï¿½ï¿½ï¿½ï¿½
             actualDist = Mathf.Clamp(hit.distance - grabPadding, minHoldDistance, desiredDist);
         }
 
         Vector3 targetPos = interactor.cam.position + interactor.cam.forward * actualDist;
 
-        // ÇöÀç À§Ä¡ -> ¸ñÇ¥ À§Ä¡·Î º¸°£ ÀÌµ¿
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ -> ï¿½ï¿½Ç¥ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
         Vector3 toTarget = targetPos - targetRb.position;
         Vector3 newPos = targetRb.position + toTarget * grabMoveSpeed * Time.fixedDeltaTime;
 
-        // ´øÁö±â ¼Óµµ
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Óµï¿½
         lastGrabVel = (newPos - lastGrabPos) / Time.fixedDeltaTime;
         lastGrabPos = newPos;
         targetRb.MovePosition(newPos);

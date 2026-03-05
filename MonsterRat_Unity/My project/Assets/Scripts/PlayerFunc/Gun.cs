@@ -103,7 +103,7 @@ public class Gun : InvenBase
 
             SetLayerRecursively(ratObj, 3);
 
-            var tm = FindObjectOfType<TutorialManager>();
+            var tm = Object.FindAnyObjectByType<TutorialManager>();
             if (tm != null) tm.NotifyRatKilled(ratObj);
 
             interactor.ForceSetLookTarget(ratObj);

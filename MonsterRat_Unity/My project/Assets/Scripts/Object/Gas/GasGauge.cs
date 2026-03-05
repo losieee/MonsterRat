@@ -8,9 +8,6 @@ public class GasGauge : MonoBehaviour
 
     void Start()
     {
-        if (player == null)
-            player = FindObjectOfType<PlayerGas>();
-
         UpdateGauge();
     }
 
