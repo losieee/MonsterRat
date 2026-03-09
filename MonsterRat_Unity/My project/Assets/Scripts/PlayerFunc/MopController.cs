@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class Mop : InvenBase
+public class MopController : InvenBase
 {
     public override ToolType Type => ToolType.Mop;
 

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Spanner : InvenBase
+public class SpannerController : InvenBase
 {
     public override ToolType Type => ToolType.Spanner;
 

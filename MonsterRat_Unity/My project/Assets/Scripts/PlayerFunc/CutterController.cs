@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Cutter : InvenBase
+public class CutterController : InvenBase
 {
     public override ToolType Type => ToolType.Cutter;
 

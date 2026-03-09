@@ -17,6 +17,9 @@ public class TutorialInventory : MonoBehaviour
     [HideInInspector] public bool hasMop = false;
     [HideInInspector] public bool hasGun = false;
     [HideInInspector] public bool hasSpanner = false;
+    [HideInInspector] public bool clickMop = false;
+    [HideInInspector] public bool clickGun = false;
+    [HideInInspector] public bool clickSpanner = false;
 
     List<TutorialToolType> slots = new List<TutorialToolType>();
 

@@ -96,7 +96,7 @@ public class TutorialStep : MonoBehaviour
 
     void HandleStoreClosed()
     {
-        if (_pausedIndex != 10) return;
+        if (_pausedIndex != 9) return;
 
         _pausedIndex = -999;
         dialogue.ResumeAuto();
@@ -104,7 +104,7 @@ public class TutorialStep : MonoBehaviour
 
     void HandleToolAdded(TutorialToolType tool)
     {
-        if (_pausedIndex != 9) return;
+        if (_pausedIndex != 10) return;
 
         if (inventory != null && inventory.HasAllTutorialTools())
         {

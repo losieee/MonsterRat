@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Gun : InvenBase
+public class GunController : InvenBase
 {
     public override ToolType Type => ToolType.Gun;
 

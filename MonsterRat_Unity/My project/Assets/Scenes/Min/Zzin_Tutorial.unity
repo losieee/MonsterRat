@@ -8713,7 +8713,7 @@ MonoBehaviour:
   distance: 3
   interactMask:
     serializedVersion: 2
-    m_Bits: 481132
+    m_Bits: 7821164
 --- !u!114 &486180241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9443,6 +9443,54 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1052449573007301933, guid: eb2e1e9e412ac624da550f0b2d4c3152, type: 3}
   m_PrefabInstance: {fileID: 536416925}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &537555756
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 537555757}
+  - component: {fileID: 537555758}
+  m_Layer: 0
+  m_Name: ToolSpawnner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &537555757
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 537555756}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1.4049999, y: 0, z: 3.480003}
+  m_LocalScale: {x: 0.5053899, y: 1.0621629, z: 4.924143}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2119711245}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &537555758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 537555756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db780836a61552d4a8338b883692cd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ToolSpawnner
+  tools:
+  - {fileID: 6727388482724980731, guid: 29175c2533fb6f643a521c92b5fdd72e, type: 3}
+  - {fileID: 6497019878762106593, guid: d1dc14cd7f6ff9048aa7215ed56f0b17, type: 3}
+  - {fileID: 4320711194446946055, guid: 21654bd60d7a2964fa2c3248dead1ec4, type: 3}
 --- !u!1001 &539033281
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29853,6 +29901,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TutorialStoreUI
   inventory: {fileID: 486180252}
+  spawnner: {fileID: 537555758}
+  toolSpawn: {fileID: 537555757}
 --- !u!1 &1686956511
 GameObject:
   m_ObjectHideFlags: 0
@@ -37617,6 +37667,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 501258766}
+  - {fileID: 537555757}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
 --- !u!1001 &2125441615

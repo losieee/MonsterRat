@@ -12,10 +12,16 @@ public class TutorialHandGrab : TutorialInvenBase
     public float grabPadding = 0.05f;
     public float minHoldDistance = 0.6f;
 
+    TutorialInventory inven;
     Rigidbody targetRb;
     Vector3 lastGrabPos;
     Vector3 lastGrabVel;
     float grabbedRadius = 0.25f;
+
+    private void Awake()
+    {
+        inven = GetComponent<TutorialInventory>();
+    }
 
     public override void Tick()
     {
@@ -106,35 +112,60 @@ public class TutorialHandGrab : TutorialInvenBase
 
     void Interaction()
     {
-        if (interactor.RaycastWorld(grabHoldDistance, out RaycastHit hit))
-        {
-            int layer = hit.collider.gameObject.layer;
-            if (layer != 10 && layer != 17 && layer != 18) return;
+        if (!interactor.RaycastWorld(grabHoldDistance, out RaycastHit hit)) return;
 
-            if (layer == 10)
-            {
-                DeleteObject btn = hit.collider.GetComponent<DeleteObject>();
-                if (btn != null)
+        int layer = hit.collider.gameObject.layer;
+
+        switch (layer)
+        {
+            case 10:
                 {
-                    btn.CanDelete();
+                    DeleteObject btn = hit.collider.GetComponent<DeleteObject>();
+                    if (btn != null) btn.CanDelete();
+                    break;
                 }
-            }
-            if (layer == 17)
-            {
-                SafeZone_Door btn = hit.collider.GetComponentInParent<SafeZone_Door>();
-                if (btn != null)
+            case 17:
                 {
-                    btn.OpenDoor();
+                    SafeZone_Door btn = hit.collider.GetComponentInParent<SafeZone_Door>();
+                    if (btn != null) btn.OpenDoor();
+                    break;
                 }
-            }
-            if (layer == 18)
-            {
-                SafeZone_Door btn = hit.collider.GetComponentInParent<SafeZone_Door>();
-                if (btn != null)
+            case 18:
                 {
-                    btn.OpenClearDoor();
+                    SafeZone_Door btn = hit.collider.GetComponentInParent<SafeZone_Door>();
+                    if (btn != null) btn.OpenClearDoor();
+                    break;
                 }
-            }
+            case 20:
+                {
+                    Destroy(hit.collider.gameObject);
+                    if (inven == null) return;
+
+                    inven.AddTool(TutorialToolType.Mop);
+                    inven.hasMop = true;
+                    break;
+                }
+            case 21:
+                {
+                    Destroy(hit.collider.gameObject);
+                    if (inven == null) return;
+
+                    inven.AddTool(TutorialToolType.Gun);
+                    inven.hasGun = true;
+                    break;
+                }
+            case 22:
+                {
+                    Destroy(hit.collider.gameObject);
+                    if (inven == null) return;
+
+                    inven.AddTool(TutorialToolType.Spanner);
+                    inven.hasSpanner = true;
+                    break;
+                }
+            default:
+                // ¹«½Ã
+                break;
         }
     }
 }
