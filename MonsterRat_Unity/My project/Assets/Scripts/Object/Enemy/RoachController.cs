@@ -30,6 +30,8 @@ public class RoachController : MonoBehaviour
     void Start()
     {
         PickNewDirection();
+
+        Destroy(gameObject, 20);
     }
 
     void Update()

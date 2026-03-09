@@ -15,6 +15,7 @@ public class RatController : MonoBehaviour
     public float attackDistance = 1.0f;         // 공격 범위
     public float hitboxActiveTime = 0.1f;       // 히트박스 켜지는 시간
     public float attackCooldown = 0.5f;         // 공격 쿨타임
+    public float attackDamage = 15f;
 
     NavMeshAgent agent;
     Transform player;
@@ -122,7 +123,7 @@ public class RatController : MonoBehaviour
             PlayerGas gas = col.GetComponent<PlayerGas>();
             if (gas != null)
             {
-                gas.AddExposure(10);
+                gas.AddExposure(attackDamage);
                 break;
             }
         }

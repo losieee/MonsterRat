@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class InvenController : MonoBehaviour
+public class TutorialInvenControl : MonoBehaviour
 {
     [Header("Slot Keys")]
     public KeyCode slot1 = KeyCode.Alpha1;
@@ -9,19 +9,19 @@ public class InvenController : MonoBehaviour
     public KeyCode slot4 = KeyCode.Alpha4;
     public KeyCode slot5 = KeyCode.Alpha5;
 
-    Inventory inv;
+    TutorialInventory inv;
     PlayerUIState ui;
     PlayerRaycast interactor;
 
-    InvenBase[] tools;
-    InvenBase current;
+    TutorialInvenBase[] tools;
+    TutorialInvenBase current;
 
     void Awake()
     {
-        inv = GetComponent<Inventory>();
+        inv = GetComponent<TutorialInventory>();
         ui = GetComponent<PlayerUIState>();
         interactor = GetComponent<PlayerRaycast>();
-        tools = GetComponents<InvenBase>();
+        tools = GetComponents<TutorialInvenBase>();
 
         // 도구 초기화
         foreach (var t in tools)
@@ -30,7 +30,7 @@ public class InvenController : MonoBehaviour
             t.OnDeselect();
         }
 
-        SwitchTo(inv != null ? inv.CurrentTool() : ToolType.Hand);
+        SwitchTo(inv != null ? inv.CurrentTool() : TutorialToolType.Hand);
     }
 
     void Update()
@@ -46,7 +46,7 @@ public class InvenController : MonoBehaviour
             if (Input.GetKeyDown(slot5)) inv.SelectSlot(5);
 
             // 인벤의 현재 슬롯 도구가 바뀌면 도구 스위치
-            ToolType want = inv.CurrentTool();
+            TutorialToolType want = inv.CurrentTool();
             if (current == null || current.Type != want)
                 SwitchTo(want);
         }
@@ -65,7 +65,7 @@ public class InvenController : MonoBehaviour
     }
 
     // 현재에 맞는 도구를 찾아서 활성화
-    void SwitchTo(ToolType type)
+    void SwitchTo(TutorialToolType type)
     {
         // 기존 도구 비활성화
         if (current != null) current.OnDeselect();
@@ -85,6 +85,7 @@ public class InvenController : MonoBehaviour
         if (current != null)
         {
             current.OnSelect();
+            Debug.Log($"현재 들고있는 아이템: {current.Type}");
         }
     }
 }

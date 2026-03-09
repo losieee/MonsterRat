@@ -24,27 +24,12 @@ public class Inventory : MonoBehaviour
 
     List<ToolType> slots = new List<ToolType>();
 
-    // 튜토리얼 전용 사용 잠금
-    private HashSet<ToolType> unlocked = new HashSet<ToolType>();
-
     public event Action<ToolType> OnToolAdded;
 
     void Awake()
     {
         slots.Clear();
         slots.Add(ToolType.Hand);       // 손은 1슬롯 고정
-
-        unlocked.Add(ToolType.Hand);
-    }
-
-    public void UnlockTool(ToolType tool)
-    {
-        unlocked.Add(tool);
-    }
-
-    public bool IsUnlocked(ToolType tool)
-    {
-        return unlocked.Contains(tool);
     }
 
     public ToolType CurrentTool()
@@ -86,9 +71,6 @@ public class Inventory : MonoBehaviour
     public void SelectSlot(int slot)
     {
         if (slot < 1 || slot > slots.Count) return;
-
-        ToolType want = slots[slot - 1];
-        if (!IsUnlocked(want)) return;
         currentSlot = slot;
     }
 

@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class TutorialManager : MonoBehaviour
 {
-    public Inventory inventory;
+    public TutorialInventory inventory;
     public TutorialDialogueSystem dialogue;
     public SafeZone_Door door;
     public Image clearGaugeFill;
@@ -81,7 +81,7 @@ public class TutorialManager : MonoBehaviour
                     tutorial2Clear = true;
                     guaid1.SetActive(false);
                     guaid2.SetActive(true);
-                    inventory.UnlockTool(ToolType.Mop);
+                    inventory.UnlockTool(TutorialToolType.Mop);
                     dialogue.ResumeAuto();
                     StartCoroutine(Tutorial2Tmi());
                 }
@@ -141,7 +141,7 @@ public class TutorialManager : MonoBehaviour
 
             dialogue.ResumeAuto();
             guaid2.SetActive(false);
-            inventory.UnlockTool(ToolType.Gun);
+            inventory.UnlockTool(TutorialToolType.Gun);
             StartCoroutine(Tutorial3Tmi());
         }
     }
@@ -201,7 +201,7 @@ public class TutorialManager : MonoBehaviour
         tutorial4Clear = true;
 
         guaid3.SetActive(true);
-        inventory.UnlockTool(ToolType.Spanner);
+        inventory.UnlockTool(TutorialToolType.Spanner);
 
         StartCoroutine(Tutorial4Tmi());
     }

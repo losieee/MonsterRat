@@ -5,7 +5,7 @@ public class TutorialStep : MonoBehaviour
 {
     public TutorialDialogueSystem dialogue;
     public PlayerUIState playerUIState;
-    public Inventory inventory;
+    public TutorialInventory inventory;
 
     public GameObject storeOutLine;
     public GameObject btnOutLine;
@@ -102,7 +102,7 @@ public class TutorialStep : MonoBehaviour
         dialogue.ResumeAuto();
     }
 
-    void HandleToolAdded(ToolType tool)
+    void HandleToolAdded(TutorialToolType tool)
     {
         if (_pausedIndex != 9) return;
 
