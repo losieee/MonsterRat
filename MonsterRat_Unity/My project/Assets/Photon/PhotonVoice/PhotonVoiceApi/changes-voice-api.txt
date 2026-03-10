@@ -1,5 +1,11 @@
 Photon Voice API Change Log
 
+v2.63 (February 23, 2026)
+Android:
+   ADDED: Vulkan support for video display in Unity texture (AndroidTextureView)
+   ADDED: Vulkan support for Unity texture encoding (AndroidTextureVideoEncoder)
+   FIXED: multiple video display: 1st TextureView output frozen when 2nd TextureView started
+
 v2.62 (November 24, 2025)
 Unity:
    FIXED: UnityAudioOut calls Object.Destroy() for the clip in Stop() to avoid memory leaks
@@ -39,7 +45,7 @@ Core:
    FIXED: continuous buffer allocations by audio sources with variable buffer size
    BREAKING: added IAudioPusher<T>.SetCallback() 'optimalFrameSize' parameter, hinting the preferable frame size to the source (actually used only in AndroidAudioInAEC)
    ADDED: VoiceClient.SetRemoteVoiceDelayFrames() overload setting the delay for Codec enum elements that matches the condition specified in the predicate function (1 call for multiple codecs)
-   ADDED: ByteStreamEncoder and ByteStreamDecoder for steaming byte buffers without processing
+   ADDED: ByteStreamEncoder and ByteStreamDecoder for streaming byte buffers without processing
    ADDED: Custom1 - Custom9 items in Codec enum for user codec implementations
 WebGL:
    BREAKING: panner node rolloff parameters removed from WebAudioAudioOut() constructor and set via new SetRefDistance() and SetMaxDistance() methods from Update() (similar to volume parameter)
@@ -147,7 +153,7 @@ Core:
    CHANGED: frame number is added to every event, it's used to run events processing queue instead of event number
    NOTE: this is the only way to correctly count dropped frames when fragmentation is enabled, which is important for codecs that recover dropped frames, such as Opus (although Opus never uses fragmentation, event and frame numbers are always the same for it)
    NOTE: advancing at the frame pace is more natural, it allows to keep given frame delay and catch up with bursts of fragmented frames events in time
-   BREAKING: 'frNumber' parameter added to IVoiceTransport.SendFrame(), it can be ignored by SendFrame() implamentation if fragmentation is not used
+   BREAKING: 'frNumber' parameter added to IVoiceTransport.SendFrame(), it can be ignored by SendFrame() implementation if fragmentation is not used
    ADDED: FrameBuffer.FrameNum property
 Fragmentation:
    ADDED: LocalVoice.Fragment: if true, large frames are fragmented to multiple events by LocalVoice and assembled by RemoteVoice
@@ -208,6 +214,6 @@ Android:
    CHANGED: AndroidAudioInParameters turned into struct (with static Default property for default value) and [System.Serializable] attribute added to it to support Unity components fields serialization
    CHANGED: all AndroidAudioInParameters fields are true by default
 WebGL:
-   CHANGED: Platform.CreateAudioInEnumerator() returns an instance of the new DeviceEnumeratorSingleDevice calss with the device named 'Default' instead of AudioInEnumeratorNotSupported for Unity WebGL platform
+   CHANGED: Platform.CreateAudioInEnumerator() returns an instance of the new DeviceEnumeratorSingleDevice class with the device named 'Default' instead of AudioInEnumeratorNotSupported for Unity WebGL platform
    CHANGED: Unity.AudioInEnumerator and UnityMicrophone rely on Unity Microphone API in Editor even if the platform is WebGL
  

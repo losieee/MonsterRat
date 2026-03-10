@@ -178,7 +178,11 @@ namespace Photon.Voice.Unity
             webOut = new WebAudioAudioOut(this.playDelayConfig, initSpatialBlend, this.Logger, string.Empty, true);
             if (initSpatialBlend > 0)
             {
+                #if UNITY_6000_0_OR_NEWER
+                var al = FindFirstObjectByType<AudioListener>();
+                #else
                 var al = FindObjectOfType<AudioListener>();
+                #endif
                 if (al != null)
                 {
                     webOutListenerTransform = al.gameObject.transform;
