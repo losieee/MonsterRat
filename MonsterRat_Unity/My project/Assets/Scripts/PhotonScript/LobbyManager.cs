@@ -1,13 +1,14 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Photon.Pun;
-using Photon.Realtime;
+using Fusion;
+using Fusion.Sockets;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
-using Unity.VisualScripting;
+using System;
+using System.Threading.Tasks;
 
-public class LobbyManager : MonoBehaviourPunCallbacks
+public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 {
     [Header("UI 패널입니다")]
     public GameObject LoginPanel;      // 닉네임 입력 패널
@@ -16,40 +17,59 @@ public class LobbyManager : MonoBehaviourPunCallbacks
     public GameObject CreateRoomPanel; // 방 만들기 패널
 
     [Header("입력 UI랑 프리팹 등등")]
-    //public Button StartButton;
     public Button goToRoomListButton;
     public TMP_InputField nicknameInput;
     public TMP_InputField roomnameInput;
     public Transform roomlistContent;
     public GameObject roomItemPrefab;
 
+    private NetworkRunner _runner;
+
     void Start()
     {
-
         if (goToRoomListButton != null)
         {
             goToRoomListButton.interactable = false;
         }
 
-
         LoginPanel.SetActive(true);
         MainPanel.SetActive(false);
         RoomListPanel.SetActive(false);
         CreateRoomPanel.SetActive(false);
+    }
 
-        PhotonNetwork.AutomaticallySyncScene = true;
+    private void InitializeRunner()
+    {
+        if (_runner == null)
+        {
+            _runner = GetComponent<NetworkRunner>();
+            _runner.ProvideInput = true;
+        }
     }
 
     #region UI Buttons
-    public void OnClick_SubmitNickname()
+
+    public async void OnClick_SubmitNickname()
     {
         if (string.IsNullOrEmpty(nicknameInput.text)) return;
 
         string name = nicknameInput.text;
         PlayerPrefs.SetString("PlayerName", name);
-        PhotonNetwork.NickName = name;  
 
-        PhotonNetwork.ConnectUsingSettings();
+
+        InitializeRunner();
+
+        var result = await _runner.JoinSessionLobby(SessionLobby.ClientServer);
+
+        if (result.Ok)
+        {
+            Debug.Log("버튼 입력 완료 마스터 서버(로비) 입장 성공!");
+            if (goToRoomListButton != null) goToRoomListButton.interactable = true;
+        }
+        else
+        {
+            Debug.LogError($"로비 접속 실패: {result.ShutdownReason}");
+        }
 
         LoginPanel.SetActive(false);
         MainPanel.SetActive(true);
@@ -57,7 +77,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
     public void OnClick_GoToRoomList()
     {
-        if (!PhotonNetwork.IsConnectedAndReady)
+        if (_runner == null || !_runner.IsCloudReady)
         {
             Debug.LogWarning("이 로그가 뜨는 이유는 아직 마스터 클라이언트 서버가 연결이 되지 않았다는 뜻");
             return;
@@ -65,11 +85,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
         MainPanel.SetActive(false);
         RoomListPanel.SetActive(true);
-
-        if (!PhotonNetwork.InLobby)
-        {
-            PhotonNetwork.JoinLobby();
-        }
+        Debug.Log("로비 접속 시도 완료했습니다. 방 목록이 업데이트 될 겁니다.");
     }
 
     public void OnClick_OpenCreateRoomPanel()
@@ -83,92 +99,113 @@ public class LobbyManager : MonoBehaviourPunCallbacks
         CreateRoomPanel.SetActive(false);
     }
 
-    public void OnClick_ConfirmCreateRoom()
+    public async void OnClick_ConfirmCreateRoom()
     {
-        if (!PhotonNetwork.IsConnectedAndReady)
+        if (_runner == null || !_runner.IsCloudReady)
         {
             Debug.LogWarning("서버 접속중 디버그 로그에요 놀라지마십쇼");
             return;
         }
 
         string roomName = string.IsNullOrEmpty(roomnameInput.text)
-            ? $"{PhotonNetwork.NickName}'s Room"
+            ? $"{PlayerPrefs.GetString("PlayerName", "Player")}'s Room"
             : roomnameInput.text;
 
-        RoomOptions roomOptions = new RoomOptions();
-        roomOptions.MaxPlayers = 2; // 이거 방 인원수 입니다. 혹시 팀장님이 2인에서 4인으로 바꾼다고 하면 저거 변수 바꿔주세요
+        var startGameArgs = new StartGameArgs()
+        {
+            GameMode = GameMode.Host, 
+            SessionName = roomName,
+            PlayerCount = 2, // 팀장님이 2인에서 4인으로 바꾼다고 하면 여기 숫자 를 바꿔주세요
+            SceneManager = gameObject.GetComponent<NetworkSceneManagerDefault>()
+        };
 
-        PhotonNetwork.CreateRoom(roomName, roomOptions);
+        CreateRoomPanel.SetActive(false);
+
+        // 방 생성 시도
+        var result = await _runner.StartGame(startGameArgs);
+
+        if (result.Ok)
+        {
+            Debug.Log("이 로그가 떴다면 방 입장(생성) 성공했다는 뜻입니다.");
+            // 방장만 게임 씬을 로드 
+            _runner.LoadScene(SceneRef.FromIndex(SceneUtility.GetBuildIndexByScenePath("Assets/Scenes/Woong/GameRoomScene.unity")));
+        }
+        else
+        {
+            Debug.LogError($"방 생성 실패: {result.ShutdownReason}");
+        }
     }
 
     public void OnClick_Quit() => Application.Quit();
 
     #endregion
 
-    #region Photon Callbacks
+    #region Fusion Callbacks (PUN2의 콜백들)
 
-
-    public override void OnConnectedToMaster()
-    {
-        Debug.Log("버튼 입력 완료 마스터 서버 입장시도 ");
-
-        if (goToRoomListButton != null)
-        {
-            goToRoomListButton.interactable = true;
-        }
-    }
-
-    public override void OnJoinedLobby()
-    {
-        Debug.Log("로비 접속 시도 완료했습니다. 아마 1초에서 2초뒤 방 목록 보일겁니다.");
-    }
-
-    public override void OnRoomListUpdate(List<RoomInfo> roomList) // ㅅ새로고침
+    public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
         foreach (Transform child in roomlistContent)
         {
             Destroy(child.gameObject);
         }
 
-        foreach (RoomInfo info in roomList)
+        foreach (SessionInfo info in sessionList)
         {
-            if (info.RemovedFromList) continue;
+            if (!info.IsVisible || !info.IsOpen) continue;
 
             GameObject newItem = Instantiate(roomItemPrefab, roomlistContent);
             newItem.GetComponent<RoomItem>().Setup(info, this);
         }
     }
 
-    // 
-    public override void OnJoinedRoom()
+    public async void JoinRoom(string roomName)
     {
-        Debug.Log("이 로그가 떴다면 방 입장 성공했다는 뜻입니다.");
-        if (PhotonNetwork.IsMasterClient)
+        var startGameArgs = new StartGameArgs()
         {
-            PhotonNetwork.LoadLevel("GameRoomScene");
+            GameMode = GameMode.Client,  
+            SessionName = roomName,
+            SceneManager = gameObject.GetComponent<NetworkSceneManagerDefault>()
+        };
+
+        var result = await _runner.StartGame(startGameArgs);
+
+        if (result.Ok)
+        {
+            Debug.Log("이 로그가 떴다면 방 입장 성공했다는 뜻입니다.");
+        }
+        else
+        {
+            Debug.LogError($"방 입장 실패: {result.ShutdownReason}");
         }
     }
 
-    public override void OnCreateRoomFailed(short returnCode, string message)
+    public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
     {
-        Debug.LogError($"방 생성 실패: {message}");
-        CreateRoomPanel.SetActive(false);
+        Debug.Log("방장이 변경되었습니다! 마이그레이션 처리 필요");
     }
+
+     
 
     #endregion
 
-    public void JoinRoom(string roomName)
-    {
-        PhotonNetwork.JoinRoom(roomName);
-    }
-
-    public override void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
-    {
-        // 2/3일 추가
-        if (newMasterClient.IsLocal)
-        {
-            Debug.Log("내가 새로운 방장이 되었습니다!");
-           
-        }
-    }
+    #region Unused Fusion Callbacks (인터페이스를 위해 구현만 해두고 비워둡니다)
+    public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
+    public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
+    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) { }
+    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
+    public void OnInput(NetworkRunner runner, NetworkInput input) { }
+    public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
+    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
+    public void OnConnectedToServer(NetworkRunner runner) { }
+    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { }
+    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
+    public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
+    public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }
+    public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
+    public void OnHostMigrationCleanUp(NetworkRunner runner) { }
+    public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ArraySegment<byte> data) { }
+    public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress) { }
+    public void OnSceneLoadDone(NetworkRunner runner) { }
+    public void OnSceneLoadStart(NetworkRunner runner) { }
+    #endregion
 }

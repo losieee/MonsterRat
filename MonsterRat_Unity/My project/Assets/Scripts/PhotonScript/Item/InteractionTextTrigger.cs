@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-using Photon.Pun;
+using Fusion; // Photon.Pun 대신 Fusion을 사용합니다!
 
 public class InteractionTextTrigger : MonoBehaviour
 {
@@ -28,8 +28,11 @@ public class InteractionTextTrigger : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            PhotonView pv = other.GetComponent<PhotonView>();
-            if (pv != null && pv.IsMine)
+            // PhotonView 대신 Fusion의 NetworkObject를 가져옵니다.
+            NetworkObject netObj = other.GetComponent<NetworkObject>();
+
+            // pv.IsMine 역할을 하는 HasInputAuthority로 내 캐릭터인지 확인합니다.
+            if (netObj != null && netObj.HasInputAuthority)
             {
                 ShowText();
             }
@@ -40,8 +43,9 @@ public class InteractionTextTrigger : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            PhotonView pv = other.GetComponent<PhotonView>();
-            if (pv != null && pv.IsMine)
+            NetworkObject netObj = other.GetComponent<NetworkObject>();
+
+            if (netObj != null && netObj.HasInputAuthority)
             {
                 HideText();
             }

@@ -1,51 +1,78 @@
 using UnityEngine;
-using Photon.Pun;
+using Fusion;
+using Fusion.Sockets;
+using System.Collections.Generic;
+using System;
 
-public class PlayerController : MonoBehaviourPun  // 전에 프로젝트에서 사용하던 방식을 가져왔습니다.
+public struct MyNetworkInput : INetworkInput
+{
+    public Vector2 moveInput;
+    public float yaw;
+    public NetworkBool isRunning;
+}
+
+public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
 {
     [Header("속도 설정")]
     public float moveSpeed = 3.0f;
     public float runSpeed = 6.0f;
-    public float mouseSensitivity = 2f; // 마우스 감도
+    public float mouseSensitivity = 2f;
 
     [Header("연결 요소")]
-    public GameObject myCamObj; // 자식으로 있는 카메라 오브젝트를 연결
+    public GameObject myCamObj;
 
+    // 다시 익숙한 Rigidbody로 돌아옵니다!
     private Rigidbody rb;
-    private float xRotation = 0f; // 위아래 시야각 제한용
+    private float pitch = 0f;
+    private float yaw = 0f;
     private Animator animator;
 
-    void Start()
+    public override void Spawned()
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponentInChildren<Animator>();
 
-
-        if (photonView.IsMine)
+        if (HasInputAuthority)
         {
-            myCamObj.SetActive(true); // 내 카메라는 켠다
-
+            myCamObj.SetActive(true);
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+            Runner.AddCallbacks(this);
+            yaw = transform.eulerAngles.y;
         }
         else
         {
-            myCamObj.SetActive(false); // 남의 카메라는 끈다
+            myCamObj.SetActive(false);
 
-            rb.isKinematic = true;
+            // ?? [핵심 해결 포인트] ??
+            // 이전에는 여기에 rb.isKinematic = true; 가 있어서 덜덜 떨렸습니다.
+            // 방장 화면에서도 게스트가 중력을 받아야 하므로 그 줄을 완전히 삭제했습니다!
 
-            // 남의 캐릭터에 AudioListener가 켜져 있으면 에러 나거나 소리가 겹침 -> 끈다
             var listener = GetComponentInChildren<AudioListener>();
             if (listener != null) listener.enabled = false;
         }
     }
 
+    public override void Despawned(NetworkRunner runner, bool hasState)
+    {
+        if (HasInputAuthority)
+        {
+            Runner.RemoveCallbacks(this);
+        }
+    }
+
     void Update()
     {
-        if (!photonView.IsMine) return;
+        if (!HasInputAuthority) return;
 
-        Move();
-        Look();
+        yaw += Input.GetAxis("Mouse X") * mouseSensitivity;
+        pitch -= Input.GetAxis("Mouse Y") * mouseSensitivity;
+        pitch = Mathf.Clamp(pitch, -90f, 90f);
+
+        if (myCamObj != null)
+        {
+            myCamObj.transform.localRotation = Quaternion.Euler(pitch, 0f, 0f);
+        }
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -54,44 +81,59 @@ public class PlayerController : MonoBehaviourPun  // 전에 프로젝트에서 사용하던 
         }
     }
 
-    // 캐릭터 이동 
-    void Move()
+    public void OnInput(NetworkRunner runner, NetworkInput input)
     {
-        float x = Input.GetAxisRaw("Horizontal");
-        float z = Input.GetAxisRaw("Vertical");
-        bool isRunning = Input.GetKey(KeyCode.LeftShift);
-        // 내가 바라보는 방향 기준으로 이동 벡터 계산
-        float currentSpeed = isRunning ? runSpeed : moveSpeed;
+        MyNetworkInput myInput = new MyNetworkInput();
+        myInput.moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        myInput.isRunning = Input.GetKey(KeyCode.LeftShift);
+        myInput.yaw = yaw;
 
-        Vector3 moveDir = (transform.right * x + transform.forward * z).normalized;
-        transform.Translate(moveDir * currentSpeed * Time.deltaTime, Space.World);
-
-        if (animator != null)
-        {
-            float animMultiplier = isRunning ? 1.0f : 0.5f;
-            animator.SetFloat("MoveX", x * animMultiplier, 0.1f, Time.deltaTime);
-            animator.SetFloat("MoveY", z * animMultiplier, 0.1f, Time.deltaTime);
-        }
-
+        input.Set(myInput);
     }
 
-    // 마우스 시야 회전
-    void Look()
+    public override void FixedUpdateNetwork()
     {
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
-
-        //  좌우 회전  
-        transform.Rotate(Vector3.up * mouseX);
-
-        //  위아래 회전  
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f); // 고개가 뒤로 꺾이지 않게 제한
-
-        // 카메라의 로컬 회전 적용
-        if (myCamObj != null)
+        if (GetInput(out MyNetworkInput input))
         {
-            myCamObj.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+            // 좌우 회전
+            transform.rotation = Quaternion.Euler(0, input.yaw, 0);
+
+            // 이동 계산
+            float currentSpeed = input.isRunning ? runSpeed : moveSpeed;
+            Vector3 moveDir = (transform.right * input.moveInput.x + transform.forward * input.moveInput.y).normalized;
+
+            // Rigidbody와 Network Transform을 같이 쓸 때는 position을 직접 밀어주는 방식이 가장 충돌이 적습니다.
+            transform.position += moveDir * currentSpeed * Runner.DeltaTime;
+
+            // 애니메이션
+            if (animator != null)
+            {
+                float animMultiplier = input.isRunning ? 1.0f : 0.5f;
+                animator.SetFloat("MoveX", input.moveInput.x * animMultiplier, 0.1f, Runner.DeltaTime);
+                animator.SetFloat("MoveY", input.moveInput.y * animMultiplier, 0.1f, Runner.DeltaTime);
+            }
         }
     }
+
+    #region 안 쓰는 퓨전 콜백들
+    public void OnPlayerJoined(NetworkRunner runner, PlayerRef player) { }
+    public void OnPlayerLeft(NetworkRunner runner, PlayerRef player) { }
+    public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input) { }
+    public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason) { }
+    public void OnConnectedToServer(NetworkRunner runner) { }
+    public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason) { }
+    public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token) { }
+    public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason) { }
+    public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message) { }
+    public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList) { }
+    public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data) { }
+    public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken) { }
+    public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ArraySegment<byte> data) { }
+    public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress) { }
+    public void OnSceneLoadDone(NetworkRunner runner) { }
+    public void OnSceneLoadStart(NetworkRunner runner) { }
+    public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
+    public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player) { }
+    public void OnHostMigrationCleanUp(NetworkRunner runner) { }
+    #endregion
 }

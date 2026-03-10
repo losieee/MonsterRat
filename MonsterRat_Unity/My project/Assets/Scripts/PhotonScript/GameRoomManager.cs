@@ -1,60 +1,63 @@
 using UnityEngine;
-using Photon.Pun;
-using UnityEngine.SceneManagement; 
+using Fusion;
 
-public class GameRoomManager : MonoBehaviourPunCallbacks
+public class GameRoomManager : NetworkBehaviour, IPlayerJoined, IPlayerLeft
 {
-    public string playerPrefabName = "PhotonPlayer";
+    [Header("플레이어 프리팹")]
+    public NetworkPrefabRef playerPrefab;
+
+    [Header("스폰 위치들")]
     public Transform[] spawnPoints;
 
-    void Start()
+    public override void Spawned()
     {
-        // 네트워크에 연결되어 있고 방에 들어와 있는지 확인하기
-        if (PhotonNetwork.IsConnectedAndReady && PhotonNetwork.InRoom)
+        if (Runner.IsServer)
         {
-            SpawnPlayer();
+            Debug.Log("씬 로드 완료! 이미 접속해 있는 플레이어들의 캐릭터를 생성합니다.");
+            foreach (PlayerRef player in Runner.ActivePlayers)
+            {
+                SpawnPlayer(player);
+            }
         }
     }
 
-    // 연결이 안 되어 있었다면 연결이 완료된 이 시점에 생성 시도
-    public override void OnJoinedRoom()
+    public void PlayerJoined(PlayerRef player)
     {
-        // 내 캐릭터가 씬에 존재하는지 확인하는 간단한 방법
-        if (GetMyPlayer() == null)
+        if (Runner.IsServer)
         {
-            SpawnPlayer();
+            Debug.Log($"새로운 플레이어({player.PlayerId}) 접속! 캐릭터를 생성합니다.");
+            SpawnPlayer(player);
         }
     }
 
-    void SpawnPlayer()
+    private void SpawnPlayer(PlayerRef player)
     {
-        // 중복 방지
-        if (GetMyPlayer() != null) return;
+        if (Runner.GetPlayerObject(player) != null) return;
 
-        int actorNumber = PhotonNetwork.LocalPlayer.ActorNumber;
-        int spawnIndex = (actorNumber - 1) % spawnPoints.Length;
-
+        int spawnIndex = player.PlayerId % spawnPoints.Length;
         Vector3 pos = Vector3.zero;
         Quaternion rot = Quaternion.identity;
 
         if (spawnPoints != null && spawnPoints.Length > 0)
         {
-            spawnIndex = spawnIndex % spawnPoints.Length;
             pos = spawnPoints[spawnIndex].position;
             rot = spawnPoints[spawnIndex].rotation;
         }
-        PhotonNetwork.Instantiate(playerPrefabName, pos, rot);
+
+        NetworkObject spawnedPlayer = Runner.Spawn(playerPrefab, pos, rot, player);
+        Runner.SetPlayerObject(player, spawnedPlayer);
     }
 
-    // 이건 넣어놓으면 좋다고 해서 넣어놓긴 했습니다.
-    GameObject GetMyPlayer()
+    public void PlayerLeft(PlayerRef player)
     {
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-        foreach (var p in players)
+        if (Runner.IsServer)
         {
-            PhotonView pv = p.GetComponent<PhotonView>();
-            if (pv != null && pv.IsMine) return p;
+            NetworkObject playerObj = Runner.GetPlayerObject(player);
+            if (playerObj != null)
+            {
+                Runner.Despawn(playerObj);
+                Debug.Log($"플레이어({player.PlayerId}) 퇴장. 캐릭터를 삭제했습니다.");
+            }
         }
-        return null;
     }
 }

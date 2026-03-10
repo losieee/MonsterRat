@@ -1,23 +1,23 @@
 using UnityEngine;
-using Photon.Pun;
 using UnityEngine.UI;
 using TMPro;
-
-public class SafeZoneTrigger : MonoBehaviourPun
+using Fusion;  
+using UnityEngine.SceneManagement; // 씬 전환용
+public class SafeZoneTrigger : NetworkBehaviour
 {
-    public string lobbySceneName = "GameRoomScene"; // 돌아갈 대기룸 씬 2스테이지로 또 바꿔줘야함
+    public string lobbySceneName = "GameRoomScene"; // 돌아갈 대기룸 씬 이름
     public float timeToEvacuate = 3.0f; // E키 누르는 시간
-    public bool requireAllPlayers = false; // 전원 도착해야 출발 True로 바꾸고 구역 도착시 다같이 가능
+    public bool requireAllPlayers = false; // 전원 도착해야 출발 (보류 기능)
 
     [Header("UI (선택사항)")]
-    public GameObject interactionUI; 
+    public GameObject interactionUI;
     public Image progressCircle;
     public TextMeshProUGUI infoText;
 
     private bool isPlayerInZone = false;
     private float currentTimer = 0f;
-    private bool isInteractionCompleted = false;
     private bool isEvacuating = false;
+
     void Start()
     {
         if (interactionUI != null) interactionUI.SetActive(false);
@@ -25,11 +25,9 @@ public class SafeZoneTrigger : MonoBehaviourPun
 
     void Update()
     {
-
         if (isEvacuating) return;
         if (!isPlayerInZone) return;
 
-        
         if (Input.GetKey(KeyCode.E))
         {
             currentTimer += Time.deltaTime;
@@ -50,65 +48,83 @@ public class SafeZoneTrigger : MonoBehaviourPun
     void EvacuateToLobby()
     {
         // 이건 일단 보류
-        /* if (requireAllPlayers && PhotonNetwork.CurrentRoom.PlayerCount > currentPlayersInZone) {
+        /* if (requireAllPlayers && Runner.SessionInfo.PlayerCount > currentPlayersInZone) {
             return;
         }
         */
         if (isEvacuating) return;
 
-        
-        isEvacuating = true; // 테스트 
-        if (PhotonNetwork.IsMasterClient)
+        // 중복 실행 방지
+        isEvacuating = true;
+
+        // Fusion 2의 방장 권한 체크
+        if (Runner.IsServer)
         {
             StartEvacuation();
         }
         else
         {
-            photonView.RPC("RPC_RequestEvacuation", RpcTarget.MasterClient);
+            // 방장이 아니면 방장(StateAuthority)에게 RPC 전송
+            RPC_RequestEvacuation();
         }
     }
 
-    [PunRPC]
-    void RPC_RequestEvacuation()
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_RequestEvacuation(RpcInfo info = default)
     {
-        if (PhotonNetwork.IsMasterClient) StartEvacuation();
+        StartEvacuation();
     }
 
     void StartEvacuation()
     {
+        if (!Runner.IsServer) return;
 
-        if (PhotonNetwork.LevelLoadingProgress > 0 && PhotonNetwork.LevelLoadingProgress < 1) return;
+        if (Runner.SessionInfo != null)
+        {
+            Runner.SessionInfo.IsOpen = true;
+            Runner.SessionInfo.IsVisible = true;
+        }
 
-        // 대기룸으로 돌아갈 때 방을 다시 열어서 다른 사람이 들어오게 함
-        PhotonNetwork.CurrentRoom.IsOpen = true;
-        PhotonNetwork.CurrentRoom.IsVisible = true;
+        Debug.Log("안전 구역 도착! 대기룸으로 대피 중...");
 
-        // 동기화 켜기
-        PhotonNetwork.AutomaticallySyncScene = true;
-
-        // 대기룸 씬 로드
-        PhotonNetwork.LoadLevel(lobbySceneName);
+        int sceneIndex = SceneUtility.GetBuildIndexByScenePath($"Assets/Scenes/{lobbySceneName}.unity");
+        if (sceneIndex >= 0)
+        {
+            Runner.LoadScene(SceneRef.FromIndex(sceneIndex));
+        }
+        else
+        {
+            Debug.LogError($"'{lobbySceneName}' 씬을 찾을 수 없습니다! Build Settings와 경로를 확인해주세요.");
+        }
     }
 
-  
     private void OnTriggerEnter(Collider other)
     {
-
         if (isEvacuating) return;
-        if (other.CompareTag("Player") && other.GetComponent<PhotonView>().IsMine)
+
+        if (other.CompareTag("Player"))
         {
-            isPlayerInZone = true;
-            if (interactionUI != null) interactionUI.SetActive(true);
+            NetworkObject netObj = other.GetComponent<NetworkObject>();
+            if (netObj != null && netObj.HasInputAuthority)
+            {
+                isPlayerInZone = true;
+                if (interactionUI != null) interactionUI.SetActive(true);
+            }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player") && other.GetComponent<PhotonView>().IsMine)
+        if (other.CompareTag("Player"))
         {
-            isPlayerInZone = false;
-            currentTimer = 0f;
-            if (interactionUI != null) interactionUI.SetActive(false);
+            NetworkObject netObj = other.GetComponent<NetworkObject>();
+            if (netObj != null && netObj.HasInputAuthority)
+            {
+                isPlayerInZone = false;
+                currentTimer = 0f;
+                if (progressCircle != null) progressCircle.fillAmount = 0f;
+                if (interactionUI != null) interactionUI.SetActive(false);
+            }
         }
     }
 }

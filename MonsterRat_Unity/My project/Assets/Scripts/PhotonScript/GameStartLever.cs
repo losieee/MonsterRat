@@ -1,17 +1,18 @@
 using UnityEngine;
 using UnityEngine.UI;
-using Photon.Pun;
 using TMPro;
+using Fusion;  
+using UnityEngine.SceneManagement;
 
-public class GameStartLever : MonoBehaviourPun
+public class GameStartLever : NetworkBehaviour
 {
     [Header("UI 설정")]
-    public GameObject uiCanvas;        
-    public Image fillImage;            
-    public TextMeshProUGUI infoText;   
+    public GameObject uiCanvas;
+    public Image fillImage;
+    public TextMeshProUGUI infoText;
 
     [Header("잡다한거")]
-    public float holdDuration = 3.0f;  
+    public float holdDuration = 3.0f;
     public string nextSceneName = "GameScene";  
 
     private bool isPlayerInZone = false;
@@ -28,7 +29,6 @@ public class GameStartLever : MonoBehaviourPun
     {
         if (isInteractionCompleted || !isPlayerInZone) return;
 
-        // E키를 누르고 있는 동안
         if (Input.GetKey(KeyCode.E))
         {
             currentHoldTime += Time.deltaTime;
@@ -46,31 +46,39 @@ public class GameStartLever : MonoBehaviourPun
         }
         else
         {
-            // 키를 떼면 초기화  
             currentHoldTime = 0f;
             if (fillImage != null) fillImage.fillAmount = 0f;
         }
     }
 
-    // 플레이어가 트리거 안에 들어왔을 때
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player") && other.GetComponent<PhotonView>().IsMine)
+        if (other.CompareTag("Player"))
         {
-            isPlayerInZone = true;
-            if (uiCanvas != null) uiCanvas.SetActive(true);
-            if (infoText != null) infoText.text = "E키를 꾹 눌러 게임 시작";
+            NetworkObject netObj = other.GetComponent<NetworkObject>();
+
+            if (netObj != null && netObj.HasInputAuthority)
+            {
+                isPlayerInZone = true;
+                if (uiCanvas != null) uiCanvas.SetActive(true);
+                if (infoText != null) infoText.text = "E키를 꾹 눌러 게임 시작";
+            }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player") && other.GetComponent<PhotonView>().IsMine)
+        if (other.CompareTag("Player"))
         {
-            isPlayerInZone = false;
-            currentHoldTime = 0f;
-            if (fillImage != null) fillImage.fillAmount = 0f;
-            if (uiCanvas != null) uiCanvas.SetActive(false);
+            NetworkObject netObj = other.GetComponent<NetworkObject>();
+
+            if (netObj != null && netObj.HasInputAuthority)
+            {
+                isPlayerInZone = false;
+                currentHoldTime = 0f;
+                if (fillImage != null) fillImage.fillAmount = 0f;
+                if (uiCanvas != null) uiCanvas.SetActive(false);
+            }
         }
     }
 
@@ -82,34 +90,41 @@ public class GameStartLever : MonoBehaviourPun
 
         Debug.Log("게임씬으로 넘어감");
 
-        if (PhotonNetwork.IsMasterClient)
+        if (Object.HasStateAuthority)
         {
             StartGameProcess();
         }
         else
         {
-            photonView.RPC("RPC_RequestStartGame", RpcTarget.MasterClient);
+            RPC_RequestStartGame();
         }
     }
 
-    [PunRPC]
-    void RPC_RequestStartGame()
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_RequestStartGame(RpcInfo info = default)
     {
-        if (PhotonNetwork.IsMasterClient)
-        {
-            StartGameProcess();
-        }
+        StartGameProcess();
     }
 
     void StartGameProcess()
     {
-        PhotonNetwork.CurrentRoom.IsOpen = false;
-        PhotonNetwork.CurrentRoom.IsVisible = false;
-
-        // 모든 클라이언트가 씬을 동기화하도록 설정
-        PhotonNetwork.AutomaticallySyncScene = true;
+        if (!Runner.IsServer) return;
+        if (Runner.SessionInfo != null)
+        {
+            Runner.SessionInfo.IsOpen = false;
+            Runner.SessionInfo.IsVisible = false;
+        }
 
         Debug.Log("씬 이동 중...");
-        PhotonNetwork.LoadLevel(nextSceneName);
+
+        int sceneIndex = SceneUtility.GetBuildIndexByScenePath($"Assets/Scenes/Woong/{nextSceneName}.unity");
+        if (sceneIndex >= 0)
+        {
+            Runner.LoadScene(SceneRef.FromIndex(sceneIndex));
+        }
+        else
+        {
+            Debug.LogError($"'{nextSceneName}' 씬을 찾을 수 없습니다! Build Settings와 경로를 확인해주세요.");
+        }
     }
 }
