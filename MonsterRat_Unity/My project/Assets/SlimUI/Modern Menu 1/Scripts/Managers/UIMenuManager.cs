@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 namespace SlimUI.ModernMenu{
 	public class UIMenuManager : MonoBehaviour {
 		private Animator CameraObject;
+		public LobbyManager lobbyManager;
 
 		// campaign button sub menu
         [Header("MENUS")]
@@ -19,7 +20,8 @@ namespace SlimUI.ModernMenu{
         [Tooltip("The Menu for when the EXIT button is clicked")]
         public GameObject exitMenu;
         [Tooltip("Optional 4th Menu")]
-        public GameObject extrasMenu;
+        public GameObject loginpanel;
+        public GameObject CreateRoomPanel;
 
         public enum Theme {custom1, custom2, custom3};
         [Header("THEME SETTINGS")]
@@ -85,7 +87,6 @@ namespace SlimUI.ModernMenu{
 
 			playMenu.SetActive(false);
 			exitMenu.SetActive(false);
-			if(extrasMenu) extrasMenu.SetActive(false);
 			firstMenu.SetActive(true);
 			mainMenu.SetActive(true);
 
@@ -119,20 +120,17 @@ namespace SlimUI.ModernMenu{
 
 		public void PlayCampaign(){
 			exitMenu.SetActive(false);
-			if(extrasMenu) extrasMenu.SetActive(false);
 			//playMenu.SetActive(true);
 		}
 		
 		public void PlayCampaignMobile(){
 			exitMenu.SetActive(false);
-			if(extrasMenu) extrasMenu.SetActive(false);
 			playMenu.SetActive(true);
 			mainMenu.SetActive(false);
 		}
 
 		public void ReturnMenu(){
 			playMenu.SetActive(false);
-			if(extrasMenu) extrasMenu.SetActive(false);
 			exitMenu.SetActive(false);
 			mainMenu.SetActive(true);
 		}
@@ -145,7 +143,10 @@ namespace SlimUI.ModernMenu{
 
 		public void  DisablePlayCampaign(){
 			playMenu.SetActive(false);
-		}
+            loginpanel.SetActive(false);
+			CreateRoomPanel.SetActive(false);
+			lobbyManager.RoomListPanel.SetActive(false);
+        }
 
 		public void Position2(){
 			DisablePlayCampaign();
@@ -236,20 +237,19 @@ namespace SlimUI.ModernMenu{
 		// Are You Sure - Quit Panel Pop Up
 		public void AreYouSure(){
 			exitMenu.SetActive(true);
-			if(extrasMenu) extrasMenu.SetActive(false);
+			if(loginpanel) loginpanel.SetActive(false);
+			CreateRoomPanel.SetActive(false);
 			DisablePlayCampaign();
 		}
 
 		public void AreYouSureMobile(){
 			exitMenu.SetActive(true);
-			if(extrasMenu) extrasMenu.SetActive(false);
 			mainMenu.SetActive(false);
 			DisablePlayCampaign();
 		}
 
 		public void ExtrasMenu(){
 			playMenu.SetActive(false);
-			if(extrasMenu) extrasMenu.SetActive(true);
 			exitMenu.SetActive(false);
 		}
 

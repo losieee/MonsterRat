@@ -24,6 +24,8 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     public GameObject roomItemPrefab;
 
     private NetworkRunner _runner;
+    private bool hasJoinedLobby = false;
+    private bool isSubmittingNickname = false;
 
     void Start()
     {
@@ -31,7 +33,10 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             goToRoomListButton.interactable = false;
         }
+    }
 
+    public void OnClickPlay()
+    {
         LoginPanel.SetActive(true);
         MainPanel.SetActive(false);
         RoomListPanel.SetActive(false);
@@ -51,28 +56,37 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public async void OnClick_SubmitNickname()
     {
+        if (isSubmittingNickname) return;
         if (string.IsNullOrEmpty(nicknameInput.text)) return;
+
+        isSubmittingNickname = true;
 
         string name = nicknameInput.text;
         PlayerPrefs.SetString("PlayerName", name);
 
-
         InitializeRunner();
 
-        var result = await _runner.JoinSessionLobby(SessionLobby.ClientServer);
+        if (!hasJoinedLobby)    // 로비에 들어간 적 없을때만 실행 (접속 요청 중복 방지)
+        {
+            var result = await _runner.JoinSessionLobby(SessionLobby.ClientServer);
 
-        if (result.Ok)
-        {
-            Debug.Log("버튼 입력 완료 마스터 서버(로비) 입장 성공!");
-            if (goToRoomListButton != null) goToRoomListButton.interactable = true;
-        }
-        else
-        {
-            Debug.LogError($"로비 접속 실패: {result.ShutdownReason}");
+            if (result.Ok)
+            {
+                hasJoinedLobby = true;
+                Debug.Log("버튼 입력 완료 마스터 서버(로비) 입장 성공!");
+                if (goToRoomListButton != null) goToRoomListButton.interactable = true;
+            }
+            else
+            {
+                Debug.LogError($"로비 접속 실패: {result.ShutdownReason}");
+                isSubmittingNickname = false;
+                return;
+            }
         }
 
         LoginPanel.SetActive(false);
         MainPanel.SetActive(true);
+        isSubmittingNickname = false;
     }
 
     public void OnClick_GoToRoomList()
@@ -83,20 +97,26 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
             return;
         }
 
-        MainPanel.SetActive(false);
         RoomListPanel.SetActive(true);
+        CreateRoomPanel.SetActive(false);
         Debug.Log("로비 접속 시도 완료했습니다. 방 목록이 업데이트 될 겁니다.");
     }
 
     public void OnClick_OpenCreateRoomPanel()
     {
         CreateRoomPanel.SetActive(true);
+        RoomListPanel.SetActive(false);
         roomnameInput.text = "";
     }
 
     public void OnClick_CancelCreateRoom()
     {
         CreateRoomPanel.SetActive(false);
+    }
+
+    public void OnClick_CancelLogin()
+    {
+        LoginPanel.SetActive(false);
     }
 
     public async void OnClick_ConfirmCreateRoom()
