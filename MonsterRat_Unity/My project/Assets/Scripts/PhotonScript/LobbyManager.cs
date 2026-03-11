@@ -128,7 +128,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             Debug.Log("이 로그가 떴다면 방 입장(생성) 성공했다는 뜻입니다.");
             // 방장만 게임 씬을 로드 
-            _runner.LoadScene(SceneRef.FromIndex(SceneUtility.GetBuildIndexByScenePath("Assets/Scenes/Woong/GameRoomScene.unity")));
+            _runner.LoadScene(SceneRef.FromIndex(SceneUtility.GetBuildIndexByScenePath("Assets/Scenes/Woong/1Stage.unity")));
         }
         else
         {
