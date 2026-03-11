@@ -31,7 +31,10 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             goToRoomListButton.interactable = false;
         }
+    }
 
+    public void OnClickPlay()
+    {
         LoginPanel.SetActive(true);
         MainPanel.SetActive(false);
         RoomListPanel.SetActive(false);
@@ -83,20 +86,26 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
             return;
         }
 
-        MainPanel.SetActive(false);
         RoomListPanel.SetActive(true);
+        CreateRoomPanel.SetActive(false);
         Debug.Log("로비 접속 시도 완료했습니다. 방 목록이 업데이트 될 겁니다.");
     }
 
     public void OnClick_OpenCreateRoomPanel()
     {
         CreateRoomPanel.SetActive(true);
+        RoomListPanel.SetActive(false);
         roomnameInput.text = "";
     }
 
     public void OnClick_CancelCreateRoom()
     {
         CreateRoomPanel.SetActive(false);
+    }
+
+    public void OnClick_CancelLogin()
+    {
+        LoginPanel.SetActive(false);
     }
 
     public async void OnClick_ConfirmCreateRoom()
