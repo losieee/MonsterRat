@@ -17,7 +17,11 @@ public class RatController : MonoBehaviour
     public float attackCooldown = 0.5f;         // 공격 쿨타임
     public float attackDamage = 15f;
 
+    private string walkParam = "isWalking";
+    private string attackTrigger = "Attack";
+
     NavMeshAgent agent;
+    Animator animator;
     Transform player;
     float repathTimer;
     bool isAttacking;
@@ -26,6 +30,7 @@ public class RatController : MonoBehaviour
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>();
         agent.stoppingDistance = stopDistance;
         agent.updateRotation = true;
         agent.updatePosition = true;
@@ -47,8 +52,11 @@ public class RatController : MonoBehaviour
         if (player == null)
         {
             FindPlayer();
+            SetWalking(false);
             return;
         }
+
+        // 나중에 공격하는 애니메이션 만들면 공격하는 동안 못움직이게
 
         if (attackCooldownTimer > 0f)
             attackCooldownTimer -= Time.deltaTime;
@@ -62,6 +70,8 @@ public class RatController : MonoBehaviour
                 agent.isStopped = true;
                 agent.ResetPath();
             }
+
+            SetWalking(false);
 
             Vector3 lookPos = new Vector3(player.position.x, transform.position.y, player.position.z);
             transform.LookAt(lookPos);
@@ -83,6 +93,9 @@ public class RatController : MonoBehaviour
                 repathTimer = repathInterval;
                 agent.SetDestination(player.position);
             }
+
+            bool walking = agent.velocity.sqrMagnitude > 0.1f && !agent.isStopped && !isAttacking;
+            SetWalking(walking);
         }
     }
 
@@ -90,6 +103,7 @@ public class RatController : MonoBehaviour
     IEnumerator ActivateHitbox()
     {
         isAttacking = true;
+        SetWalking(false);
 
         if (hitbox != null)
         {
@@ -129,6 +143,11 @@ public class RatController : MonoBehaviour
         }
     }
 
+    void SetWalking(bool walking)
+    {
+        if (animator != null)
+            animator.SetBool(walkParam, walking);
+    }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
