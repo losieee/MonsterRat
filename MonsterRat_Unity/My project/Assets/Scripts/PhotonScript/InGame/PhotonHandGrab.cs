@@ -51,7 +51,6 @@ public class PhotonHandGrab : TutorialInvenBase
     {
         if (playerNetObj == null || !playerNetObj.HasInputAuthority) return;
 
-        // 내가 잡은 타겟이 있다면 방장에게 계속해서 이동 명령을 내립니다!
         if (targetRb != null && targetNetObj != null)
         {
             MoveGrabbedObject();
@@ -68,7 +67,6 @@ public class PhotonHandGrab : TutorialInvenBase
         targetRb = rb;
         targetNetObj = netObj;
 
-        // 1. 권한 요청 코드를 삭제하고, 무전기를 통해 방장에게 "중력 꺼주세요!" 라고만 요청합니다.
         netBridge.RPC_SetGrabState(targetNetObj, true);
 
         Collider col = targetRb.GetComponent<Collider>();
@@ -91,7 +89,6 @@ public class PhotonHandGrab : TutorialInvenBase
         if (interactor != null && interactor.cam != null)
         {
             Vector3 throwVelocity = lastGrabVel + interactor.cam.forward * throwBoost;
-            // 2. 방장에게 "이 방향으로 던져주세요!" 라고 요청합니다.
             netBridge.RPC_ThrowObject(targetNetObj, throwVelocity);
         }
 
@@ -118,7 +115,6 @@ public class PhotonHandGrab : TutorialInvenBase
         lastGrabVel = (newPos - lastGrabPos) / Time.fixedDeltaTime;
         lastGrabPos = newPos;
 
-        // 3. 방장에게 "제가 계산한 좌표로 상자 좀 옮겨주세요!" 실시간 요청
         netBridge.RPC_MoveObject(targetNetObj, newPos);
     }
 }
