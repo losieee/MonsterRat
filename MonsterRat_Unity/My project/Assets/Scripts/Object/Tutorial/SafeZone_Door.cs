@@ -50,6 +50,6 @@ public class SafeZone_Door : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        SceneManager.LoadScene("LobbyScene");
+        SceneManager.LoadScene("ZZin_Main_Lobby");
     }
 }

@@ -61,6 +61,9 @@ public class TutorialHandGrab : TutorialInvenBase
         targetRb.useGravity = false;
 
         Collider col = targetRb.GetComponent<Collider>();
+        if (col == null)
+            col = targetRb.GetComponentInChildren<Collider>();
+        
         if (col != null)
         {
             Vector3 e = col.bounds.extents;

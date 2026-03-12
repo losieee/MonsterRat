@@ -79,7 +79,7 @@ public class GunController : InvenBase
                 rc.enabled = false;
             }
             if (rc != null) rc.enabled = false;
-            ratObj.transform.GetChild(1).gameObject.SetActive(false);
+            //ratObj.transform.GetChild(1).gameObject.SetActive(false);
 
             if (bloodPreb != null)
             {

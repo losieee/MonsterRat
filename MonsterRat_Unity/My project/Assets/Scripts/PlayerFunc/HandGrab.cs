@@ -49,13 +49,19 @@ public class HandGrab : InvenBase
     void TryGrab(GameObject target)
     {
         Rigidbody rb = target.GetComponent<Rigidbody>();
+        if (rb == null)
+            rb = target.GetComponentInParent<Rigidbody>();
+
         if (rb == null) return;
 
         targetRb = rb;
         targetRb.freezeRotation = true;
         targetRb.useGravity = false;
 
-        Collider col = targetRb.GetComponent<Collider>();
+        Collider col = target.GetComponent<Collider>();
+        if (col == null)
+            col = target.GetComponentInParent<Collider>();
+
         if (col != null)
         {
             Vector3 e = col.bounds.extents;
