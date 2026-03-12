@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using Fusion;
 
 public class PhotonHandGrabNetwork : NetworkBehaviour
@@ -26,7 +26,7 @@ public class PhotonHandGrabNetwork : NetworkBehaviour
             Rigidbody rb = obj.GetComponent<Rigidbody>();
             if (rb != null)
             {
-                rb.MovePosition(newPos); // ¼­¹ö ¹°¸® ¿£ÁøÀÌ ºÎµå·´°Ô ÀÌµ¿½ÃÅ´
+                rb.MovePosition(newPos); // ì„œë²„ ë¬¼ë¦¬ ì—”ì§„ì´ ë¶€ë“œëŸ½ê²Œ ì´ë™ì‹œí‚´
             }
         }
     }
@@ -41,7 +41,7 @@ public class PhotonHandGrabNetwork : NetworkBehaviour
             {
                 rb.useGravity = true;
                 rb.freezeRotation = false;
-                rb.linearVelocity = throwVelocity; // ¼­¹ö°¡ Á÷Á¢ ÈûÀ» °¡ÇÔ
+                rb.linearVelocity = throwVelocity; // ì„œë²„ê°€ ì§ì ‘ í˜ì„ ê°€í•¨
             }
         }
     }
