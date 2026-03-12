@@ -121,9 +121,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7493468220236412613}
+      - m_Target: {fileID: 8289719037013333509}
         m_TargetAssemblyTypeName: TutorialStoreUI, Assembly-CSharp
-        m_MethodName: BuySpanner
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -364,9 +364,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7493468220236412613}
+      - m_Target: {fileID: 8289719037013333509}
         m_TargetAssemblyTypeName: TutorialStoreUI, Assembly-CSharp
-        m_MethodName: BuyMop
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -471,7 +471,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.4245283, g: 0.4245283, b: 0.4245283, a: 0.392}
+  m_Color: {r: 0.4245283, g: 0.4245283, b: 0.4245283, a: 0.41960785}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -521,7 +521,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2317011662390251674}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 08f84d115742cc64abd2092149d9bccb, type: 3}
   m_Name: 
@@ -963,9 +963,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7493468220236412613}
+      - m_Target: {fileID: 8289719037013333509}
         m_TargetAssemblyTypeName: TutorialStoreUI, Assembly-CSharp
-        m_MethodName: BuyGun
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1223,19 +1223,22 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4300096115388253541}
+  - component: {fileID: 7680601876534934}
+  - component: {fileID: 5053122888985684548}
+  - component: {fileID: 6939596719044220407}
+  - component: {fileID: 8533715287199307269}
   - component: {fileID: 1139983391281621322}
   - component: {fileID: 3781888732311085437}
   - component: {fileID: 9043575834424920966}
   - component: {fileID: 232426663093574612}
   - component: {fileID: 8912150048000606042}
-  - component: {fileID: 3341103897251282659}
-  - component: {fileID: 5053122888985684548}
-  - component: {fileID: 7680601876534934}
-  - component: {fileID: 8533715287199307269}
-  - component: {fileID: 6939596719044220407}
   - component: {fileID: 3622515418939287238}
+  - component: {fileID: 3341103897251282659}
   - component: {fileID: 1634961478233974428}
   - component: {fileID: 3422080703811961702}
+  - component: {fileID: 9213975253137544893}
+  - component: {fileID: 7375767261746206591}
+  - component: {fileID: 6815836651522158606}
   m_Layer: 0
   m_Name: PhotonPlayer
   m_TagString: Player
@@ -1264,7 +1267,7 @@ Transform:
   - {fileID: 4607878176469403721}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1139983391281621322
+--- !u!114 &7680601876534934
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1273,100 +1276,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 8289719037013333509}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Script: {fileID: 11500000, guid: dd7fea91fe63f4e1b884ef1e16a975c3, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 3636227180
-  ObjectInterest: 1
-  Flags: 262145
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 3781888732311085437}
-  - {fileID: 9043575834424920966}
-  - {fileID: 232426663093574612}
-  - {fileID: 8912150048000606042}
-  - {fileID: 3341103897251282659}
-  - {fileID: 3622515418939287238}
-  - {fileID: 1655036304726671577}
-  ForceRemoteRenderTimeframe: 0
---- !u!114 &3781888732311085437
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8289719037013333509}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6376dd7fc23b3764483a7349b58502e2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: PhotonVoice.Fusion::Photon.Voice.Fusion.VoiceNetworkObject
---- !u!114 &9043575834424920966
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8289719037013333509}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e8f12e69e2c85b342bb6f49d8a1215f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 3
-  runSpeed: 6
-  mouseSensitivity: 2
-  myCamObj: {fileID: 1854414265921017584}
---- !u!114 &232426663093574612
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8289719037013333509}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c7f91564bb89864f80a72da6ad9b8a3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &8912150048000606042
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8289719037013333509}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f228614475808141b447a63df57a3ae, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pickupRadius: 2
-  itemLayer:
-    serializedVersion: 2
-    m_Bits: 524288
-  pickupKey: 101
---- !u!114 &3341103897251282659
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8289719037013333509}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f86b73f7745c0b4693f8fd9e143e789, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inventoryPanel: {fileID: 8614311244138643895}
-  inventorySlots:
-  - {fileID: 726942828759734024}
-  - {fileID: 6600355290388554281}
-  - {fileID: 523193741122308686}
-  - {fileID: 5638340025029122062}
-  dropPoint: {fileID: 7515643468641692121}
-  lobbySceneName: GameRoomScene
-  _NetActiveTool: 0
+  m_EditorClassIdentifier: PhotonVoice::Photon.Voice.Unity.Speaker
+  playDelayConfig:
+    Low: 200
+    High: 200
+    Max: 1000
+    SpeedUpPerc: 5
+  restartOnDeviceChange: 1
 --- !u!82 &5053122888985684548
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1464,24 +1382,29 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &7680601876534934
-MonoBehaviour:
+--- !u!136 &6939596719044220407
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8289719037013333509}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dd7fea91fe63f4e1b884ef1e16a975c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: PhotonVoice::Photon.Voice.Unity.Speaker
-  playDelayConfig:
-    Low: 200
-    High: 200
-    Max: 1000
-    SpeedUpPerc: 5
-  restartOnDeviceChange: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Height: 1.9794608
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!54 &8533715287199307269
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1509,29 +1432,90 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!136 &6939596719044220407
-CapsuleCollider:
+--- !u!114 &1139983391281621322
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8289719037013333509}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 1.9794608
-  m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
+  SortKey: 3636227180
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 3781888732311085437}
+  - {fileID: 9043575834424920966}
+  - {fileID: 232426663093574612}
+  - {fileID: 8912150048000606042}
+  - {fileID: 3622515418939287238}
+  - {fileID: 3341103897251282659}
+  - {fileID: 9213975253137544893}
+  - {fileID: 6815836651522158606}
+  - {fileID: 1655036304726671577}
+  ForceRemoteRenderTimeframe: 0
+--- !u!114 &3781888732311085437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8289719037013333509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6376dd7fc23b3764483a7349b58502e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: PhotonVoice.Fusion::Photon.Voice.Fusion.VoiceNetworkObject
+--- !u!114 &9043575834424920966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8289719037013333509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8f12e69e2c85b342bb6f49d8a1215f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 3
+  runSpeed: 6
+  mouseSensitivity: 2
+  myCamObj: {fileID: 1854414265921017584}
+--- !u!114 &232426663093574612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8289719037013333509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c7f91564bb89864f80a72da6ad9b8a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8912150048000606042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8289719037013333509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f228614475808141b447a63df57a3ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickupRadius: 2
+  itemLayer:
+    serializedVersion: 2
+    m_Bits: 524288
+  pickupKey: 101
 --- !u!114 &3622515418939287238
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1549,6 +1533,27 @@ MonoBehaviour:
   SyncParent: 0
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 0
+--- !u!114 &3341103897251282659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8289719037013333509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f86b73f7745c0b4693f8fd9e143e789, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inventoryPanel: {fileID: 8614311244138643895}
+  inventorySlots:
+  - {fileID: 726942828759734024}
+  - {fileID: 6600355290388554281}
+  - {fileID: 523193741122308686}
+  - {fileID: 5638340025029122062}
+  dropPoint: {fileID: 7515643468641692121}
+  lobbySceneName: GameRoomScene
+  _NetActiveTool: 0
 --- !u!114 &1634961478233974428
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1579,6 +1584,51 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TutorialMop
   coolTime: 1
+--- !u!114 &9213975253137544893
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8289719037013333509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d656c9f74b65d4449f049fe558d39df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PhotonHandGrabNetwork
+--- !u!114 &7375767261746206591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8289719037013333509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41868b73d36ac9444bc223f1e3e66580, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PhotonHandGrab
+  grabHoldDistance: 3
+  grabMoveSpeed: 15
+  throwBoost: 2.5
+  grabBlock:
+    serializedVersion: 2
+    m_Bits: 129
+  grabPadding: 0.05
+  minHoldDistance: 0.6
+--- !u!114 &6815836651522158606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8289719037013333509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c8f4b3c95c92a64b8d8a4ac0dacc4de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PhotonPlayerUIState
+  storePanel: {fileID: 2317011662390251674}
 --- !u!1001 &4318191310040044080
 PrefabInstance:
   m_ObjectHideFlags: 0
