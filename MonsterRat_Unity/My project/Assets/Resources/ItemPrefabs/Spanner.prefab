@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6478744230690150420}
   - component: {fileID: -1296490530418355211}
   - component: {fileID: -6225736977602612103}
-  - component: {fileID: 6783374007197604354}
+  - component: {fileID: 307737043142770034}
   m_Layer: 19
   m_Name: Spanner
   m_TagString: Item
@@ -175,9 +175,9 @@ MonoBehaviour:
   Flags: 262145
   NestedObjects: []
   NetworkedBehaviours:
-  - {fileID: 6783374007197604354}
+  - {fileID: 307737043142770034}
   ForceRemoteRenderTimeframe: 0
---- !u!114 &6783374007197604354
+--- !u!114 &307737043142770034
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -186,11 +186,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 4320711194446946055}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Script: {fileID: 11500000, guid: 0a591d221a634417e9827eb58e17de84, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
+  m_EditorClassIdentifier: Fusion.Addons.Physics::Fusion.Addons.Physics.NetworkRigidbody3D
   _stateAuthorityChangeErrorCorrectionDelta: 0
   SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  DisableSharedModeInterpolation: 0
+  SyncParent: 1
+  _interpolationTarget: {fileID: 0}
+  UsePreciseRotation: 0
+  UseRenderSleepThresholds: 1
+  RenderThresholds:
+    UseEnergy: 1
+    Position: 0.01
+    Rotation: 0.01
+    Scale: 0.01
