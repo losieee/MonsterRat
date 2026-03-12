@@ -1,5 +1,5 @@
 using UnityEngine;
-using Fusion; // Photon.Pun 대신 Fusion 사용
+using Fusion;
 using System.Linq;
 
 [RequireComponent(typeof(PhotonInventory))]
@@ -23,6 +23,7 @@ public class PlayerInteraction : NetworkBehaviour
         }
         playerCamera = Camera.main;
     }
+
     public override void Spawned()
     {
         if (!HasInputAuthority)
@@ -36,19 +37,14 @@ public class PlayerInteraction : NetworkBehaviour
     {
         if (!HasInputAuthority) return;
 
-        CheckForInteractableItems(); 
+        CheckForInteractableItems();
 
-        if (currentInteractableItem != null && Input.GetKeyDown(pickupKey))  
+        if (currentInteractableItem != null && Input.GetKeyDown(pickupKey))
         {
             TryPickupItem();
         }
-        if (inventory == null) return;
-        if (Input.GetKeyDown(KeyCode.Alpha1)) { inventory.DropItem(0); }
-        if (Input.GetKeyDown(KeyCode.Alpha2)) { inventory.DropItem(1); }
-        if (Input.GetKeyDown(KeyCode.Alpha3)) { inventory.DropItem(2); }
-        if (Input.GetKeyDown(KeyCode.Alpha4)) { inventory.DropItem(3); }
-        // if (Input.GetKeyDown(KeyCode.Alpha5)) { inventory.DropItem(4); }
-        // if (Input.GetKeyDown(KeyCode.Alpha6)) { inventory.DropItem(5); }
+
+        // 1~4번 키로 버리던 로직은 PhotonInventory로 이사했습니다!
     }
 
     private void CheckForInteractableItems()
@@ -83,21 +79,18 @@ public class PlayerInteraction : NetworkBehaviour
 
         NetworkObject itemNetObj = currentInteractableItem.GetComponent<NetworkObject>();
 
-        inventory.AddItem(currentInteractableItem.itemData);
-        if (itemNetObj != null)
+        // 인벤토리에 추가 시도 (성공했을 때만 삭제)
+        if (inventory.AddItem(currentInteractableItem.itemData))
         {
-            if (Runner.IsServer)
+            if (itemNetObj != null)
             {
-                Runner.Despawn(itemNetObj);
+                if (Runner.IsServer) Runner.Despawn(itemNetObj);
+                else RPC_RequestDespawnItem(itemNetObj);
             }
             else
             {
-                RPC_RequestDespawnItem(itemNetObj);
+                Destroy(currentInteractableItem.gameObject);
             }
-        }
-        else
-        {
-            Destroy(currentInteractableItem.gameObject);
         }
 
         currentInteractableItem = null;

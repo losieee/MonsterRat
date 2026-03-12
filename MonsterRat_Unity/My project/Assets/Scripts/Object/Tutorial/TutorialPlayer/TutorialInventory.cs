@@ -28,7 +28,7 @@ public class TutorialInventory : MonoBehaviour
 
     public event Action<TutorialToolType> OnToolAdded;
 
-    void Awake()
+    void Awake()  
     {
         slots.Clear();
         slots.Add(TutorialToolType.Hand);       // 손은 1슬롯 고정

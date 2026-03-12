@@ -21,7 +21,7 @@ public class Start_zoon_door : Fusion.NetworkBehaviour
     public NetworkBool IsDoorOpen { get; set; }
 
     [Networked]
-    public NetworkBool IsDoorPermanentlyClosed { get; set; }
+    public NetworkBool IsDoorPermanentlyClosed { get; set; }  
 
     private bool isPlayerInZone = false;
     private float currentHoldTime = 0f;

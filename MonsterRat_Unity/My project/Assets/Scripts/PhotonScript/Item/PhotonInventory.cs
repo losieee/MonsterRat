@@ -1,110 +1,209 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using Fusion; // Photon.Pun ´ë½Å Fusion »ç¿ë
+using Fusion;
 using System.Linq;
+using System; // Enum íŒŒì‹±ìš©
 
-// MonoBehaviour ´ë½Å NetworkBehaviour »ó¼Ó
 public class PhotonInventory : NetworkBehaviour
 {
-    [Header("UI ¼³Á¤")]
+    [Header("UI ì„¤ì •")]
     public GameObject inventoryPanel;
     public List<Slot> inventorySlots;
 
-    [Header("¾À ¹× ¹ö¸®±â ¼³Á¤")]
+    [Header("ì”¬ ë° ë²„ë¦¬ê¸° ì„¤ì •")]
     public Transform dropPoint;
-    public string lobbySceneName = "GameRoomScene"; // ´ë±â·ë ¾À ÀÌ¸§
+    public string lobbySceneName = "GameRoomScene";
 
-    private List<ItemData> heldItems = new List<ItemData>();
+    private ItemData[] heldItems;
+    private int currentSelectedSlot = -1;  
 
-    // Awake ´ë½Å Spawned()¿¡¼­ ÃÊ±âÈ­ (³×Æ®¿öÅ© ¿ÀºêÁ§Æ® ±ÇÇÑ È¹µæ ÈÄ ½ÇÇà)
+    [Header("ë„êµ¬ ê´€ë¦¬ (TutorialInvenBase ì—°ë™)")]
+    private TutorialInvenBase[] tools;
+    private TutorialInvenBase currentTool;
+
+    [Networked]
+    public TutorialToolType NetActiveTool { get; set; }
+    private TutorialToolType _localActiveTool;
+
     public override void Spawned()
     {
-        if (inventoryPanel == null)
-        {
-            inventoryPanel = GameObject.FindWithTag("InventoryPanel");
-        }
+        heldItems = new ItemData[inventorySlots.Count];
+
+        if (inventoryPanel == null) inventoryPanel = GameObject.FindWithTag("InventoryPanel");
         if (inventoryPanel != null) inventoryPanel.SetActive(false);
+
+        tools = GetComponentsInChildren<TutorialInvenBase>(true);
+        PlayerUIState ui = GetComponent<PlayerUIState>();
+
+        PlayerRaycast interactor = GetComponentInChildren<PlayerRaycast>(true);
+
+        if (interactor == null)
+        {
+            Debug.LogError("ğŸ’€ [ì¹˜ëª…ì  ì—ëŸ¬] í”Œë ˆì´ì–´ í”„ë¦¬íŒ¹ì—ì„œ 'PlayerRaycast' ì»´í¬ë„ŒíŠ¸ë¥¼ ì•„ì˜ˆ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤! ì—ë””í„°ì—ì„œ í”„ë¦¬íŒ¹ì— ì§ì ‘ ì¶”ê°€í•´ì£¼ì„¸ìš”!");
+        }
+        else
+        {
+            Debug.Log("âœ… [ì„±ê³µ] PlayerRaycastë¥¼ ì„±ê³µì ìœ¼ë¡œ ì°¾ì•„ì„œ ëŒ€ê±¸ë ˆì—ê²Œ ì‹œë ¥ì„ ì„ ë¬¼í–ˆìŠµë‹ˆë‹¤!");
+        }
+
+        foreach (var t in tools)
+        {
+            t.Init(ui, interactor);
+            t.OnDeselect();
+        }
+
+        if (HasInputAuthority) RPC_ChangeTool(TutorialToolType.Hand);
 
         UpdateInventoryUI();
     }
 
     void Update()
     {
-        // photonView.IsMine ´ë½Å HasInputAuthority »ç¿ë
-        if (HasInputAuthority)
+        if (!HasInputAuthority) return;
+
+        if (Input.GetKeyDown(KeyCode.I))
         {
-            if (Input.GetKeyDown(KeyCode.I))
+            if (inventoryPanel != null) inventoryPanel.SetActive(!inventoryPanel.activeSelf);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha1)) ToggleSlot(0);
+        if (Input.GetKeyDown(KeyCode.Alpha2)) ToggleSlot(1);
+        if (Input.GetKeyDown(KeyCode.Alpha3)) ToggleSlot(2);
+        if (Input.GetKeyDown(KeyCode.Alpha4)) ToggleSlot(3);
+
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            if (currentSelectedSlot != -1 && heldItems[currentSelectedSlot] != null)
             {
-                if (inventoryPanel != null) { inventoryPanel.SetActive(!inventoryPanel.activeSelf); }
+                DropItem(currentSelectedSlot);
+            }
+        }
+
+        if (currentTool != null)
+        {
+            currentTool.Tick();
+        }
+    }
+
+    void FixedUpdate()
+    {
+        if (HasInputAuthority && currentTool != null)
+        {
+            currentTool.FixedTick();
+        }
+    }
+
+    public bool AddItem(ItemData itemData)
+    {
+        for (int i = 0; i < heldItems.Length; i++)
+        {
+            if (heldItems[i] == null)
+            {
+                heldItems[i] = itemData;
+                UpdateInventoryUI();
+                return true;  
+            }
+        }
+        return false;  
+    }
+
+    private void ToggleSlot(int slotIndex)
+    {
+        if (slotIndex < 0 || slotIndex >= heldItems.Length) return;
+
+        if (heldItems[slotIndex] == null) return;
+
+        if (currentSelectedSlot == slotIndex)
+        {
+            currentSelectedSlot = -1;
+            RPC_ChangeTool(TutorialToolType.Hand);
+        }
+        else
+        {
+            currentSelectedSlot = slotIndex;
+            ItemData data = heldItems[slotIndex];
+            if (Enum.TryParse(data.itemName, true, out TutorialToolType type))
+            {
+                RPC_ChangeTool(type);
+            }
+            else
+            {
+                Debug.LogWarning($"{data.itemName}ì€(ëŠ”) ì¼ì¹˜í•˜ëŠ” TutorialToolTypeì´ ì—†ìŠµë‹ˆë‹¤! ë§¨ì†ìœ¼ë¡œ ëŒ€ì²´í•©ë‹ˆë‹¤.");
+                RPC_ChangeTool(TutorialToolType.Hand);
             }
         }
     }
 
-    public void AddItem(ItemData itemData)
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    public void RPC_ChangeTool(TutorialToolType newTool)
     {
-        if (heldItems.Count >= inventorySlots.Count)
+        NetActiveTool = newTool;
+    }
+
+    public override void Render()
+    {
+        if (Object == null || !Object.IsValid) return;
+
+        if (NetActiveTool != _localActiveTool)
         {
-            Debug.Log("ÀÎº¥Åä¸®°¡ ²Ë Ã¡½À´Ï´Ù.");
-            return;
+            SwitchToolLogic(NetActiveTool);
+            _localActiveTool = NetActiveTool;
         }
-        heldItems.Add(itemData);
-        UpdateInventoryUI();
+    }
+
+    // ì‹¤ì œ ë„êµ¬ ìŠ¤í¬ë¦½íŠ¸ë¥¼ ì¼œê³  ë„ëŠ” ë¡œì§
+    private void SwitchToolLogic(TutorialToolType type)
+    {
+        if (currentTool != null) currentTool.OnDeselect();
+
+        currentTool = tools.FirstOrDefault(t => t.Type == type);
+
+        if (currentTool != null)
+        {
+            currentTool.OnSelect();
+            // Debug.Log($"ë¬´ê¸° ë³€ê²½ë¨: {type}");
+        }
     }
 
     public void DropItem(int slotIndex)
     {
-        if (slotIndex < 0 || slotIndex >= heldItems.Count) return;
+        if (slotIndex < 0 || slotIndex >= heldItems.Length) return;
 
         ItemData itemToDrop = heldItems[slotIndex];
-        if (itemToDrop.itemPrefab == null) return;
+        if (itemToDrop == null || itemToDrop.itemPrefab == null) return;
 
-        // PUN2¿¡¼­ »ç¿ëÇÏ´ø ÇÁ¸®ÆÕ °æ·Î À¯Áö
         string prefabPath = "ItemPrefabs/" + itemToDrop.itemPrefab.name;
 
-        // 1. ¹æÀå(¼­¹ö)ÀÌ¶ó¸é Á÷Á¢ ¾ÆÀÌÅÛÀ» ½ºÆùÇÕ´Ï´Ù.
-        if (Runner.IsServer)
+        if (Runner.IsServer) SpawnDroppedItem(prefabPath, dropPoint.position, dropPoint.rotation);
+        else RPC_RequestDropItem(prefabPath, dropPoint.position, dropPoint.rotation);
+
+        // ë²„ë¦° ìë¦¬ëŠ” ë¹„ì›Œë“€ê¸°
+        heldItems[slotIndex] = null;
+
+        // ë²„ë¦° í›„ì— ë§¨ì† ìœ ì§€
+        if (currentSelectedSlot == slotIndex)
         {
-            SpawnDroppedItem(prefabPath, dropPoint.position, dropPoint.rotation);
-        }
-        // 2. °Ô½ºÆ®(Å¬¶óÀÌ¾ğÆ®)¶ó¸é ¹æÀå¿¡°Ô ¶³¾î¶ß·Á ´Ş¶ó°í RPC¸¦ º¸³À´Ï´Ù.
-        else
-        {
-            RPC_RequestDropItem(prefabPath, dropPoint.position, dropPoint.rotation);
+            currentSelectedSlot = -1;
+            RPC_ChangeTool(TutorialToolType.Hand);
         }
 
-        heldItems.RemoveAt(slotIndex);
         UpdateInventoryUI();
     }
 
-    // Å¬¶óÀÌ¾ğÆ®°¡ ¹æÀå¿¡°Ô ¾ÆÀÌÅÛ ½ºÆùÀ» ¿äÃ»ÇÏ´Â RPC
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     public void RPC_RequestDropItem(string prefabPath, Vector3 pos, Quaternion rot)
     {
         SpawnDroppedItem(prefabPath, pos, rot);
     }
 
-    // ¾ÆÀÌÅÛÀ» ½ÇÁ¦·Î ¸Ê¿¡ »ı¼ºÇÏ´Â ÇÔ¼ö (¹æÀå¸¸ ½ÇÇàÇÔ)
     private void SpawnDroppedItem(string prefabPath, Vector3 pos, Quaternion rot)
     {
-        // Resources Æú´õ¿¡¼­ ÇÁ¸®ÆÕÀ» Ã£¾Æ¿É´Ï´Ù.
         GameObject prefab = Resources.Load<GameObject>(prefabPath);
         if (prefab != null)
         {
             NetworkObject netObj = prefab.GetComponent<NetworkObject>();
-            if (netObj != null)
-            {
-                // Fusion Àü¿ë ½ºÆù ¸í·É¾î
-                Runner.Spawn(netObj, pos, rot);
-            }
-            else
-            {
-                Debug.LogError($"[Fusion ¿À·ù] {prefabPath} ÇÁ¸®ÆÕ¿¡ 'NetworkObject' ÄÄÆ÷³ÍÆ®°¡ ¾ø½À´Ï´Ù!");
-            }
-        }
-        else
-        {
-            Debug.LogError($"[¿À·ù] Resources Æú´õ¿¡¼­ {prefabPath}¸¦ Ã£À» ¼ö ¾ø½À´Ï´Ù.");
+            if (netObj != null) Runner.Spawn(netObj, pos, rot);
         }
     }
 
@@ -114,7 +213,8 @@ public class PhotonInventory : NetworkBehaviour
         for (int i = 0; i < inventorySlots.Count; i++)
         {
             if (inventorySlots[i] == null) continue;
-            if (i < heldItems.Count && heldItems[i] != null)
+
+            if (i < heldItems.Length && heldItems[i] != null)
             {
                 inventorySlots[i].DrawSlot(heldItems[i]);
             }
@@ -125,27 +225,6 @@ public class PhotonInventory : NetworkBehaviour
         }
     }
 
-    public bool HasItem(string itemID)
-    {
-        return heldItems.Any(item => item.itemName == itemID);
-    }
-
-    public void RemoveItem(string itemID)
-    {
-        ItemData itemToRemove = heldItems.FirstOrDefault(item => item.itemName == itemID);
-        if (itemToRemove != null)
-        {
-            heldItems.Remove(itemToRemove);
-            UpdateInventoryUI();
-        }
-    }
-
-    // --- [ÀÌÀü¿¡ ¸¸µé¾ú´ø 'ÅğÀå ½Ã ¾ÆÀÌÅÛ Ã³¸®' ·ÎÁ÷µµ Ç»Àü¿¡ ¸Â°Ô ¼öÁ¤ ¿Ï·á] ---
-    void OnApplicationQuit()
-    {
-        HandlePlayerLeave();
-    }
-
     public void HandlePlayerLeave()
     {
         if (!HasInputAuthority) return;
@@ -154,26 +233,10 @@ public class PhotonInventory : NetworkBehaviour
 
         if (currentScene == lobbySceneName)
         {
-            for (int i = heldItems.Count - 1; i >= 0; i--)
+            for (int i = 0; i < heldItems.Length; i++)
             {
-                ItemData itemToDrop = heldItems[i];
-                if (itemToDrop != null && itemToDrop.itemPrefab != null)
-                {
-                    string prefabPath = "ItemPrefabs/" + itemToDrop.itemPrefab.name;
-                    if (Runner.IsServer)
-                        SpawnDroppedItem(prefabPath, dropPoint.position, dropPoint.rotation);
-                    else
-                        RPC_RequestDropItem(prefabPath, dropPoint.position, dropPoint.rotation);
-                }
+                if (heldItems[i] != null) DropItem(i);
             }
-            Debug.Log("´ë±â·ë¿¡¼­ ÅğÀå: ¸ğµç ¾ÆÀÌÅÛÀ» ¹Ù´Ú¿¡ µå·ÓÇß½À´Ï´Ù.");
         }
-        else
-        {
-            Debug.Log("°ÔÀÓ¾À¿¡¼­ ÅğÀå: ÀÎº¥Åä¸® ¾ÆÀÌÅÛÀÌ ¸ğµÎ Áõ¹ßÇß½À´Ï´Ù.");
-        }
-
-        heldItems.Clear();
-        UpdateInventoryUI();
     }
 }
