@@ -19,12 +19,12 @@ public class PhotonInventory : NetworkBehaviour
     private int currentSelectedSlot = -1;  
 
     [Header("도구 관리 (TutorialInvenBase 연동)")]
-    private TutorialInvenBase[] tools;
-    private TutorialInvenBase currentTool;
+    private InvenBase[] tools;
+    private InvenBase currentTool;
 
     [Networked]
-    public TutorialToolType NetActiveTool { get; set; }
-    private TutorialToolType _localActiveTool;
+    public ToolType NetActiveTool { get; set; }
+    private ToolType _localActiveTool;
 
     public override void Spawned()
     {
@@ -33,7 +33,7 @@ public class PhotonInventory : NetworkBehaviour
         if (inventoryPanel == null) inventoryPanel = GameObject.FindWithTag("InventoryPanel");
         if (inventoryPanel != null) inventoryPanel.SetActive(false);
 
-        tools = GetComponentsInChildren<TutorialInvenBase>(true);
+        tools = GetComponentsInChildren<InvenBase>(true);
         PlayerUIState ui = GetComponent<PlayerUIState>();
 
         PlayerRaycast interactor = GetComponentInChildren<PlayerRaycast>(true);
@@ -53,7 +53,7 @@ public class PhotonInventory : NetworkBehaviour
             t.OnDeselect();
         }
 
-        if (HasInputAuthority) RPC_ChangeTool(TutorialToolType.Hand);
+        if (HasInputAuthority) RPC_ChangeTool(ToolType.Hand);
 
         UpdateInventoryUI();
     }
@@ -117,26 +117,26 @@ public class PhotonInventory : NetworkBehaviour
         if (currentSelectedSlot == slotIndex)
         {
             currentSelectedSlot = -1;
-            RPC_ChangeTool(TutorialToolType.Hand);
+            RPC_ChangeTool(ToolType.Hand);
         }
         else
         {
             currentSelectedSlot = slotIndex;
             ItemData data = heldItems[slotIndex];
-            if (Enum.TryParse(data.itemName, true, out TutorialToolType type))
+            if (Enum.TryParse(data.itemName, true, out ToolType type))
             {
                 RPC_ChangeTool(type);
             }
             else
             {
                 Debug.LogWarning($"{data.itemName}은(는) 일치하는 TutorialToolType이 없습니다! 맨손으로 대체합니다.");
-                RPC_ChangeTool(TutorialToolType.Hand);
+                RPC_ChangeTool(ToolType.Hand);
             }
         }
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-    public void RPC_ChangeTool(TutorialToolType newTool)
+    public void RPC_ChangeTool(ToolType newTool)
     {
         NetActiveTool = newTool;
     }
@@ -153,7 +153,7 @@ public class PhotonInventory : NetworkBehaviour
     }
 
     // 실제 도구 스크립트를 켜고 끄는 로직
-    private void SwitchToolLogic(TutorialToolType type)
+    private void SwitchToolLogic(ToolType type)
     {
         if (currentTool != null) currentTool.OnDeselect();
 
@@ -185,7 +185,7 @@ public class PhotonInventory : NetworkBehaviour
         if (currentSelectedSlot == slotIndex)
         {
             currentSelectedSlot = -1;
-            RPC_ChangeTool(TutorialToolType.Hand);
+            RPC_ChangeTool(ToolType.Hand);
         }
 
         UpdateInventoryUI();

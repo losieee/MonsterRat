@@ -147,6 +147,8 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         if (result.Ok)
         {
             Debug.Log("이 로그가 떴다면 방 입장(생성) 성공했다는 뜻입니다.");
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
             // 방장만 게임 씬을 로드 
             _runner.LoadScene(SceneRef.FromIndex(SceneUtility.GetBuildIndexByScenePath("Assets/Resources/Scenes/Woong/1Stage.unity")));
         }

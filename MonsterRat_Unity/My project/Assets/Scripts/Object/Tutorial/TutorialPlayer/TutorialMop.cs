@@ -12,32 +12,14 @@ public class TutorialMop : TutorialInvenBase
     {
         if (!canClean) return;
 
+        if (!canClean) return;
         if (Input.GetMouseButtonDown(0))
         {
-            if (interactor == null)
-            {
-                return;
-            }
-
-            GameObject t = interactor.LookTarget;
-
-            Vector3 rayStart = Camera.main != null ? Camera.main.transform.position : transform.position;
-
-            if (t == null)
-            {
-                return;
-            }
+            GameObject t = interactor != null ? interactor.LookTarget : null;
+            if (t == null) return;
 
             if (t.layer == 6)
             {
-                PhotonPollutionControl multiPol = t.GetComponentInParent<PhotonPollutionControl>();
-                if (multiPol != null)
-                {
-                    multiPol.CleanOnce();
-                    StartCoroutine(Cooldown());
-                    return;
-                }
-
                 TutorialPollutionControl singlePol = t.GetComponentInParent<TutorialPollutionControl>();
                 if (singlePol != null)
                 {

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Text;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class TutorialDialogueSystem : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class TutorialDialogueSystem : MonoBehaviour
     public Text dialogueText;
     public int startIndex = 0;              // 시작 인덱스
     public int endIndexValue = -100;        // 끝날 인덱스
+    public GameObject choicePanel;
 
     [Header("글자 페이드 인/아웃")]
     public bool autoPlay = true;
@@ -62,7 +64,21 @@ public class TutorialDialogueSystem : MonoBehaviour
 
     private void Start()
     {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    public void GoToTutorial()
+    {
+        choicePanel.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         StartCoroutine(WaitStart());
+    }
+
+    public void GoToMenu()
+    {
+        SceneManager.LoadScene("ZZin_Main_Lobby");
     }
 
     public void StartDialogue(int index)

@@ -23,6 +23,7 @@ public class RatController : MonoBehaviour
     NavMeshAgent agent;
     Animator animator;
     Transform player;
+    CapsuleCollider playerCapsule;
     float repathTimer;
     bool isAttacking;
     float attackCooldownTimer;
@@ -30,17 +31,25 @@ public class RatController : MonoBehaviour
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
-        animator = GetComponent<Animator>();
+        animator = GetComponentInChildren<Animator>();
         agent.stoppingDistance = stopDistance;
         agent.updateRotation = true;
         agent.updatePosition = true;
+        agent.angularSpeed = 360f;
+        agent.acceleration = 20f;
 
         if (hitbox != null)
             hitbox.gameObject.SetActive(false);
     }
 
     void OnEnable() => SceneManager.sceneLoaded += OnSceneLoaded;
-    void OnDisable() => SceneManager.sceneLoaded -= OnSceneLoaded;
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+
+        if (agent != null) agent.enabled = false;
+        if (animator != null) animator.enabled = false;
+    }
 
     void Start()
     {
@@ -57,13 +66,13 @@ public class RatController : MonoBehaviour
         }
 
         // 나중에 공격하는 애니메이션 만들면 공격하는 동안 못움직이게
-
         if (attackCooldownTimer > 0f)
             attackCooldownTimer -= Time.deltaTime;
 
-        float distance = Vector3.Distance(transform.position, player.position);
+        float surfaceDistance = GetSurfaceDistanceToPlayer();
+
         // 공격범위 안에 있으면 멈춤
-        if (distance <= attackDistance)
+        if (surfaceDistance <= attackDistance)
         {
             if (!agent.isStopped)
             {
@@ -91,11 +100,68 @@ public class RatController : MonoBehaviour
             if (repathTimer <= 0f)
             {
                 repathTimer = repathInterval;
-                agent.SetDestination(player.position);
+                MoveToPlayerEdge();
             }
 
             bool walking = agent.velocity.sqrMagnitude > 0.1f && !agent.isStopped && !isAttacking;
             SetWalking(walking);
+        }
+    }
+
+    // 쥐 - 사람 거리 계산
+    float GetSurfaceDistanceToPlayer()
+    {
+        if (player == null) return Mathf.Infinity;
+
+        float centerDistance = Vector3.Distance(transform.position, player.position);
+
+        float playerRadius = 0.35f;
+        if (playerCapsule != null)
+        {
+            float maxScale = Mathf.Max(player.lossyScale.x, player.lossyScale.z);
+            playerRadius = playerCapsule.radius * maxScale;
+        }
+
+        float ratRadius = agent != null ? agent.radius : 0.1f;
+
+        return Mathf.Max(0f, centerDistance - playerRadius - ratRadius);
+    }
+
+    // 플레이어 근처로 이동
+    void MoveToPlayerEdge()
+    {
+        if (player == null || !agent.enabled) return;
+
+        Vector3 toPlayer = player.position - transform.position;
+        toPlayer.y = 0f;
+
+        if (toPlayer.sqrMagnitude < 0.0001f)
+            return;
+
+        Vector3 dir = toPlayer.normalized;
+
+        float playerRadius = 0.35f;
+        if (playerCapsule != null)
+        {
+            float maxScale = Mathf.Max(player.lossyScale.x, player.lossyScale.z);
+            playerRadius = playerCapsule.radius * maxScale;
+        }
+
+        float ratRadius = agent.radius;
+        float desiredGap = stopDistance;
+
+        float offset = playerRadius + ratRadius + desiredGap;
+
+        Vector3 targetPos = player.position - dir * offset;
+
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(targetPos, out hit, 1.0f, NavMesh.AllAreas))
+        {
+            agent.SetDestination(hit.position);
+        }
+        else
+        {
+            agent.SetDestination(targetPos);
         }
     }
 
@@ -105,10 +171,12 @@ public class RatController : MonoBehaviour
         isAttacking = true;
         SetWalking(false);
 
+        if (animator != null)
+            animator.SetTrigger(attackTrigger);
+
         if (hitbox != null)
         {
             hitbox.gameObject.SetActive(true);
-
             CheckHitboxNow();
         }
 
@@ -152,12 +220,17 @@ public class RatController : MonoBehaviour
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         player = null;
+        playerCapsule = null;
         FindPlayer();
     }
 
     void FindPlayer()
     {
         GameObject p = GameObject.FindGameObjectWithTag(playerTag);
-        if (p != null) player = p.transform;    
+        if (p != null)
+        {
+            player = p.transform;
+            playerCapsule = p.GetComponent<CapsuleCollider>();
+        }
     }
 }

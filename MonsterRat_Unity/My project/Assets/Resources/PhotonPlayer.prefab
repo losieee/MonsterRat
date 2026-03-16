@@ -1560,7 +1560,7 @@ GameObject:
   - component: {fileID: 3622515418939287238}
   - component: {fileID: 3341103897251282659}
   - component: {fileID: 1634961478233974428}
-  - component: {fileID: 3422080703811961702}
+  - component: {fileID: 8040449326264660451}
   - component: {fileID: 9213975253137544893}
   - component: {fileID: 7375767261746206591}
   - component: {fileID: 6815836651522158606}
@@ -1896,7 +1896,7 @@ MonoBehaviour:
   interactMask:
     serializedVersion: 2
     m_Bits: 6815852
---- !u!114 &3422080703811961702
+--- !u!114 &8040449326264660451
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1905,9 +1905,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 8289719037013333509}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41a5763f879403c40a43ced3b4ce06b4, type: 3}
+  m_Script: {fileID: 11500000, guid: 2fb8a775a7d11a443a150cf021c2971f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TutorialMop
+  m_EditorClassIdentifier: Assembly-CSharp::MopController
   coolTime: 1
 --- !u!114 &9213975253137544893
 MonoBehaviour:
@@ -1954,6 +1954,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhotonPlayerUIState
   storePanel: {fileID: 6244745962788242794}
+  storeDetectRadius: 2.5
 --- !u!1 &8620495648606292564
 GameObject:
   m_ObjectHideFlags: 0

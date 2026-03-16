@@ -1,9 +1,9 @@
 using UnityEngine;
 using Fusion;
 
-public class PhotonHandGrab : TutorialInvenBase
+public class PhotonHandGrab : InvenBase
 {
-    public override TutorialToolType Type => TutorialToolType.Hand;
+    public override ToolType Type => ToolType.Hand;
 
     [Header("Grab")]
     public float grabHoldDistance = 3f;
