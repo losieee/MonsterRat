@@ -11,8 +11,6 @@ GameObject:
   - component: {fileID: 628432701587987930}
   - component: {fileID: 6392623047657910883}
   - component: {fileID: 2291035964908642812}
-  - component: {fileID: 4149683662418821877}
-  - component: {fileID: 5769206248560956603}
   m_Layer: 6
   m_Name: Tutorial_Rat_Pollution
   m_TagString: Untagged
@@ -30,7 +28,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.453471, y: 0.010344127, z: 0.453471}
+  m_LocalScale: {x: 0.8, y: 0.00210831, z: 0.8}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2790692402408888007}
@@ -61,10 +59,15 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ab6295928ece14645bcccccf6925b3ef, type: 2}
+  - {fileID: 2100000, guid: 2d521bdefd43cba49a2db80058fb1553, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -82,47 +85,12 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &4149683662418821877
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3999510559161058140}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5769206248560956603
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3999510559161058140}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 332d385d5952bf246b6fd19d2debb2ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  polstep:
-  - {fileID: 2100000, guid: 0ca734de9a5f52d478d7c3098042d979, type: 2}
-  - {fileID: 2100000, guid: 5cc6c1fc270dc4e449bd0d0a33987020, type: 2}
-  - {fileID: 2100000, guid: d7e7e476b25230440bcd808b35c12e7f, type: 2}
 --- !u!1 &6214755336666648463
 GameObject:
   m_ObjectHideFlags: 0
@@ -135,7 +103,7 @@ GameObject:
   - component: {fileID: 7286278579982397976}
   - component: {fileID: 7824092887786336508}
   - component: {fileID: 567248412570358844}
-  - component: {fileID: 5219499984939980724}
+  - component: {fileID: 1027298230264002580}
   m_Layer: 6
   m_Name: Tutorial_Rat_Pollution
   m_TagString: Untagged
@@ -152,9 +120,9 @@ Transform:
   m_GameObject: {fileID: 6214755336666648463}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.9480744, y: 0.9480744, z: 0.9480744}
-  m_ConstrainProportionsScale: 1
+  m_LocalPosition: {x: 0, y: 0.4, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 628432701587987930}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -183,6 +151,11 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -204,9 +177,11 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!65 &567248412570358844
 BoxCollider:
@@ -229,7 +204,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5219499984939980724
+--- !u!114 &1027298230264002580
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -238,10 +213,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 6214755336666648463}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 332d385d5952bf246b6fd19d2debb2ce, type: 3}
+  m_Script: {fileID: 11500000, guid: 9838ed63bf072c249aac919175d9ed7c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialPollutionControl
   polstep:
   - {fileID: 2100000, guid: 0ca734de9a5f52d478d7c3098042d979, type: 2}
   - {fileID: 2100000, guid: 5cc6c1fc270dc4e449bd0d0a33987020, type: 2}
   - {fileID: 2100000, guid: d7e7e476b25230440bcd808b35c12e7f, type: 2}
+  outline:
+  - {fileID: 2100000, guid: 2d521bdefd43cba49a2db80058fb1553, type: 2}
+  - {fileID: 2100000, guid: 1cf29c9bba6c3c943a15e17cc22ffec9, type: 2}
+  - {fileID: 2100000, guid: 269a8f6ed978bd54590258fb1261abd4, type: 2}

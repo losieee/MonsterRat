@@ -1,22 +1,23 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class PollutionControl : MonoBehaviour, IClearTarget
+public class TutorialPollutionControl : MonoBehaviour, IClearTarget
 {
     public Material[] polstep;
+    public Material[] outline;
 
     MeshRenderer render;
+    MeshRenderer outlineRender;
     int cleanCount = 0;
-
+    
     public float Remain01 => 1f;
     public float Weight => 1f;
 
     void Awake()
     {
         render = GetComponent<MeshRenderer>();
+
+        if (transform.parent != null)
+            outlineRender = transform.parent.GetComponent<MeshRenderer>();
     }
 
     void Start()
@@ -31,6 +32,9 @@ public class PollutionControl : MonoBehaviour, IClearTarget
 
         if (polstep != null && cleanCount < polstep.Length)
             render.material = polstep[cleanCount];
+
+        if(cleanCount < outline.Length)
+            outlineRender.material = outline[cleanCount];
 
         if (cleanCount >= 3)
         {

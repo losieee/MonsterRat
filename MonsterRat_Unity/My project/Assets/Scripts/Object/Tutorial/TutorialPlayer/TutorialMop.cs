@@ -25,12 +25,8 @@ public class TutorialMop : TutorialInvenBase
 
             if (t == null)
             {
-                if (Camera.main != null)
-                    Debug.DrawRay(rayStart, Camera.main.transform.forward * 3f, Color.red, 2f);
                 return;
             }
-
-            Debug.DrawLine(rayStart, t.transform.position, Color.green, 2f);
 
             if (t.layer == 6)
             {
@@ -42,7 +38,7 @@ public class TutorialMop : TutorialInvenBase
                     return;
                 }
 
-                PollutionControl singlePol = t.GetComponentInParent<PollutionControl>();
+                TutorialPollutionControl singlePol = t.GetComponentInParent<TutorialPollutionControl>();
                 if (singlePol != null)
                 {
                     singlePol.CleanOnce();
