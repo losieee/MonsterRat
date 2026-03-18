@@ -11,6 +11,7 @@ public class RoachController : MonoBehaviour
 
     [Header("Avoid Walls")]
     public float wallCheckDistance;
+    public float bodyRadius = 0.2f;
     public LayerMask obstacleMask;
 
     [Header("Idle")]
@@ -34,34 +35,37 @@ public class RoachController : MonoBehaviour
         Destroy(gameObject, 20);
     }
 
-    void Update()
+    private void Update()
     {
         if (isIdling) return;
 
-        // 앞에 벽 있으면 방향 바꾸기
-        if (Physics.Raycast(transform.position + Vector3.up * 0.1f, moveDir, wallCheckDistance, obstacleMask))
+        Vector3 origin = transform.position + Vector3.up * 0.05f;
+
+        // 앞쪽 벽 감지
+        if (Physics.SphereCast(origin, bodyRadius, moveDir, out RaycastHit hit, wallCheckDistance, obstacleMask))
         {
-            PickNewDirection(forceTurn: true);
+            PickNewDirection(true);
+            return;
         }
 
+        // 실제 이동
         transform.position += moveDir * speed * Time.deltaTime;
 
-        // 바라보는 방향 맞춤
+        // 회전
         if (moveDir.sqrMagnitude > 0.0001f)
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveDir), 10f * Time.deltaTime);
+        {
+            Quaternion targetRot = Quaternion.LookRotation(moveDir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, 10f * Time.deltaTime);
+        }
 
-        // 주기적으로 방향 바꾸기 / 멈추기
+        // 방향 전환 / 멈춤
         timer -= Time.deltaTime;
         if (timer <= 0f)
         {
             if (Random.value < idleChance)
-            {
                 StartCoroutine(IdleAndTurn());
-            }
             else
-            {
                 PickNewDirection();
-            }
         }
     }
 
@@ -84,15 +88,37 @@ public class RoachController : MonoBehaviour
 
     void PickNewDirection(bool forceTurn = false)
     {
-        float angle = Random.Range(0f, 360f);
-        Vector3 dir = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad), 0f, Mathf.Sin(angle * Mathf.Deg2Rad)).normalized;
+        for (int i = 0; i < 10; i++)
+        {
+            float angle = Random.Range(0f, 360f);
+            Vector3 dir = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad), 0f, Mathf.Sin(angle * Mathf.Deg2Rad)).normalized;
 
-        // 턴할 때는 진행방향과 비슷한 방향 피하기
-        if (forceTurn && Vector3.Dot(dir, moveDir) > 0.5f)
-            dir = -dir;
+            if (forceTurn && Vector3.Dot(dir, moveDir) > 0.5f)
+                dir = -dir;
 
-        moveDir = dir;
-        speed = Random.Range(speedMin, speedMax);
-        timer = Random.Range(directionChangeIntervalMin, directionChangeIntervalMax);
+            Vector3 origin = transform.position + Vector3.up * 0.1f;
+
+            // 새 방향 앞이 바로 막혀 있으면 다른 방향 다시 뽑기
+            if (Physics.SphereCast(origin, bodyRadius, dir, out _, wallCheckDistance, obstacleMask))
+                continue;
+
+            moveDir = dir;
+            speed = Random.Range(speedMin, speedMax);
+            timer = Random.Range(directionChangeIntervalMin, directionChangeIntervalMax);
+            return;
+        }
+
+        // 방향을 못 찾았으면 잠깐 멈춤
+        moveDir = Vector3.zero;
+        speed = 0f;
+        timer = 0.2f;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.cyan;
+        Vector3 origin = transform.position + Vector3.up * 0.1f;
+        Gizmos.DrawWireSphere(origin, bodyRadius);
+        Gizmos.DrawLine(origin, origin + moveDir.normalized * wallCheckDistance);
     }
 }

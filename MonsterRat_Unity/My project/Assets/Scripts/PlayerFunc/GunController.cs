@@ -20,6 +20,13 @@ public class GunController : InvenBase
     {
         if (!Input.GetMouseButtonDown(0)) return;
 
+
+        MonsterLegless monster = FindFirstObjectByType<MonsterLegless>();
+        if (monster != null)
+        {
+            monster.GunShot();
+        }
+
         if (TryShootRat()) return;
         if (TryShootRoach()) return;
         if (TryShootTarget()) return;

@@ -32,6 +32,12 @@ public class Inventory : MonoBehaviour
         slots.Add(ToolType.Hand);       // 손은 1슬롯 고정
     }
 
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
     public ToolType CurrentTool()
     {
         int idx = currentSlot - 1;
