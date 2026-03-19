@@ -4,44 +4,67 @@ using Fusion;
 public class PhotonHandGrabNetwork : NetworkBehaviour
 {
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RPC_SetGrabState(NetworkObject obj, bool isGrabbed)
+    public void RPC_SetGrabState(NetworkObject obj, bool isGrabbed, RpcInfo info = default)
     {
         if (obj != null)
         {
             Rigidbody rb = obj.GetComponent<Rigidbody>();
             if (rb != null)
             {
+                rb.WakeUp();
                 rb.useGravity = !isGrabbed;
-                rb.freezeRotation = isGrabbed;
-                if (!isGrabbed) rb.WakeUp();
+                rb.isKinematic = isGrabbed;
+            }
+
+            if (isGrabbed)
+            {
+                if (info.Source != Runner.LocalPlayer)
+                {
+                    obj.AssignInputAuthority(info.Source);
+                }
+            }
+            else
+            {
+                if (info.Source != Runner.LocalPlayer)
+                {
+                    obj.RemoveInputAuthority();
+                }
+            }
+        }
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority, Channel = RpcChannel.Unreliable)]
+    public void RPC_MoveObjectUnreliable(NetworkObject obj, Vector3 newPos)
+    {
+        if (obj != null)
+        {
+            Rigidbody rb = obj.GetComponent<Rigidbody>();
+            if (rb != null && rb.isKinematic)
+            {
+                rb.WakeUp();
+                rb.MovePosition(newPos);
             }
         }
     }
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RPC_MoveObject(NetworkObject obj, Vector3 newPos)
+    public void RPC_ReleaseAndThrow(NetworkObject obj, Vector3 throwVelocity, RpcInfo info = default)
     {
         if (obj != null)
         {
-            Rigidbody rb = obj.GetComponent<Rigidbody>();
-            if (rb != null)
+            if (info.Source != Runner.LocalPlayer)
             {
-                rb.MovePosition(newPos); // 서버 물리 엔진이 부드럽게 이동시킴
+                obj.RemoveInputAuthority();
             }
-        }
-    }
 
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RPC_ThrowObject(NetworkObject obj, Vector3 throwVelocity)
-    {
-        if (obj != null)
-        {
             Rigidbody rb = obj.GetComponent<Rigidbody>();
             if (rb != null)
             {
+                rb.isKinematic = false;
                 rb.useGravity = true;
                 rb.freezeRotation = false;
-                rb.linearVelocity = throwVelocity; // 서버가 직접 힘을 가함
+                rb.WakeUp();
+                rb.linearVelocity = throwVelocity;
             }
         }
     }

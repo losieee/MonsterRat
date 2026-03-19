@@ -78,24 +78,21 @@ public class PlayerInteraction : NetworkBehaviour
 
         NetworkObject itemNetObj = currentInteractableItem.GetComponent<NetworkObject>();
 
+        if (itemNetObj == null)
+        {
+            return;
+        }
+
         if (inventory.AddItem(currentInteractableItem.itemData))
         {
-            if (itemNetObj != null)
+            if (Runner.IsServer)
             {
-                if (Runner.IsServer)
-                {
-                    Debug.Log($"?? [방장 권한] 방장이 아이템({itemNetObj.Id})을 직접 삭제합니다.");
-                    Runner.Despawn(itemNetObj);
-                }
-                else
-                {
-                    Debug.Log($"?? [게스트 권한] 게스트가 아이템({itemNetObj.Id})을 먹었습니다. 방장에게 삭제를 요청합니다!");
-                    RPC_RequestDespawnItem(itemNetObj.Id);
-                }
+                Runner.Despawn(itemNetObj);
             }
             else
             {
-                Destroy(currentInteractableItem.gameObject);
+                RPC_RequestDespawnItem(itemNetObj.Id);
+                currentInteractableItem.gameObject.SetActive(false);
             }
         }
         currentInteractableItem = null;

@@ -19,26 +19,41 @@ public class PhotonHandGrab : InvenBase
     Vector3 lastGrabVel;
     float grabbedRadius = 0.25f;
 
+    Vector3 centerOffset;
+    Vector3 virtualGrabPos;
+
     PhotonHandGrabNetwork netBridge;
     NetworkObject playerNetObj;
 
     public override void Init(PlayerUIState uiState, PlayerRaycast playerInteractor)
     {
         base.Init(uiState, playerInteractor);
-        netBridge = GetComponent<PhotonHandGrabNetwork>();
+        netBridge = transform.root.GetComponent<PhotonHandGrabNetwork>();
         playerNetObj = transform.root.GetComponent<NetworkObject>();
     }
 
     public override void Tick()
     {
-        if (playerNetObj == null || !playerNetObj.HasInputAuthority || netBridge == null) return;
-        if (interactor == null) return;
+        bool isLocalPlayer = playerNetObj != null && (playerNetObj.HasStateAuthority || playerNetObj.HasInputAuthority);
+        if (!isLocalPlayer || netBridge == null || interactor == null) return;
 
         if (Input.GetMouseButtonDown(1))
         {
             GameObject t = interactor.LookTarget;
+
+            if (t == null || t.layer != 3)
+            {
+                int boxLayerMask = 1 << 3;
+                if (Physics.SphereCast(interactor.cam.position, 0.4f, interactor.cam.forward, out RaycastHit hit, grabHoldDistance, boxLayerMask))
+                {
+                    t = hit.collider.gameObject;
+                }
+            }
+
             if (t != null && t.layer == 3)
+            {
                 TryGrab(t);
+            }
         }
 
         if (Input.GetMouseButtonUp(1))
@@ -49,9 +64,9 @@ public class PhotonHandGrab : InvenBase
 
     public override void FixedTick()
     {
-        if (playerNetObj == null || !playerNetObj.HasInputAuthority) return;
+        bool isLocalPlayer = playerNetObj != null && (playerNetObj.HasStateAuthority || playerNetObj.HasInputAuthority);
+        if (!isLocalPlayer) return;
 
-        // 내가 잡은 타겟이 있다면 방장에게 계속해서 이동 명령을 내립니다!
         if (targetRb != null && targetNetObj != null)
         {
             MoveGrabbedObject();
@@ -67,20 +82,24 @@ public class PhotonHandGrab : InvenBase
 
         targetRb = rb;
         targetNetObj = netObj;
-
-        // 1. 권한 요청 코드를 삭제하고, 무전기를 통해 방장에게 "중력 꺼주세요!" 라고만 요청합니다.
         netBridge.RPC_SetGrabState(targetNetObj, true);
 
         Collider col = targetRb.GetComponent<Collider>();
         if (col != null)
         {
             Vector3 e = col.bounds.extents;
-            grabbedRadius = Mathf.Max(e.x, e.y, e.z);
+            grabbedRadius = Mathf.Min(e.x, e.y, e.z);
+            if (grabbedRadius > 0.3f) grabbedRadius = 0.3f;
+            centerOffset = targetRb.transform.InverseTransformPoint(col.bounds.center);
         }
         else
+        {
             grabbedRadius = 0.25f;
+            centerOffset = Vector3.zero;
+        }
 
-        lastGrabPos = targetRb.position;
+        virtualGrabPos = targetRb.position;
+        lastGrabPos = virtualGrabPos;
         lastGrabVel = Vector3.zero;
     }
 
@@ -91,8 +110,7 @@ public class PhotonHandGrab : InvenBase
         if (interactor != null && interactor.cam != null)
         {
             Vector3 throwVelocity = lastGrabVel + interactor.cam.forward * throwBoost;
-            // 2. 방장에게 "이 방향으로 던져주세요!" 라고 요청합니다.
-            netBridge.RPC_ThrowObject(targetNetObj, throwVelocity);
+            netBridge.RPC_ReleaseAndThrow(targetNetObj, throwVelocity);
         }
 
         targetRb = null;
@@ -101,7 +119,16 @@ public class PhotonHandGrab : InvenBase
 
     void MoveGrabbedObject()
     {
-        if (interactor == null || interactor.cam == null || targetRb == null) return;
+        if (interactor == null || interactor.cam == null || targetRb == null || targetNetObj == null) return;
+
+        bool hasControl = targetNetObj.HasStateAuthority || targetNetObj.HasInputAuthority;
+
+        if (!hasControl)
+        {
+            virtualGrabPos = targetRb.position;
+            lastGrabPos = targetRb.position;
+            return;
+        }
 
         float desiredDist = grabHoldDistance;
         float actualDist = desiredDist;
@@ -111,14 +138,26 @@ public class PhotonHandGrab : InvenBase
             actualDist = Mathf.Clamp(hit.distance - grabPadding, minHoldDistance, desiredDist);
         }
 
-        Vector3 targetPos = interactor.cam.position + interactor.cam.forward * actualDist;
-        Vector3 toTarget = targetPos - targetRb.position;
-        Vector3 newPos = targetRb.position + toTarget * grabMoveSpeed * Time.fixedDeltaTime;
+        Vector3 targetCenterPos = interactor.cam.position + interactor.cam.forward * actualDist;
+        Vector3 worldCenterOffset = targetRb.transform.TransformDirection(centerOffset);
+        Vector3 desiredPivotPos = targetCenterPos - worldCenterOffset;
+
+        Vector3 toTarget = desiredPivotPos - virtualGrabPos;
+        Vector3 newPos = virtualGrabPos + toTarget * grabMoveSpeed * Time.fixedDeltaTime;
 
         lastGrabVel = (newPos - lastGrabPos) / Time.fixedDeltaTime;
         lastGrabPos = newPos;
 
-        // 3. 방장에게 "제가 계산한 좌표로 상자 좀 옮겨주세요!" 실시간 요청
-        netBridge.RPC_MoveObject(targetNetObj, newPos);
+        virtualGrabPos = newPos;
+
+        if (targetNetObj.HasStateAuthority)
+        {
+            targetRb.MovePosition(newPos);
+        }
+        else
+        {
+            targetRb.transform.position = newPos;
+            netBridge.RPC_MoveObjectUnreliable(targetNetObj, newPos);
+        }
     }
 }
