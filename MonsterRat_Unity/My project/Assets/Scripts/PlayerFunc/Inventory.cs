@@ -11,6 +11,7 @@ public enum ToolType
     Spanner,        // 스패너
     Cutter,         // 절단기
     Flame,          // 화염방사기
+    Flash,          // 손전등
 }
 
 public class Inventory : MonoBehaviour

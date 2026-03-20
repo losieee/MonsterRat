@@ -6,6 +6,7 @@ public class TutorialManager : MonoBehaviour
 {
     public TutorialInventory inventory;
     public TutorialDialogueSystem dialogue;
+    public GasCamFollow gasCam;
     public SafeZone_Door door;
     public Image clearGaugeFill;
 
@@ -19,6 +20,8 @@ public class TutorialManager : MonoBehaviour
     private bool reached60Once = false;
     private float case3StartTime = -999f;
     private bool case3Started = false;
+    private bool case4Started = false;
+    private bool gasCamEntered = false;
     // 쥐 사살 카운트
     private int tutorial3AliveRats = 0;
     private bool waitingRatsClear = false;
@@ -84,6 +87,7 @@ public class TutorialManager : MonoBehaviour
                     inventory.UnlockTool(TutorialToolType.Mop);
                     dialogue.ResumeAuto();
                     StartCoroutine(Tutorial2Tmi());
+                    gaugeStep++;
                 }
                 break;
 
@@ -93,28 +97,33 @@ public class TutorialManager : MonoBehaviour
                     tutorial3Clear = true;
                     case3Started = false;
                     dialogue.ResumeAuto();
+                    gaugeStep++;
                 }
                 break;
 
             case 4:     // 몬스터
-                if (!tutorial4Clear)
+                if (!case4Started)
                 {
-                    dialogue.ResumeAuto();
                     StartCase4();
+                    return;
                 }
-                break;
 
-            case 5:     // 배관
+                if (!gasCamEntered)
+                {
+                    return;
+                }
+
+                gaugeStep = 5;
+                dialogue.ResumeAuto();
+
                 if (!tutorial5Clear)
                 {
                     tutorial5Clear = true;
                     guaid3.SetActive(false);
-                    dialogue.ResumeAuto();
                     StartCoroutine(Tutorial5Tmi());
                 }
                 break;
         }
-        gaugeStep++;
 
         if (gaugeStep == 3)
         {
@@ -195,13 +204,23 @@ public class TutorialManager : MonoBehaviour
         }
     }
 
+    public void NotifyGasCamEntered()
+    {
+        if (!case4Started) return;
+
+        gasCamEntered = true;
+    }
+
     void StartCase4()
     {
-        if (tutorial4Clear) return;
+        if (case4Started) return;
+
+        case4Started = true;
         tutorial4Clear = true;
 
         guaid3.SetActive(true);
         inventory.UnlockTool(TutorialToolType.Spanner);
+        dialogue.ResumeAuto();
 
         StartCoroutine(Tutorial4Tmi());
     }

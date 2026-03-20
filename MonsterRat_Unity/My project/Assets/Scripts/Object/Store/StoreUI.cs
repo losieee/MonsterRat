@@ -38,4 +38,10 @@ public class StoreUI : MonoBehaviour
         if (inventory == null) return;
         inventory.AddTool(ToolType.Cutter);
     }
+
+    public void BuyFlash()
+    {
+        if (inventory == null) return;
+        inventory.AddTool(ToolType.Flash);
+    }
 }

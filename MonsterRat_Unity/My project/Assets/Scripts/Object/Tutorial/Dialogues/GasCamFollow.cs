@@ -4,6 +4,7 @@ using UnityEngine;
 public class GasCamFollow : MonoBehaviour
 {
     public TutorialDialogueSystem dialogue;
+    public TutorialManager tutorialManager;
     public Transform camPivot;
     public GameObject gasAction1;
     public GameObject gasAction2;
@@ -11,7 +12,7 @@ public class GasCamFollow : MonoBehaviour
 
     public MonoBehaviour[] cameraControlScripts;
 
-    bool triggered;
+    public bool triggered;
     Transform mainCamTr;
     Transform originalParent;
     Vector3 originalPos;
@@ -29,6 +30,10 @@ public class GasCamFollow : MonoBehaviour
         if (!other.CompareTag("Player")) return;
 
         triggered = true;
+
+        if (tutorialManager != null)
+            tutorialManager.NotifyGasCamEntered();
+
         StartCoroutine(Co_FadeSnapLock());
     }
 
@@ -92,7 +97,5 @@ public class GasCamFollow : MonoBehaviour
             foreach (var s in cameraControlScripts)
                 if (s != null) s.enabled = true;
         }
-
-        triggered = false;
     }
 }
