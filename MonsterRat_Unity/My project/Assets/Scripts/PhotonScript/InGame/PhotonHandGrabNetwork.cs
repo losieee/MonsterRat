@@ -3,6 +3,7 @@ using Fusion;
 
 public class PhotonHandGrabNetwork : NetworkBehaviour
 {
+    // 원본 그대로 RpcTargets.StateAuthority 유지! (가장 안정적)
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_SetGrabState(NetworkObject obj, bool isGrabbed, RpcInfo info = default)
     {
@@ -63,8 +64,18 @@ public class PhotonHandGrabNetwork : NetworkBehaviour
                 rb.isKinematic = false;
                 rb.useGravity = true;
                 rb.freezeRotation = false;
+
+                // 💡 [수정 포인트 4] 엄청난 속도값(NaN)이 들어오면 강제로 0으로 만들어 허공으로 날아가는 버그 차단!
+                if (!float.IsNaN(throwVelocity.x))
+                {
+                    rb.linearVelocity = Vector3.ClampMagnitude(throwVelocity, 25f);
+                }
+                else
+                {
+                    rb.linearVelocity = Vector3.zero;
+                }
+
                 rb.WakeUp();
-                rb.linearVelocity = throwVelocity;
             }
         }
     }

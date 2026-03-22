@@ -140,6 +140,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8113566506925565300}
+  - {fileID: 4338298656576687736}
   m_Father: {fileID: 4300096115388253541}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2327382706136071718
@@ -274,6 +275,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1.7224731, z: 1.0125424}
   m_Center: {x: 0, y: -0.025375724, z: 0.2322784}
+--- !u!1 &2992599094117469953
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4338298656576687736}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4338298656576687736
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2992599094117469953}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.632, z: 2.268}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 599440580541166388}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3405209177687912585
 GameObject:
   m_ObjectHideFlags: 0
@@ -1561,9 +1593,8 @@ GameObject:
   - component: {fileID: 3341103897251282659}
   - component: {fileID: 1634961478233974428}
   - component: {fileID: 8040449326264660451}
-  - component: {fileID: 9213975253137544893}
-  - component: {fileID: 7375767261746206591}
   - component: {fileID: 6815836651522158606}
+  - component: {fileID: 2335744159757916608}
   m_Layer: 0
   m_Name: PhotonPlayer
   m_TagString: Player
@@ -1780,8 +1811,8 @@ MonoBehaviour:
   - {fileID: 8912150048000606042}
   - {fileID: 3622515418939287238}
   - {fileID: 3341103897251282659}
-  - {fileID: 9213975253137544893}
   - {fileID: 6815836651522158606}
+  - {fileID: 2335744159757916608}
   - {fileID: 1655036304726671577}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &3781888732311085437
@@ -1886,7 +1917,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8289719037013333509}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 78dfa2e4911f0d848a3f63165264c259, type: 3}
   m_Name: 
@@ -1909,38 +1940,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MopController
   coolTime: 1
---- !u!114 &9213975253137544893
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8289719037013333509}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d656c9f74b65d4449f049fe558d39df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PhotonHandGrabNetwork
---- !u!114 &7375767261746206591
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8289719037013333509}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41868b73d36ac9444bc223f1e3e66580, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PhotonHandGrab
-  grabHoldDistance: 3
-  grabMoveSpeed: 15
-  throwBoost: 2.5
-  grabBlock:
-    serializedVersion: 2
-    m_Bits: 129
-  grabPadding: 0.05
-  minHoldDistance: 0.6
 --- !u!114 &6815836651522158606
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1955,6 +1954,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PhotonPlayerUIState
   storePanel: {fileID: 6244745962788242794}
   storeDetectRadius: 2.5
+--- !u!114 &2335744159757916608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8289719037013333509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 860fbedd47e06a242a5b4083415a1ed3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StandaloneHandGrab
+  grabRange: 5
+  holdDistance: 3
+  pullSpeed: 15
+  interactLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  aimTransform: {fileID: 8113566506925565300}
+  _GrabbedObject: {fileID: 0}
 --- !u!1 &8620495648606292564
 GameObject:
   m_ObjectHideFlags: 0
