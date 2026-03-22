@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum TutorialToolType
 {
@@ -21,6 +22,14 @@ public class TutorialInventory : MonoBehaviour
     [HideInInspector] public bool clickGun = false;
     [HideInInspector] public bool clickSpanner = false;
 
+    [Header("아이템 이미지")]
+    public Animator currentToolAnimator;
+    public Image currentToolImage;
+    public Sprite handSprite;
+    public Sprite gunSprite;
+    public Sprite mopSprite;
+    public Sprite spannerSprite;
+
     List<TutorialToolType> slots = new List<TutorialToolType>();
 
     // 튜토리얼 전용 사용 잠금
@@ -34,6 +43,11 @@ public class TutorialInventory : MonoBehaviour
         slots.Add(TutorialToolType.Hand);       // 손은 1슬롯 고정
 
         unlocked.Add(TutorialToolType.Hand);
+    }
+
+    void Start()
+    {
+        UpdateCurrentToolImage();
     }
 
     public void UnlockTool(TutorialToolType tool)
@@ -88,10 +102,51 @@ public class TutorialInventory : MonoBehaviour
 
         TutorialToolType want = slots[slot - 1];
         if (!IsUnlocked(want)) return;
+
         currentSlot = slot;
+
+        if (currentToolImage != null)
+        {
+            currentToolImage.gameObject.SetActive(true);
+            currentToolImage.enabled = true;
+        }
+
+        UpdateCurrentToolImage();
+
+        if (currentToolAnimator != null)
+        {
+            currentToolAnimator.Play("HandToolBig", 0, 0f);
+        }
     }
 
     public IReadOnlyList<TutorialToolType> GetSlots() => slots;
 
     public bool HasAllTutorialTools() => hasMop && hasGun && hasSpanner;
+
+    void UpdateCurrentToolImage()
+    {
+        if (currentToolImage == null) return;
+
+        TutorialToolType tool = CurrentTool();
+        currentToolImage.sprite = GetSpriteByTool(tool);
+
+        currentToolImage.enabled = currentToolImage.sprite != null;
+    }
+
+    Sprite GetSpriteByTool(TutorialToolType tool)
+    {
+        switch (tool)
+        {
+            case TutorialToolType.Hand:
+                return handSprite;
+            case TutorialToolType.Gun:
+                return gunSprite;
+            case TutorialToolType.Mop:
+                return mopSprite;
+            case TutorialToolType.Spanner:
+                return spannerSprite;
+            default:
+                return handSprite;
+        }
+    }
 }
