@@ -17,6 +17,7 @@ public class MonsterLegless : MonoBehaviour
 
     [SerializeField] private NavMeshAgent agent;
     [SerializeField] private Transform player;
+    private Animator anim;
 
     [Header("시야")]
     [SerializeField] private float viewDistance = 12f;      // 시야 거리
@@ -56,6 +57,8 @@ public class MonsterLegless : MonoBehaviour
     {
         if (agent == null)
             agent = GetComponent<NavMeshAgent>();
+
+        anim = GetComponent<Animator>();
     }
 
     private void Start()
@@ -79,6 +82,17 @@ public class MonsterLegless : MonoBehaviour
             agent.isStopped = false;
             agent.SetDestination(player.position);
         }
+
+        UpdateAnimation();
+    }
+
+    private void UpdateAnimation()
+    {
+        if (anim == null || agent == null)
+            return;
+
+        bool isMoving = !agent.isStopped && agent.enabled;
+        anim.SetBool("IsMoving", isMoving);
     }
 
     // 플레이어가 시야각 안에 들어왔는지 검사
@@ -147,14 +161,23 @@ public class MonsterLegless : MonoBehaviour
 
         stateRoutine = StartCoroutine(VisitThrowPos());
     }
-    
-    // 총 쐈을때 멈칫
-    public void GunShot()
+
+    // 총 쐈을때 그 자리로
+    public void GunShot(Vector3 gunShotPosition)
     {
+        if (NavMesh.SamplePosition(gunShotPosition, out NavMeshHit hit, 3f, NavMesh.AllAreas))
+        {
+            investigateTarget = hit.position;
+        }
+        else
+        {
+            return;
+        }
+
         if (stateRoutine != null)
             StopCoroutine(stateRoutine);
 
-        stateRoutine = StartCoroutine(GunFreeze());
+        stateRoutine = StartCoroutine(VisitThrowPos());
     }
 
     // 랜덤 배회 시작
@@ -274,31 +297,6 @@ public class MonsterLegless : MonoBehaviour
         agent.isStopped = true;
 
         yield return new WaitForSeconds(waitAtThrowPointTime);
-
-        agent.isStopped = false;
-        isBusy = false;
-
-        if (hasDetectedPlayer)
-        {
-            agent.stoppingDistance = chaseStopDistance;
-            currentState = MonsterState.Chasing;
-        }
-        else
-        {
-            StartRoaming();
-        }
-    }
-
-    // 총 쏘면 멈추는 함수
-    private IEnumerator GunFreeze()
-    {
-        isBusy = true;
-        currentState = MonsterState.StunnedByGun;
-
-        agent.ResetPath();
-        agent.isStopped = true;
-
-        yield return new WaitForSeconds(gunFreezeTime);
 
         agent.isStopped = false;
         isBusy = false;

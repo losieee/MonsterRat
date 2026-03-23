@@ -24,7 +24,7 @@ public class GunController : InvenBase
         MonsterLegless monster = FindFirstObjectByType<MonsterLegless>();
         if (monster != null)
         {
-            monster.GunShot();
+            monster.GunShot(transform.position);
         }
 
         if (TryShootRat()) return;
