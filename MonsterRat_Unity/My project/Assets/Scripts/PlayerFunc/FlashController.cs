@@ -8,6 +8,11 @@ public class FlashController : InvenBase
 
     bool flashOn;
 
+    private void OnDisable()
+    {
+        FlashOff();
+    }
+
     public override void Tick()
     {
         if (Input.GetKeyDown(KeyCode.T))

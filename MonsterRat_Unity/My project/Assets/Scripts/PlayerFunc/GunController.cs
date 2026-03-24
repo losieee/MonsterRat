@@ -10,7 +10,8 @@ public class GunController : InvenBase
     public LayerMask groundMask;
     public LayerMask ratMask;
     public LayerMask roachMask;
-    public LayerMask targetMask;
+    public LayerMask MonsterLegless;
+    public LayerMask MonsterBoxHead;
 
     [Header("Prefabs")]
     public GameObject bloodPreb;
@@ -20,7 +21,7 @@ public class GunController : InvenBase
     {
         if (!Input.GetMouseButtonDown(0)) return;
 
-
+        // 허공에 총을 쏴도 레그리스가 쫒아올 수 있도록
         MonsterLegless monster = FindFirstObjectByType<MonsterLegless>();
         if (monster != null)
         {
@@ -29,7 +30,8 @@ public class GunController : InvenBase
 
         if (TryShootRat()) return;
         if (TryShootRoach()) return;
-        if (TryShootTarget()) return;
+        if (TryShootLegless()) return;
+        if (TryShootBoxHead()) return;
         TrySpawnPollutionAtHit();
     }
 
@@ -120,12 +122,29 @@ public class GunController : InvenBase
         return false;
     }
 
-    // 꽃, 좀비, 몬스터 등등
-    bool TryShootTarget()
+    bool TryShootLegless()
     {
         if (interactor == null) return false;
 
-        if (interactor.SphereCast(ratAimRadius, ratDistance, targetMask, out RaycastHit hit))
+        if (interactor.SphereCast(ratAimRadius, ratDistance, MonsterLegless, out RaycastHit hit))
+        {
+            MonsterLegless monster = hit.collider.GetComponentInParent<MonsterLegless>();
+            if (monster == null) return false;
+
+            monster.GunShot(transform.position);
+            interactor.ForceSetLookTarget(monster.gameObject);
+            return true;
+        }
+
+        return false;
+    }
+
+    // 박스헤드
+    bool TryShootBoxHead()
+    {
+        if (interactor == null) return false;
+
+        if (interactor.SphereCast(ratAimRadius, ratDistance, MonsterBoxHead, out RaycastHit hit))
         {
             ShootTarget target = hit.collider.GetComponentInParent<ShootTarget>();
             if (target == null) return false;

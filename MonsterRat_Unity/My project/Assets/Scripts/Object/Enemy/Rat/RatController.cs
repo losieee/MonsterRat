@@ -16,6 +16,7 @@ public class RatController : MonoBehaviour
     public float hitboxActiveTime = 0.1f;       // 히트박스 켜지는 시간
     public float attackCooldown = 0.5f;         // 공격 쿨타임
     public float attackDamage = 15f;
+    public float attackAnimDuration = 0.8f;
 
     private string walkParam = "isWalking";
     private string attackTrigger = "Attack";
@@ -65,9 +66,24 @@ public class RatController : MonoBehaviour
             return;
         }
 
-        // 나중에 공격하는 애니메이션 만들면 공격하는 동안 못움직이게
+        // 공격하는 동안 못움직이게
         if (attackCooldownTimer > 0f)
             attackCooldownTimer -= Time.deltaTime;
+
+        if (isAttacking)
+        {
+            if (!agent.isStopped)
+            {
+                agent.isStopped = true;
+                agent.ResetPath();
+            }
+
+            SetWalking(false);
+
+            Vector3 lookPos = new Vector3(player.position.x, transform.position.y, player.position.z);
+            transform.LookAt(lookPos);
+            return;
+        }
 
         float surfaceDistance = GetSurfaceDistanceToPlayer();
 
@@ -169,6 +185,13 @@ public class RatController : MonoBehaviour
     IEnumerator ActivateHitbox()
     {
         isAttacking = true;
+
+        if (agent != null)
+        {
+            agent.isStopped = true;
+            agent.ResetPath();
+        }
+
         SetWalking(false);
 
         if (animator != null)
@@ -184,6 +207,8 @@ public class RatController : MonoBehaviour
 
         if (hitbox != null)
             hitbox.gameObject.SetActive(false);
+
+        yield return new WaitForSeconds(attackAnimDuration - hitboxActiveTime);
 
         attackCooldownTimer = attackCooldown;
         isAttacking = false;

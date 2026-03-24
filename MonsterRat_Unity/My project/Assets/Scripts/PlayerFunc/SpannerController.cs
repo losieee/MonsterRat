@@ -16,47 +16,61 @@ public class SpannerController : InvenBase
         if (Input.GetMouseButton(0))
         {
             GameObject t = interactor != null ? interactor.LookTarget : null;
-            if (t == null) 
+            if (t == null)
             {
-                currentTime = 0f;
-                fixGauge.fillAmount = 0f;
-                return; 
+                ResetGauge();
+                return;
             }
 
             float d = Vector3.Distance(interactor.transform.position, t.transform.position);
             if (d > distance)
             {
-                currentTime = 0f;
-                fixGauge.fillAmount = 0f;
+                ResetGauge();
                 return;
             }
 
-            if(t.layer == 14)
+            if (t.layer == 14)
             {
                 currentTime += Time.deltaTime;
 
                 if (currentTime <= fixTime)
                 {
-                    fixGauge.fillAmount = currentTime / fixTime;
+                    if (fixGauge != null)
+                        fixGauge.fillAmount = currentTime / fixTime;
                 }
                 else
                 {
                     Destroy(t.gameObject);
-                    currentTime = 0f;
-                    fixGauge.fillAmount = 0f;
+                    ResetGauge();
                 }
             }
             else
             {
-                currentTime = 0f;
-                fixGauge.fillAmount = 0f;
+                ResetGauge();
             }
         }
 
         if (Input.GetMouseButtonUp(0))
         {
-            currentTime = 0;
-            fixGauge.fillAmount = 0;
+            ResetGauge();
         }
+    }
+
+    void OnDisable()
+    {
+        ResetGauge();
+    }
+
+    void OnDestroy()
+    {
+        ResetGauge();
+    }
+
+    private void ResetGauge()
+    {
+        currentTime = 0f;
+
+        if (fixGauge != null)
+            fixGauge.fillAmount = 0f;
     }
 }
