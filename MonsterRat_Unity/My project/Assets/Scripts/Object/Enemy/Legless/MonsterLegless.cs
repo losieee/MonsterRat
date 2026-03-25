@@ -1,10 +1,10 @@
 using System.Collections;
+using Fusion;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class MonsterLegless : MonoBehaviour
+public class MonsterLegless : NetworkBehaviour
 {
-    // 몬스터 상태
     public enum MonsterState
     {
         Idle,
@@ -16,105 +16,205 @@ public class MonsterLegless : MonoBehaviour
     }
 
     [SerializeField] private NavMeshAgent agent;
-    [SerializeField] private Transform player;
-    private Animator anim;
+    [SerializeField] private Animator anim;
+
+    [Header("Player Search")]
+    [SerializeField] private string playerTag = "Player";
 
     [Header("시야")]
-    [SerializeField] private float viewDistance = 12f;      // 시야 거리
-    [SerializeField] private float viewAngle = 90f;         // 시야 각
-    [SerializeField] private float eyeHeight = 1.6f;        // 눈 높이
-    [SerializeField] private float checkInterval = 0.1f;    // 시야 체크 주기
+    [SerializeField] private float viewDistance = 12f;
+    [SerializeField] private float viewAngle = 90f;
+    [SerializeField] private float eyeHeight = 1.6f;
+    [SerializeField] private float checkInterval = 0.1f;
 
     [Header("멈출 거리")]
-    [SerializeField] private float chaseStopDistance = 1.5f;        // 플레이어 추적 시 멈출 거리
-    [SerializeField] private float throwPointStopDistance = 0.5f;   // 물건 추적 시 멈출 거리
+    [SerializeField] private float chaseStopDistance = 1.5f;
+    [SerializeField] private float throwPointStopDistance = 0.5f;
 
     [Header("랜덤 배회")]
-    [SerializeField] private float roamingRadius = 8f;          // 랜덤 배회 반경
-    [SerializeField] private float roamingStopDistance = 0.3f;     // 랜덤 목적지 도착 판정 거리
-    [SerializeField] private float roamingWaitTime = 2f;           // 랜덤 위치 도착 후 대기 시간
-    [SerializeField] private float roamingSampleRadius = 2f;       // NavMesh 보정 반경
-    [SerializeField] private int roamingTryCount = 8;              // 랜덤 위치 찾기 시도 횟수
+    [SerializeField] private float roamingRadius = 8f;
+    [SerializeField] private float roamingStopDistance = 0.3f;
+    [SerializeField] private float roamingWaitTime = 2f;
+    [SerializeField] private float roamingSampleRadius = 2f;
+    [SerializeField] private int roamingTryCount = 8;
 
     [Header("대기 시간")]
-    [SerializeField] private float waitAtThrowPointTime = 3f;       // 물건 위치 도착 후 대기 시간
-    [SerializeField] private float gunFreezeTime = 5f;              // 총소리 대기 시간
+    [SerializeField] private float waitAtThrowPointTime = 3f;
+    [SerializeField] private float gunFreezeTime = 5f;
     [SerializeField] private float lifeTime = 20f;
 
-    private MonsterState currentState = MonsterState.Idle;
+    [Header("애니메이션")]
+    [SerializeField] private string isMovingParam = "IsMoving";
+    [SerializeField] private float movingThreshold = 0.05f;
+    [SerializeField] private float animDampSpeed = 10f;
+    
+    [Networked] private MonsterState NetState { get; set; }             // 현재 몬스터 상태
+    [Networked] private NetworkBool HasDetectedPlayer { get; set; }     // 플레이어를 포착한적이 있는지
+    [Networked] private NetworkBool IsBusy { get; set; }                // 현재 무슨 동작을 하고있는지
+    [Networked] private NetworkBool IsMovingNet { get; set; }           // 이동 애니메이션 동기화용
 
-    private bool hasDetectedPlayer = false;     // 플레이어를 본적이 있는가 (true 면 시야각 상관없이 계속 추적)
-    private bool isBusy = false;
-    private Vector3 investigateTarget;          // 떨어진 물건 위치
+    private Transform currentTarget;
+    private Vector3 investigateTarget;
     private Coroutine stateRoutine;
+    private Coroutine visionRoutine;
+    private Coroutine lifeRoutine;
+    private bool localFallbackMode;
+    private bool overrideInvestigation;
+    private bool resumeChaseAfterInvestigation;
+
+    // 프록시 화면에서 bool 전환이 너무 딱딱해 보이는 걸 조금 완화
+    private float movingBlendVisual;
+
+    // RPC - 누구든 호출 가능한 함수, 실행은 몬스터에서만 실행 됨
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_InvestigatePoint(Vector3 point)
+    {
+        Debug.Log($"[Monster] RPC_InvestigatePoint: {point}");
+        ThrownObject(point);
+    }
 
     private void Reset()
     {
         agent = GetComponent<NavMeshAgent>();
+        anim = GetComponent<Animator>();
     }
 
     private void Awake()
     {
-        if (agent == null)
-            agent = GetComponent<NavMeshAgent>();
-
-        anim = GetComponent<Animator>();
+        if (agent == null) agent = GetComponent<NavMeshAgent>();
+        if (anim == null) anim = GetComponent<Animator>();
     }
 
     private void Start()
     {
-        agent.stoppingDistance = chaseStopDistance;
-        Destroy(gameObject, lifeTime);
-        StartCoroutine(VisionCheckRoutine());
+        if (Object == null)
+        {
+            localFallbackMode = true;
+            InitializeMonster();
+            BeginMonsterLogic();
+        }
+    }
+
+    // 스폰 됐을때
+    public override void Spawned()
+    {
+        InitializeMonster();
+
+        if (HasStateAuthority)
+            BeginMonsterLogic();
+    }
+
+    // agent 기본 상태 세팅
+    private void InitializeMonster()
+    {
+        if (agent != null && !agent.isOnNavMesh)
+        {
+            if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 5f, NavMesh.AllAreas))
+                agent.Warp(hit.position);
+        }
+
+        if (agent != null)
+        {
+            agent.enabled = true;
+            agent.isStopped = false;
+            agent.stoppingDistance = chaseStopDistance;
+        }
+    }
+
+    // 몬스터 로직 시작
+    private void BeginMonsterLogic()
+    {
+        if (lifeRoutine != null) StopCoroutine(lifeRoutine);
+        lifeRoutine = StartCoroutine(LifeRoutine());
+
+        if (visionRoutine != null) StopCoroutine(visionRoutine);
+        visionRoutine = StartCoroutine(VisionCheckRoutine());
 
         StartRoaming();
     }
 
+    public override void FixedUpdateNetwork()
+    {
+        if (!HasStateAuthority)
+            return;
+
+        TickAuthority();
+    }
+
     private void Update()
     {
-        if (player == null)
+        if (localFallbackMode)
+            TickAuthority();
+
+        UpdateAnimationVisual();
+    }
+
+    // 플레이어 추적 / 이동 애니메이션 네트워크 값 갱신
+    private void TickAuthority()
+    {
+        if (agent == null || !agent.enabled || !agent.isOnNavMesh)
             return;
 
-        if (hasDetectedPlayer && !isBusy)
+        // 박스, 총 소리 중 플레이어 추적 금지
+        if (!overrideInvestigation && currentTarget != null && HasDetectedPlayer && !IsBusy)
         {
-            currentState = MonsterState.Chasing;
+            NetState = MonsterState.Chasing;
             agent.stoppingDistance = chaseStopDistance;
             agent.isStopped = false;
-            agent.SetDestination(player.position);
+            agent.SetDestination(currentTarget.position);
         }
 
-        UpdateAnimation();
+        float speed = agent.velocity.magnitude;
+        IsMovingNet = speed > movingThreshold;
     }
 
-    private void UpdateAnimation()
+    // 몬스터 생존시간
+    private IEnumerator LifeRoutine()
     {
-        if (anim == null || agent == null)
-            return;
+        yield return new WaitForSeconds(lifeTime);
 
-        bool isMoving = !agent.isStopped && agent.enabled;
-        anim.SetBool("IsMoving", isMoving);
+        if (Object != null && HasStateAuthority)
+            Runner.Despawn(Object);
+        else
+            Destroy(gameObject);
     }
 
-    // 플레이어가 시야각 안에 들어왔는지 검사
+    // 일정 주기로 시야 체크
     private IEnumerator VisionCheckRoutine()
     {
         WaitForSeconds wait = new WaitForSeconds(checkInterval);
 
         while (true)
         {
-            if (!hasDetectedPlayer && player != null)
+            // 타깃이 없으면 새타깃 탐색
+            if (currentTarget == null)
             {
-                if (CanSeePlayer())
+                Transform visibleTarget = FindClosestVisiblePlayer();
+
+                if (visibleTarget != null)
                 {
-                    hasDetectedPlayer = true;
-                    currentState = MonsterState.Chasing;
+                    currentTarget = visibleTarget;
+                    HasDetectedPlayer = true;
+                    NetState = MonsterState.Chasing;
 
                     if (stateRoutine != null)
                         StopCoroutine(stateRoutine);
 
-                    isBusy = false;
+                    IsBusy = false;
                     agent.isStopped = false;
                     agent.stoppingDistance = chaseStopDistance;
+                }
+            }
+            else
+            {
+                // 추적 대상 사라지면 다시 랜덤 배회
+                if (!currentTarget.gameObject.activeInHierarchy)
+                {
+                    currentTarget = null;
+                    HasDetectedPlayer = false;
+
+                    if (!IsBusy)
+                        StartRoaming();
                 }
             }
 
@@ -122,11 +222,42 @@ public class MonsterLegless : MonoBehaviour
         }
     }
 
-    // 플레이어 추적
-    private bool CanSeePlayer()
+    // 시야 안에 들어온 플레이어 중 가장 가까운 플레이어 추적
+    private Transform FindClosestVisiblePlayer()
     {
+        GameObject[] players = GameObject.FindGameObjectsWithTag(playerTag);
+
+        Transform best = null;
+        float bestSqr = float.MaxValue;
+
+        foreach (GameObject go in players)
+        {
+            if (go == null) continue;
+
+            Transform target = go.transform;
+
+            if (!CanSeePlayer(target))
+                continue;
+
+            float sqr = (target.position - transform.position).sqrMagnitude;
+            if (sqr < bestSqr)
+            {
+                bestSqr = sqr;
+                best = target;
+            }
+        }
+
+        return best;
+    }
+
+    // 플레이어 탐색
+    private bool CanSeePlayer(Transform target)
+    {
+        if (target == null)
+            return false;
+
         Vector3 eyePos = transform.position + Vector3.up * eyeHeight;
-        Vector3 playerPos = player.position + Vector3.up * 1.0f;
+        Vector3 playerPos = target.position + Vector3.up * 1.0f;
         Vector3 dir = playerPos - eyePos;
 
         if (dir.magnitude > viewDistance)
@@ -137,53 +268,70 @@ public class MonsterLegless : MonoBehaviour
             return false;
 
         if (Physics.Raycast(eyePos, dir.normalized, out RaycastHit hit, viewDistance, ~0))
-        {
-            if (hit.transform == player)
-                return true;
-        }
+            return hit.transform == target || hit.transform.IsChildOf(target);
 
         return false;
     }
 
-    // 물건 확인
+    // 박스가 던져졌을 때 그 자리 탐색
     public void ThrownObject(Vector3 thrownPosition)
     {
-        // 가장 가까운 Navmesh 위치로 이동
-        if (NavMesh.SamplePosition(thrownPosition, out NavMeshHit hit, 3f, NavMesh.AllAreas))
+        if (!CanRunAuthorityLogic())
         {
-            investigateTarget = hit.position;
-        }
-        else
             return;
+        }
+
+        if (!NavMesh.SamplePosition(thrownPosition, out NavMeshHit hit, 3f, NavMesh.AllAreas))
+        {
+            return;
+        }
+
+        investigateTarget = hit.position;
+        resumeChaseAfterInvestigation = currentTarget != null && HasDetectedPlayer;
+        overrideInvestigation = true;
+        IsBusy = true;
 
         if (stateRoutine != null)
             StopCoroutine(stateRoutine);
 
-        stateRoutine = StartCoroutine(VisitThrowPos());
+        stateRoutine = StartCoroutine(VisitThrowPos(false));
     }
 
-    // 총 쐈을때 그 자리로
+    // 총 쏜자리 탐색
     public void GunShot(Vector3 gunShotPosition)
     {
-        if (NavMesh.SamplePosition(gunShotPosition, out NavMeshHit hit, 3f, NavMesh.AllAreas))
-        {
-            investigateTarget = hit.position;
-        }
-        else
-        {
+        if (!CanRunAuthorityLogic())
             return;
-        }
+
+        if (!NavMesh.SamplePosition(gunShotPosition, out NavMeshHit hit, 3f, NavMesh.AllAreas))
+            return;
+
+        investigateTarget = hit.position;
+
+        resumeChaseAfterInvestigation = currentTarget != null && HasDetectedPlayer;
+
+        overrideInvestigation = true;
+        IsBusy = true;
 
         if (stateRoutine != null)
             StopCoroutine(stateRoutine);
 
-        stateRoutine = StartCoroutine(VisitThrowPos());
+        stateRoutine = StartCoroutine(VisitThrowPos(true));
     }
 
-    // 랜덤 배회 시작
+    private bool CanRunAuthorityLogic()
+    {
+        if (localFallbackMode)
+            return true;
+
+        return HasStateAuthority;
+    }
+
+    // 랜덤 배회
     private void StartRoaming()
     {
-        if (hasDetectedPlayer) return;
+        if (HasDetectedPlayer)
+            return;
 
         if (stateRoutine != null)
             StopCoroutine(stateRoutine);
@@ -191,65 +339,67 @@ public class MonsterLegless : MonoBehaviour
         stateRoutine = StartCoroutine(RoamRoutine());
     }
 
-    // 플레이어를 못 본 상태일 때 랜덤 배회
     private IEnumerator RoamRoutine()
     {
-        isBusy = true;
+        IsBusy = true;
 
-        while (!hasDetectedPlayer)
+        while (!HasDetectedPlayer)
         {
-            currentState = MonsterState.Roaming;
+            NetState = MonsterState.Roaming;
 
-            // 현재 위치 기준으로 랜덤 목적지 찾기
             if (TryGetRandomRoamPoint(out Vector3 roamTarget))
             {
                 agent.isStopped = false;
                 agent.stoppingDistance = roamingStopDistance;
                 agent.SetDestination(roamTarget);
 
-                // 경로 계산 대기
-                while (agent.pathPending && !hasDetectedPlayer)
+                while (agent.pathPending && !HasDetectedPlayer)
                     yield return null;
 
-                // 목적지 도착까지 대기
-                while (!hasDetectedPlayer)
+                while (!HasDetectedPlayer)
                 {
-                    if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+                    bool arrived =
+                        !agent.pathPending &&
+                        (
+                            !agent.hasPath ||
+                            agent.remainingDistance <= agent.stoppingDistance + 0.05f ||
+                            agent.pathStatus == NavMeshPathStatus.PathInvalid
+                        );
+
+                    if (arrived)
                         break;
 
                     yield return null;
                 }
 
-                if (hasDetectedPlayer)
+                if (HasDetectedPlayer)
                     break;
 
-                currentState = MonsterState.Idle;
+                NetState = MonsterState.Idle;
                 agent.isStopped = true;
-
-                // 도착 후 잠깐 쉬었다가 다음 랜덤 위치 선택
                 yield return new WaitForSeconds(roamingWaitTime);
             }
             else
             {
-                // 랜덤 목적지를 못 찾았으면 잠시 대기 후 재시도
-                currentState = MonsterState.Idle;
+                NetState = MonsterState.Idle;
                 agent.isStopped = true;
                 yield return new WaitForSeconds(1f);
             }
         }
 
-        isBusy = false;
+        IsBusy = false;
     }
 
-    // 랜덤 배회용 목적지 찾기
+    // NavMesh 위의 랜덤 목적지 하나 찾는 함수
     private bool TryGetRandomRoamPoint(out Vector3 result)
     {
+        Vector3 center = transform.position;
+
         for (int i = 0; i < roamingTryCount; i++)
         {
             Vector2 random2D = Random.insideUnitCircle * roamingRadius;
-            Vector3 randomPoint = transform.position + new Vector3(random2D.x, 0f, random2D.y);
+            Vector3 randomPoint = center + new Vector3(random2D.x, 0f, random2D.y);
 
-            // 랜덤 좌표를 NavMesh 위 좌표로 보정
             if (NavMesh.SamplePosition(randomPoint, out NavMeshHit hit, roamingSampleRadius, NavMesh.AllAreas))
             {
                 result = hit.position;
@@ -257,73 +407,91 @@ public class MonsterLegless : MonoBehaviour
             }
         }
 
-        result = transform.position;
+        result = center;
         return false;
     }
 
-    // 물건 위치로 가서 멈춤
-    private IEnumerator VisitThrowPos()
+    // 박스 / 총소리 위치 탐색
+    private IEnumerator VisitThrowPos(bool fromGunShot)
     {
-        isBusy = true;
-        currentState = MonsterState.InvestigatingThrow;
+        IsBusy = true;
+        NetState = fromGunShot ? MonsterState.StunnedByGun : MonsterState.InvestigatingThrow;
 
+        // 혹시 이전 경로가 남아있으면 초기화
+        agent.ResetPath();
         agent.isStopped = false;
         agent.stoppingDistance = throwPointStopDistance;
-
-        bool success = agent.SetDestination(investigateTarget);
+        agent.SetDestination(investigateTarget);
 
         while (agent.pathPending)
             yield return null;
 
         if (!agent.hasPath)
         {
-            isBusy = false;
+            overrideInvestigation = false;
+            IsBusy = false;
 
-            if (!hasDetectedPlayer)
-                StartRoaming();
+            if (resumeChaseAfterInvestigation && currentTarget != null && HasDetectedPlayer)
+            {
+                resumeChaseAfterInvestigation = false;
+                NetState = MonsterState.Chasing;
+            }
+            else
+            {
+                resumeChaseAfterInvestigation = false;
+                agent.ResetPath();
+                agent.isStopped = false;
+                NetState = MonsterState.Idle;
+                stateRoutine = StartCoroutine(RoamRoutine());
+            }
 
             yield break;
         }
 
         while (true)
         {
-            if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+            if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + 0.05f)
                 break;
 
             yield return null;
         }
 
-        currentState = MonsterState.WaitingAtThrowPoint;
+        NetState = MonsterState.WaitingAtThrowPoint;
         agent.isStopped = true;
 
-        yield return new WaitForSeconds(waitAtThrowPointTime);
+        yield return new WaitForSeconds(fromGunShot ? gunFreezeTime : waitAtThrowPointTime);
 
         agent.isStopped = false;
-        isBusy = false;
 
-        if (hasDetectedPlayer)
+        // 조사 종료
+        overrideInvestigation = false;
+        IsBusy = false;
+
+        if (resumeChaseAfterInvestigation && currentTarget != null && HasDetectedPlayer)
         {
-            agent.stoppingDistance = chaseStopDistance;
-            currentState = MonsterState.Chasing;
+            resumeChaseAfterInvestigation = false;
+            NetState = MonsterState.Chasing;
         }
         else
         {
-            StartRoaming();
+            resumeChaseAfterInvestigation = false;
+            agent.ResetPath();
+            agent.isStopped = false;
+            NetState = MonsterState.Idle;
+            stateRoutine = StartCoroutine(RoamRoutine());
         }
     }
 
-    // 범위 체크
-    private void OnDrawGizmosSelected()
+    // 멀티 애니메이션 부드럽게
+    private void UpdateAnimationVisual()
     {
-        Gizmos.color = Color.red;
-        Vector3 eyePos = transform.position + Vector3.up * eyeHeight;
-        Gizmos.DrawWireSphere(eyePos, viewDistance);
+        if (anim == null)
+            return;
 
-        Vector3 leftDir = Quaternion.Euler(0, -viewAngle * 0.5f, 0) * transform.forward;
-        Vector3 rightDir = Quaternion.Euler(0, viewAngle * 0.5f, 0) * transform.forward;
+        float target = IsMovingNet ? 1f : 0f;
+        movingBlendVisual = Mathf.Lerp(movingBlendVisual, target, Time.deltaTime * animDampSpeed);
 
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(eyePos, eyePos + leftDir * viewDistance);
-        Gizmos.DrawLine(eyePos, eyePos + rightDir * viewDistance);
+        bool visualMoving = movingBlendVisual > 0.5f;
+        anim.SetBool(isMovingParam, visualMoving);
     }
 }

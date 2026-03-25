@@ -120,7 +120,7 @@ namespace SlimUI.ModernMenu{
 
 		public void PlayCampaign(){
 			exitMenu.SetActive(false);
-			//playMenu.SetActive(true);
+			playMenu.SetActive(true);
 		}
 		
 		public void PlayCampaignMobile(){

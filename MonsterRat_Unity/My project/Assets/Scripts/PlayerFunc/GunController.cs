@@ -25,7 +25,7 @@ public class GunController : InvenBase
         MonsterLegless monster = FindFirstObjectByType<MonsterLegless>();
         if (monster != null)
         {
-            monster.GunShot(transform.position);
+            //monster.GunShot(transform.position);
         }
 
         if (TryShootRat()) return;
@@ -131,7 +131,7 @@ public class GunController : InvenBase
             MonsterLegless monster = hit.collider.GetComponentInParent<MonsterLegless>();
             if (monster == null) return false;
 
-            monster.GunShot(transform.position);
+            //monster.GunShot(transform.position);
             interactor.ForceSetLookTarget(monster.gameObject);
             return true;
         }

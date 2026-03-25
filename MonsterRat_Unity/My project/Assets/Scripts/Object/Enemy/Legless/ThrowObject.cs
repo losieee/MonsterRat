@@ -1,27 +1,38 @@
-using Mirror.Examples.CCU;
+using Fusion;
 using UnityEngine;
 
-public class ThrowObject : MonoBehaviour
+public class ThrowObject : NetworkBehaviour
 {
-    [SerializeField] private float notifyCooldown = 0.7f;
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private float notifyCooldown = 0.5f;
 
     private float lastNotifyTime = -999f;
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (1 << collision.gameObject.layer == 0)
+        bool isGround = ((1 << collision.gameObject.layer) & groundLayer.value) != 0;
+
+        if (!isGround)
             return;
 
         if (Time.time - lastNotifyTime < notifyCooldown)
+        {
             return;
+        }
 
         lastNotifyTime = Time.time;
 
-        MonsterLegless monster = FindFirstObjectByType<MonsterLegless>();
+        Vector3 impactPoint = collision.contacts.Length > 0
+            ? collision.contacts[0].point
+            : transform.position;
+
+        MonsterLegless monster = FindAnyObjectByType<MonsterLegless>();
 
         if (monster == null)
+        {
             return;
+        }
 
-        monster.ThrownObject(transform.position);
+        monster.RPC_InvestigatePoint(impactPoint);
     }
 }
