@@ -10,6 +10,13 @@ public class PlayerInteraction : NetworkBehaviour
     public LayerMask itemLayer;
     public KeyCode pickupKey = KeyCode.E;
 
+    [Header("소각장 관련")]
+    public float interactDistance = 2f;
+    public Transform PushBtCamera;
+    public LayerMask ButtonLayer;
+    public KeyCode PushButton = KeyCode.F;
+    // 레이어는 ItemLayer 쓰십쇼
+
     private Camera playerCamera;
     private PhotonInventory inventory;
     private ItemObject currentInteractableItem;
@@ -43,6 +50,32 @@ public class PlayerInteraction : NetworkBehaviour
             else
             {
                 Debug.LogWarning("? [줍기 실패] 눈앞에 아이템이 안 보입니다! (LayerMask나 아이템의 Layer 설정 문제)");
+            }
+        }
+
+        if (Input.GetKeyDown(PushButton)) // 그냥 정할 수 있게끔..
+        {
+            TryInteract();
+        }
+    }
+
+    private void TryInteract()
+    {
+        // 화면 정중앙(카메라가 보는 방향)으로 레이저를 쏩니다.
+        Ray ray = new Ray(PushBtCamera.position, PushBtCamera.forward);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, interactDistance, ButtonLayer))
+        {
+            // 레이저에 맞은 오브젝트에 DestroyController 스크립트가 붙어있는지 확인합니다.
+            DestroyController incineratorButton = hit.collider.GetComponent<DestroyController>();
+
+            // 스크립트를 찾았다면!
+            if (incineratorButton != null)
+            {
+                Debug.Log("[Interact] 소각장 버튼을 눌렀습니다!");
+
+                // 여기서 핵심 함수를 실행시켜 소각장을 가동합니다.
+                incineratorButton.CanDelete();
             }
         }
     }
