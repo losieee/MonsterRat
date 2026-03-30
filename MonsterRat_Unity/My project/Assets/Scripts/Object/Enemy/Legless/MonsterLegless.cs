@@ -87,12 +87,7 @@ public class MonsterLegless : NetworkBehaviour
 
     private void Start()
     {
-        if (Object == null)
-        {
-            localFallbackMode = true;
-            InitializeMonster();
-            BeginMonsterLogic();
-        }
+        
     }
 
     // 스폰 됐을때
@@ -143,6 +138,9 @@ public class MonsterLegless : NetworkBehaviour
 
     private void Update()
     {
+        if (Object == null || !Object.IsValid)
+            return;
+
         if (localFallbackMode)
             TickAuthority();
 
@@ -486,6 +484,10 @@ public class MonsterLegless : NetworkBehaviour
     private void UpdateAnimationVisual()
     {
         if (anim == null)
+            return;
+
+        // 아직 Fusion Spawn 전이면 Networked 값 접근 금지
+        if (Object == null || !Object.IsValid)
             return;
 
         float target = IsMovingNet ? 1f : 0f;
