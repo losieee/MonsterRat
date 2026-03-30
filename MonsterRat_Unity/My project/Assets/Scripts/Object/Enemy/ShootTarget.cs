@@ -8,6 +8,7 @@ public class ShootTarget : MonoBehaviour, IClearTarget
     public float weight = 1f;
     public bool destroyOnDeath = true;
     public GameObject remainPrefab;
+    public GameObject afterGasPrefab;
     public bool snapToGround = true;
     public float groundY = 0f;
 
@@ -27,6 +28,9 @@ public class ShootTarget : MonoBehaviour, IClearTarget
     {
         if (ClearManager.Instance != null)
             ClearManager.Instance.Unregister(this);
+
+        if (afterGasPrefab != null)
+            Instantiate(afterGasPrefab, transform.position, default);
     }
 
     // 총에서 호출할 함수
@@ -51,6 +55,6 @@ public class ShootTarget : MonoBehaviour, IClearTarget
             Instantiate(remainPrefab, pos, transform.rotation);
         }
 
-        Destroy(transform.parent.gameObject);
+        Destroy(gameObject);
     }
 }

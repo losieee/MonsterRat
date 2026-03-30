@@ -34,6 +34,7 @@ public class GasZone : MonoBehaviour
         // 30개 이상이면 오염 증가
         if (nearCount >= minParticleCount)
         {
+            Debug.Log(nearCount);
             player.AddExposure(exposurePerSec * checkInterval);
         }
     }
