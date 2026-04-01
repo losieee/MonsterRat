@@ -1438,7 +1438,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &236812660491309258
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1595,6 +1595,7 @@ GameObject:
   - component: {fileID: 8040449326264660451}
   - component: {fileID: 6815836651522158606}
   - component: {fileID: 2335744159757916608}
+  - component: {fileID: 1586983518938147771}
   m_Layer: 0
   m_Name: PhotonPlayer
   m_TagString: Player
@@ -1923,7 +1924,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8289719037013333509}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 78dfa2e4911f0d848a3f63165264c259, type: 3}
   m_Name: 
@@ -1932,7 +1933,7 @@ MonoBehaviour:
   distance: 3
   interactMask:
     serializedVersion: 2
-    m_Bits: 524360
+    m_Bits: 540744
 --- !u!114 &8040449326264660451
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1980,6 +1981,21 @@ MonoBehaviour:
     m_Bits: 8
   aimTransform: {fileID: 8113566506925565300}
   _GrabbedObject: {fileID: 0}
+--- !u!114 &1586983518938147771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8289719037013333509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0e1af823846a834c9b5271477c1706d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PhotonSpanner
+  distance: 10
+  fixTime: 5
+  fixGauge: {fileID: 7955681951448313746}
 --- !u!1 &8620495648606292564
 GameObject:
   m_ObjectHideFlags: 0
