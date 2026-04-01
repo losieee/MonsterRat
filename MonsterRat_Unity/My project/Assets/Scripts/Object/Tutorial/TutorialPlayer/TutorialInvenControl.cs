@@ -85,7 +85,6 @@ public class TutorialInvenControl : MonoBehaviour
         if (current != null)
         {
             current.OnSelect();
-            Debug.Log($"현재 들고있는 아이템: {current.Type}");
         }
     }
 }

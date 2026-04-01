@@ -5,13 +5,12 @@ public class TutorialMop : TutorialInvenBase
 {
     public override TutorialToolType Type => TutorialToolType.Mop;
 
-    public float coolTime = 1f;
+    public Animator anim;
+    public float coolTime;
     bool canClean = true;
 
     public override void Tick()
     {
-        if (!canClean) return;
-
         if (!canClean) return;
         if (Input.GetMouseButtonDown(0))
         {
@@ -35,7 +34,10 @@ public class TutorialMop : TutorialInvenBase
     IEnumerator Cooldown()
     {
         canClean = false;
+        anim.SetTrigger("SolCleaning");        
+
         yield return new WaitForSeconds(coolTime);
+
         canClean = true;
     }
 }

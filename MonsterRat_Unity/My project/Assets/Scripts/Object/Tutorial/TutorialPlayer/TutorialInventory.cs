@@ -30,6 +30,9 @@ public class TutorialInventory : MonoBehaviour
     public Sprite mopSprite;
     public Sprite spannerSprite;
 
+    [Header("아이템 모델")]
+    public GameObject solModel;
+
     List<TutorialToolType> slots = new List<TutorialToolType>();
 
     // 튜토리얼 전용 사용 잠금
@@ -131,6 +134,14 @@ public class TutorialInventory : MonoBehaviour
         currentToolImage.sprite = GetSpriteByTool(tool);
 
         currentToolImage.enabled = currentToolImage.sprite != null;
+
+        UpdateSolModel();
+    }
+
+    void UpdateSolModel()
+    {
+        if (solModel == null) return;
+        solModel.SetActive(CurrentTool() == TutorialToolType.Mop);
     }
 
     Sprite GetSpriteByTool(TutorialToolType tool)
