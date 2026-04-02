@@ -59,7 +59,7 @@ public class StandaloneHandGrab : NetworkBehaviour
             Rigidbody rb = targetObj.GetComponent<Rigidbody>();
             if (rb != null)
             {
-                rb.isKinematic = true;  
+                rb.isKinematic = true; // 호스트에서 물리 연산 끄기 (잡힘)
             }
         }
     }
@@ -72,7 +72,7 @@ public class StandaloneHandGrab : NetworkBehaviour
             Rigidbody rb = GrabbedObject.GetComponent<Rigidbody>();
             if (rb != null)
             {
-                rb.isKinematic = false;  
+                rb.isKinematic = false; // 호스트에서 물리 연산 켜기 (떨어짐)
             }
             GrabbedObject = null;
         }
@@ -80,6 +80,7 @@ public class StandaloneHandGrab : NetworkBehaviour
 
     public override void FixedUpdateNetwork()
     {
+        // 오직 호스트만 물건을 이동시킵니다. 클라이언트는 이 결과를 껍데기로 받습니다.
         if (HasStateAuthority && GrabbedObject != null)
         {
             if (grabbedRb == null || grabbedRb.gameObject != GrabbedObject.gameObject)
