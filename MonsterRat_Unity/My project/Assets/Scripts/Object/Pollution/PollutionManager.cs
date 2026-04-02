@@ -1,55 +1,71 @@
 using UnityEngine;
-using UnityEngine.UI;
+using Fusion;
 
-public class PollutionManager : MonoBehaviour
+public class PollutionManager : NetworkBehaviour
 {
-    public static PollutionManager Instance;
+    public static PollutionManager Instance { get; private set; }
 
-    [Header("UI")]
-    public Image clearGaugeFill;
+    [Networked]
+    public int TotalSpawned { get; set; }
 
-    [Header("Count")]
-    public int totalSpawned = 0;
-    public int cleanedCount = 0;
+    [Networked]
+    public int CleanedCount { get; set; }
 
-    void Awake()
+    public float FillAmount
     {
-        if (Instance != null && Instance != this)
+        get
         {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
+            if (TotalSpawned <= 0)
+                return 0f;
 
-        UpdateGauge();
+            return Mathf.Clamp01((float)CleanedCount / TotalSpawned);
+        }
     }
 
-    // 오염 오브젝트 생성 될 때
+    public int FillPercent
+    {
+        get
+        {
+            return Mathf.RoundToInt(FillAmount * 100f);
+        }
+    }
+
+    public override void Spawned()
+    {
+        Instance = this;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+    }
+
+    // 오염 오브젝트 생성 시 호출
     public void RegisterPollution()
     {
-        totalSpawned++;
-        UpdateGauge();
+        if (!HasStateAuthority)
+            return;
+
+        TotalSpawned++;
     }
 
-    // 오염 오브젝트 제거 될 때
+    // 오염 오브젝트 청소 완료 시 호출
     public void OnPollutionCleaned()
     {
-        cleanedCount++;
-        UpdateGauge();
+        if (!HasStateAuthority)
+            return;
+
+        CleanedCount++;
     }
 
-    void UpdateGauge()
+    // 필요하면 스테이지 시작 시 초기화용
+    public void ResetPollution()
     {
-        if (clearGaugeFill == null)
+        if (!HasStateAuthority)
             return;
 
-        if (totalSpawned <= 0)
-        {
-            clearGaugeFill.fillAmount = 0f;
-            return;
-        }
-
-        float fill = (float)cleanedCount / totalSpawned;
-        clearGaugeFill.fillAmount = Mathf.Clamp01(fill);
+        TotalSpawned = 0;
+        CleanedCount = 0;
     }
 }

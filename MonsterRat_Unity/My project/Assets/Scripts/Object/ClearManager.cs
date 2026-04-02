@@ -1,37 +1,30 @@
-using System.Collections;
-using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
+using Fusion;
 
 public interface IClearTarget
 {
-    // 1-아직 남아있음, 0-다 제거됨
     float Remain01 { get; }
-
-    // 게이지에 차지하는 비중
     float Weight { get; }
 }
 
-public class ClearManager : MonoBehaviour
+public class ClearManager : NetworkBehaviour
 {
     public static ClearManager Instance;
-    public Image clearGaugeFill;
-    public Text clearGaugeText;
 
     [System.Serializable]
     public class RandomAction
     {
         [Header("Objects")]
-        public GameObject prefab;      // 프리팹 소환
+        public GameObject prefab;
         public Transform spawnPoint;
 
         [Header("Events")]
-        public UnityEvent onInvoke;    // 다른 스크립트 함수 호출
+        public UnityEvent onInvoke;
 
         [Header("Percent")]
-        public float weight = 1;         // 확률
+        public float weight = 1f;
     }
 
     [System.Serializable]
@@ -40,153 +33,132 @@ public class ClearManager : MonoBehaviour
         public string name;
         [Range(0, 90)] public int minStep;
         [Range(0, 90)] public int maxStep;
-        public List<RandomAction> actions = new List<RandomAction>();        // 랜덤하게 실행 할 목록
+        public List<RandomAction> actions = new List<RandomAction>();
     }
 
     public Transform spawnRoot;
     public List<PhaseRandom> phases = new List<PhaseRandom>();
 
-    // 클리어 대상 목록
+    // 로컬 참조용 리스트(디버그/확장용)
     private readonly List<IClearTarget> targets = new List<IClearTarget>();
-    private float baselineTotal = 0f;
-    private int lastStep = 0;
 
-    void Awake()
+    // 네트워크 동기화되는 값들
+    [Networked] public float BaselineTotal { get; set; }
+    [Networked] public float RemainingTotal { get; set; }
+    [Networked] public int LastStep { get; set; }
+    [Networked] public NetworkBool HasInitializedTargets { get; set; }
+
+    public float ClearRatio01
     {
-        if (Instance != null)
+        get
         {
-            Destroy(gameObject);
-            return;
+            if (!HasInitializedTargets)
+                return 0f;
+
+            if (BaselineTotal <= 0f)
+                return 0f;
+
+            return Mathf.Clamp01(1f - (RemainingTotal / BaselineTotal));
         }
+    }
+
+    public int ClearPercent => Mathf.RoundToInt(ClearRatio01 * 100f);
+
+    public override void Spawned()
+    {
         Instance = this;
+
+        if (spawnRoot == null)
+            spawnRoot = transform;
     }
 
-    void OnEnable()
+    private void OnDestroy()
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        if (Instance == this)
+            Instance = null;
     }
 
-    void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-    }
-
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        BindUI();
-    }
-
-    IEnumerator Start()
-    {
-        BindUI();
-        yield return null;
-
-        RebuildBaseline();
-
-        lastStep = 0;
-
-        if (clearGaugeFill != null) clearGaugeFill.fillAmount = 0f;
-        if (clearGaugeText != null) clearGaugeText.text = "0%";
-        if (spawnRoot == null) spawnRoot = transform;
-    }
-
-    void BindUI()
-    {
-        if (clearGaugeFill != null && clearGaugeText != null) return;
-
-        // DontDestroy된 Player에서 PlayerHUD 찾기
-        PlayerHUD hud = FindFirstObjectByType<PlayerHUD>();
-        if (hud == null) return;
-
-        clearGaugeFill = hud.clearGaugeFill;
-        clearGaugeText = hud.clearGaugeText;
-    }
-
-    void Update()
-    {
-        UpdateGauge();
-    }
-
-    // 오브젝트가 생성될 때
     public void Register(IClearTarget target)
     {
         if (target == null) return;
         if (targets.Contains(target)) return;
+
         targets.Add(target);
 
-        baselineTotal += Mathf.Max(0f, target.Weight);
-        if (baselineTotal <= 0f) baselineTotal = 1f;
+        // 상태 권한만 네트워크 상태 변경
+        if (!HasStateAuthority) return;
+
+        float w = Mathf.Max(0f, target.Weight);
+
+        BaselineTotal += w;
+        RemainingTotal += Mathf.Clamp01(target.Remain01) * w;
+        HasInitializedTargets = true;
     }
 
-    // 오브젝트가 사라질 때
     public void Unregister(IClearTarget target)
     {
         if (target == null) return;
-        targets.Remove(target);
+
+        bool removed = targets.Remove(target);
+        if (!removed) return;
+
+        if (!HasStateAuthority) return;
+
+        float w = Mathf.Max(0f, target.Weight);
+
+        // 현재 구조에선 "사라지는 것 = 청소 완료" 타입으로 보고 남은 양에서 차감
+        RemainingTotal = Mathf.Max(0f, RemainingTotal - (Mathf.Clamp01(target.Remain01) * w));
     }
 
-    // 게이지 계산
-    void UpdateGauge()
+    // 부분 청소형 대상이 있을 때 수동 호출용
+    public void NotifyTargetProgressChanged(IClearTarget target, float previousRemain01, float newRemain01)
     {
-        if (baselineTotal <= 0f) return;
+        if (target == null) return;
+        if (!HasStateAuthority) return;
 
-        float remainTotal = 0f;
+        float w = Mathf.Max(0f, target.Weight);
 
-        for (int i = targets.Count - 1; i >= 0; i--)
-        {
-            if (targets[i] == null)
-            {
-                targets.RemoveAt(i);
-                continue;
-            }
+        float before = Mathf.Clamp01(previousRemain01) * w;
+        float after = Mathf.Clamp01(newRemain01) * w;
+        float delta = before - after;
 
-            float w = Mathf.Max(0f, targets[i].Weight);
-            remainTotal += Mathf.Clamp01(targets[i].Remain01) * w;
-        }
-
-        // 진행률 = 1 - (현재 남은량 / 처음 총량)
-        float clearRatio = 1f - (remainTotal / baselineTotal);
-        clearRatio = Mathf.Clamp01(clearRatio);
-
-        if (clearGaugeFill != null)
-            clearGaugeFill.fillAmount = clearRatio;
-
-        if (clearGaugeText != null)
-            clearGaugeText.text = $"{(clearRatio * 100f):F0}%";
-
-        CheckStep(clearRatio);
+        RemainingTotal = Mathf.Clamp(RemainingTotal - delta, 0f, BaselineTotal);
     }
 
-    // weight에 맞게 게이지 다시 계산
-    public void RebuildBaseline()
+    public void ResetProgress()
     {
-        baselineTotal = 0f;
-        for (int i = 0; i < targets.Count; i++)
-            baselineTotal += Mathf.Max(0f, targets[i].Weight);
+        if (!HasStateAuthority) return;
 
-        if (baselineTotal <= 0f) baselineTotal = 1f;
+        BaselineTotal = 0f;
+        RemainingTotal = 0f;
+        LastStep = 0;
+        HasInitializedTargets = false;
+    }
+
+    private void Update()
+    {
+        // 단계 이벤트는 권한 쪽에서만 처리
+        if (!HasStateAuthority) return;
+
+        CheckStep(ClearRatio01);
     }
 
     void CheckStep(float clearRatio01)
     {
-        // 0~100 중 10단위로 내림
         int step = Mathf.FloorToInt(clearRatio01 * 10f) * 10;
         step = Mathf.Clamp(step, 0, 100);
 
-        if (step <= lastStep) return;
+        if (step <= LastStep) return;
 
-        // 10단위로 무조건 처리
-        for (int s = lastStep + 10; s <= step; s += 10)
+        for (int s = LastStep + 10; s <= step; s += 10)
         {
             if (s >= 10 && s <= 90)
-            {
                 RunRandomFromPhase(s);
-            }
         }
-        lastStep = step;
+
+        LastStep = step;
     }
 
-    // 랜덤 소환
     void RunRandomFromPhase(int step)
     {
         PhaseRandom phase = FindPhase(step);
@@ -196,7 +168,6 @@ public class ClearManager : MonoBehaviour
         RandomAction pick = PickWeightedRandom(phase.actions);
         if (pick == null) return;
 
-        // 프리팹 소환
         if (pick.prefab != null)
         {
             Transform point = pick.spawnPoint != null ? pick.spawnPoint : spawnRoot;
@@ -205,7 +176,6 @@ public class ClearManager : MonoBehaviour
             Instantiate(pick.prefab, point.position, point.rotation);
         }
 
-        // 이벤트 실행
         pick.onInvoke?.Invoke();
     }
 
@@ -218,29 +188,28 @@ public class ClearManager : MonoBehaviour
             if (step < p.minStep || step > p.maxStep) continue;
             return p;
         }
+
         return null;
     }
 
     RandomAction PickWeightedRandom(List<RandomAction> list)
     {
-        float total = 0;
+        float total = 0f;
 
-        // 총 확률의 합
         for (int i = 0; i < list.Count; i++)
         {
             var a = list[i];
             if (a == null) continue;
 
-            // 프리팹도 없고 이벤트도 없으면 후보에서 제외
             bool hasSomething = (a.prefab != null) || (a.onInvoke != null);
             if (!hasSomething) continue;
 
-            total += Mathf.Max(0, a.weight);
+            total += Mathf.Max(0f, a.weight);
         }
 
-        if (total <= 0) return null;
+        if (total <= 0f) return null;
 
-        float r = Random.Range(0, total);
+        float r = Random.Range(0f, total);
 
         for (int i = 0; i < list.Count; i++)
         {
@@ -250,9 +219,11 @@ public class ClearManager : MonoBehaviour
             bool hasSomething = (a.prefab != null) || (a.onInvoke != null);
             if (!hasSomething) continue;
 
-            float w = Mathf.Max(0, a.weight);
+            float w = Mathf.Max(0f, a.weight);
             r -= w;
-            if (r < 0) return a;
+
+            if (r < 0f)
+                return a;
         }
 
         return null;

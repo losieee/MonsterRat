@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class TutorialPollutionControl : MonoBehaviour, IClearTarget
+public class TutorialPollutionControl : MonoBehaviour, TutorialIClearTarget
 {
     public Material[] polstep;
     public Material[] outline;
@@ -22,8 +22,8 @@ public class TutorialPollutionControl : MonoBehaviour, IClearTarget
 
     void Start()
     {
-        if (ClearManager.Instance != null)
-            ClearManager.Instance.Register(this);
+        if (TutorialClearManager.Instance != null)
+            TutorialClearManager.Instance.Register(this);
     }
 
     public void CleanOnce()
@@ -47,7 +47,7 @@ public class TutorialPollutionControl : MonoBehaviour, IClearTarget
         if (polstep != null && polstep.Length > 0)
             render.material = polstep[0];
 
-        if (ClearManager.Instance != null)
-            ClearManager.Instance.Unregister(this);
+        if (TutorialClearManager.Instance != null)
+            TutorialClearManager.Instance.Unregister(this);
     }
 }

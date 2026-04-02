@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +15,6 @@ public class TutorialManager : MonoBehaviour
     private bool tutorial1Clear = false;    // 물건 구매 완료
     private bool tutorial2Clear = false;    // 쓰레기 처리 완료
     private bool tutorial3Clear = false;    // 얼룩 지우기 완료
-    private bool tutorial4Clear = false;    // 몬스터 처치 완료
     private bool tutorial5Clear = false;    // 배관 수리 완료
 
     private bool reached60Once = false;
@@ -216,7 +216,6 @@ public class TutorialManager : MonoBehaviour
         if (case4Started) return;
 
         case4Started = true;
-        tutorial4Clear = true;
 
         guaid3.SetActive(true);
         inventory.UnlockTool(TutorialToolType.Spanner);

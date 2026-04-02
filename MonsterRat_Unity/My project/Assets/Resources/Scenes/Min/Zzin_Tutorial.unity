@@ -730,7 +730,7 @@ GameObject:
   - component: {fileID: 57215320}
   - component: {fileID: 57215323}
   - component: {fileID: 57215322}
-  - component: {fileID: 57215321}
+  - component: {fileID: 57215324}
   m_Layer: 3
   m_Name: mhp_barrel (5)
   m_TagString: Untagged
@@ -758,19 +758,6 @@ Transform:
   - {fileID: 1844409472}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &57215321
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 57215319}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f28b6bc4afee7347bcdbbe22e7d2efd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weight: 1
 --- !u!54 &57215322
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -819,6 +806,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.69766724, y: 1.2510741, z: 0.713531}
   m_Center: {x: 0.0038155615, y: 0.626665, z: 0.0031471848}
+--- !u!114 &57215324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 57215319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b55be142dc4db154aadbad16c8cc8aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialClearBox
+  weight: 1
 --- !u!1 &62070514
 GameObject:
   m_ObjectHideFlags: 0
@@ -942,7 +942,7 @@ GameObject:
   - component: {fileID: 62351548}
   - component: {fileID: 62351551}
   - component: {fileID: 62351550}
-  - component: {fileID: 62351549}
+  - component: {fileID: 62351552}
   m_Layer: 3
   m_Name: mhp_barrel (2)
   m_TagString: Untagged
@@ -970,19 +970,6 @@ Transform:
   - {fileID: 2112398773}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 62.709, z: 0}
---- !u!114 &62351549
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 62351547}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f28b6bc4afee7347bcdbbe22e7d2efd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weight: 1
 --- !u!54 &62351550
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1031,6 +1018,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.69766724, y: 1.2510741, z: 0.713531}
   m_Center: {x: 0.0038155615, y: 0.626665, z: 0.0031471848}
+--- !u!114 &62351552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 62351547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b55be142dc4db154aadbad16c8cc8aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialClearBox
+  weight: 1
 --- !u!1001 &71788530
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1475,7 +1475,7 @@ GameObject:
   - component: {fileID: 108784760}
   - component: {fileID: 108784763}
   - component: {fileID: 108784762}
-  - component: {fileID: 108784761}
+  - component: {fileID: 108784764}
   m_Layer: 3
   m_Name: mhp_barrel (3)
   m_TagString: Untagged
@@ -1503,19 +1503,6 @@ Transform:
   - {fileID: 245176277}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 62.709, z: 0}
---- !u!114 &108784761
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 108784759}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f28b6bc4afee7347bcdbbe22e7d2efd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weight: 1
 --- !u!54 &108784762
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1564,6 +1551,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.69766724, y: 1.2510741, z: 0.713531}
   m_Center: {x: 0.0038155615, y: 0.626665, z: 0.0031471848}
+--- !u!114 &108784764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 108784759}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b55be142dc4db154aadbad16c8cc8aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialClearBox
+  weight: 1
 --- !u!1001 &110083098
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7759,7 +7759,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1058f0fbda1e84e6c9e18b7ebf1d0c4b, type: 2}
+  - {fileID: 2100000, guid: 5f02cb57d11f83f4289c11282375f560, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -10795,21 +10795,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1052449573007301933, guid: eb2e1e9e412ac624da550f0b2d4c3152, type: 3}
   m_PrefabInstance: {fileID: 687055105}
   m_PrefabAsset: {fileID: 0}
---- !u!115 &691399051
-MonoScript:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  serializedVersion: 7
-  m_DefaultReferences: {}
-  m_Icon: {fileID: 0}
-  m_Type: 0
-  m_ExecutionOrder: 0
-  m_ClassName: SceneObjectIDMapSceneAsset
-  m_Namespace: UnityEngine.Rendering.HighDefinition
-  m_AssemblyName: Unity.RenderPipelines.HighDefinition.Runtime
 --- !u!1 &695080940
 GameObject:
   m_ObjectHideFlags: 0
@@ -11481,11 +11466,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 747986641}
-  - component: {fileID: 747986640}
   - component: {fileID: 747986639}
   - component: {fileID: 747986638}
-  - component: {fileID: 747986637}
   - component: {fileID: 747986642}
+  - component: {fileID: 747986644}
+  - component: {fileID: 747986643}
   m_Layer: 0
   m_Name: ClearManager
   m_TagString: Untagged
@@ -11493,22 +11478,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &747986637
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 747986636}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7cfb2b44d3e3fdd46873cf91f0a9c92b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  clearGaugeFill: {fileID: 46736642}
-  clearGaugeText: {fileID: 1143146631}
-  spawnRoot: {fileID: 747986641}
-  phases: []
 --- !u!65 &747986638
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11564,21 +11533,6 @@ MonoBehaviour:
   plantMask:
     serializedVersion: 2
     m_Bits: 128
---- !u!114 &747986640
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 747986636}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e137215608ef93346b4bc9eac81b9c7f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  clearGaugeFill: {fileID: 46736642}
-  totalSpawned: 0
-  cleanedCount: 0
 --- !u!4 &747986641
 Transform:
   m_ObjectHideFlags: 0
@@ -11625,6 +11579,37 @@ MonoBehaviour:
   guaid1: {fileID: 1062304703}
   guaid2: {fileID: 1359790334}
   guaid3: {fileID: 921191418}
+--- !u!114 &747986643
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 747986636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 212a550bb1ee5df4f92eba6fbc24f669, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialPollutionManager
+  clearGaugeFill: {fileID: 46736642}
+  totalSpawned: 0
+  cleanedCount: 0
+--- !u!114 &747986644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 747986636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df1533f8e56f33c47bd0ba8d7e93d699, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialClearManager
+  clearGaugeFill: {fileID: 46736642}
+  clearGaugeText: {fileID: 1143146631}
+  spawnRoot: {fileID: 747986641}
+  phases: []
 --- !u!1 &759634928
 GameObject:
   m_ObjectHideFlags: 0
@@ -14531,7 +14516,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 965775827}
-  - component: {fileID: 965775826}
   m_Layer: 0
   m_Name: SceneIDMap
   m_TagString: Untagged
@@ -14539,18 +14523,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &965775826
-MonoBehaviour:
-  m_ObjectHideFlags: 19
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 965775825}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 691399051}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &965775827
 Transform:
   m_ObjectHideFlags: 19
@@ -18696,9 +18668,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1169240742}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f28b6bc4afee7347bcdbbe22e7d2efd, type: 3}
+  m_Script: {fileID: 11500000, guid: b55be142dc4db154aadbad16c8cc8aed, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialClearBox
   weight: 1
 --- !u!1001 &1170227211
 PrefabInstance:
@@ -27775,7 +27747,7 @@ GameObject:
   - component: {fileID: 1722727941}
   - component: {fileID: 1722727944}
   - component: {fileID: 1722727943}
-  - component: {fileID: 1722727942}
+  - component: {fileID: 1722727945}
   m_Layer: 3
   m_Name: mhp_barrel (4)
   m_TagString: Untagged
@@ -27803,19 +27775,6 @@ Transform:
   - {fileID: 655344651}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1722727942
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1722727940}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f28b6bc4afee7347bcdbbe22e7d2efd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weight: 1
 --- !u!54 &1722727943
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -27864,6 +27823,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.69766724, y: 1.2510741, z: 0.713531}
   m_Center: {x: 0.0038155615, y: 0.626665, z: 0.0031471848}
+--- !u!114 &1722727945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1722727940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b55be142dc4db154aadbad16c8cc8aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialClearBox
+  weight: 1
 --- !u!1001 &1723043328
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30709,7 +30681,7 @@ GameObject:
   - component: {fileID: 1871850917}
   - component: {fileID: 1871850920}
   - component: {fileID: 1871850919}
-  - component: {fileID: 1871850918}
+  - component: {fileID: 1871850921}
   m_Layer: 3
   m_Name: mhp_barrel (1)
   m_TagString: Untagged
@@ -30737,19 +30709,6 @@ Transform:
   - {fileID: 658588713}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 62.709, z: 0}
---- !u!114 &1871850918
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1871850916}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f28b6bc4afee7347bcdbbe22e7d2efd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weight: 1
 --- !u!54 &1871850919
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -30798,6 +30757,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.69766724, y: 1.2510741, z: 0.713531}
   m_Center: {x: 0.0038155615, y: 0.626665, z: 0.0031471848}
+--- !u!114 &1871850921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1871850916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b55be142dc4db154aadbad16c8cc8aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialClearBox
+  weight: 1
 --- !u!1001 &1878595376
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -32822,7 +32794,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2013410475}
-  - component: {fileID: 2013410474}
   m_Layer: 0
   m_Name: StaticLightingSky
   m_TagString: Untagged
@@ -32830,18 +32801,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2013410474
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2013410473}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 441482e8936e35048a1dffac814e3ef8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &2013410475
 Transform:
   m_ObjectHideFlags: 1
@@ -33355,7 +33314,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2040777512}
   - component: {fileID: 2040777511}
-  - component: {fileID: 2040777510}
   m_Layer: 0
   m_Name: Reflection Probe (7)
   m_TagString: Untagged
@@ -33363,18 +33321,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2040777510
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2040777509}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0ef8dc2c2eabfa4e8cb77be57a837c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!215 &2040777511
 ReflectionProbe:
   m_ObjectHideFlags: 0
@@ -50436,6 +50382,10 @@ PrefabInstance:
       propertyPath: cleanClip
       value: 
       objectReference: {fileID: 7400000, guid: cce37aa3007b62b48a01b103affb1d94, type: 2}
+    - target: {fileID: 3081883320688819342, guid: 64c93d62dab084f4d8f49bc29492141d, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 6c4246dd80904b747bd0f2b32a4b5bef, type: 3}
     - target: {fileID: 3718590990175070752, guid: 64c93d62dab084f4d8f49bc29492141d, type: 3}
       propertyPath: m_Name
       value: Player
@@ -50488,6 +50438,10 @@ PrefabInstance:
       propertyPath: currentToolAnimator
       value: 
       objectReference: {fileID: 1883790383}
+    - target: {fileID: 6969349169773843602, guid: 64c93d62dab084f4d8f49bc29492141d, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 6c4246dd80904b747bd0f2b32a4b5bef, type: 3}
     - target: {fileID: 7283772397316916211, guid: 64c93d62dab084f4d8f49bc29492141d, type: 3}
       propertyPath: bloodPreb
       value: 
@@ -53842,9 +53796,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 3903708052158643018}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f28b6bc4afee7347bcdbbe22e7d2efd, type: 3}
+  m_Script: {fileID: 11500000, guid: b55be142dc4db154aadbad16c8cc8aed, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialClearBox
   weight: 1
 --- !u!1 &4435912130458853281
 GameObject:

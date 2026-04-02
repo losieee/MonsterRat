@@ -58,15 +58,7 @@ public class PhotonPollutionControl : NetworkBehaviour, IClearTarget
 
         if (cleanCount >= 3)
         {
-            NetworkObject rootNetObj = transform.root.GetComponent<NetworkObject>();
-            if (rootNetObj != null)
-            {
-                Runner.Despawn(rootNetObj);
-            }
-            else
-            {
-                Runner.Despawn(Object); // 루트에 없으면 자기 자신이라도 지움
-            }
+            Runner.Despawn(Object);
         }
     }
 
@@ -81,10 +73,11 @@ public class PhotonPollutionControl : NetworkBehaviour, IClearTarget
 
     private void UpdateMaterial()
     {
-        if (polstep != null && cleanCount < polstep.Length)
-        {
-            render.material = polstep[cleanCount];
-        }
+        if (render == null) return;
+        if (polstep == null || polstep.Length == 0) return;
+
+        int index = Mathf.Clamp(cleanCount, 0, polstep.Length - 1);
+        render.material = polstep[index];
     }
 
     public override void Despawned(NetworkRunner runner, bool hasState)
