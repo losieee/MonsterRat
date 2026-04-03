@@ -22,6 +22,8 @@ public class MopController : InvenBase
 
             Vector3 rayStart = Camera.main != null ? Camera.main.transform.position : transform.position;
 
+            Debug.Log($"[Mop] hit point = {t.name}");
+
             if (t == null)
             {
                 return;
@@ -29,6 +31,8 @@ public class MopController : InvenBase
 
             if (t.layer == 6)
             {
+                Debug.Log($"[Mop] hit = {t.name}");
+
                 PhotonPollutionControl multiPol = t.GetComponentInParent<PhotonPollutionControl>();
                 if (multiPol != null)
                 {

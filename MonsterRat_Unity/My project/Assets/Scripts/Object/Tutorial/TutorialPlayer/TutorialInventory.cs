@@ -1,3 +1,4 @@
+using NUnit.Framework.Internal.Filters;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,7 +14,7 @@ public enum TutorialToolType
 public class TutorialInventory : MonoBehaviour
 {
     public int maxSlots = 5;
-    public int currentSlot { get; private set; } = 1;
+    public int CurrentSlot { get; private set; } = 0;
 
     [HideInInspector] public bool hasMop = false;
     [HideInInspector] public bool hasGun = false;
@@ -22,9 +23,10 @@ public class TutorialInventory : MonoBehaviour
     [HideInInspector] public bool clickGun = false;
     [HideInInspector] public bool clickSpanner = false;
 
-    [Header("아이템 이미지")]
-    public Animator currentToolAnimator;
-    public Image currentToolImage;
+    [Header("인벤 이미지")]
+    public GameObject invenPanel;
+    public Image[] slotImages;
+    public Sprite emptySlotSprite;
     public Sprite handSprite;
     public Sprite gunSprite;
     public Sprite mopSprite;
@@ -32,6 +34,12 @@ public class TutorialInventory : MonoBehaviour
 
     [Header("아이템 모델")]
     public GameObject solModel;
+
+    [Header("아이템 드롭")]
+    public Transform dropPoint;
+    public GameObject gunPrefab;
+    public GameObject mopPrefab;
+    public GameObject spannerPrefab;
 
     List<TutorialToolType> slots = new List<TutorialToolType>();
 
@@ -45,12 +53,33 @@ public class TutorialInventory : MonoBehaviour
         slots.Clear();
         slots.Add(TutorialToolType.Hand);       // 손은 1슬롯 고정
 
+        unlocked.Clear();
         unlocked.Add(TutorialToolType.Hand);
+
+        CurrentSlot = 0;
     }
 
     void Start()
     {
-        UpdateCurrentToolImage();
+        if (invenPanel != null)
+            invenPanel.SetActive(false);
+
+        RefreshInventoryUI();
+        UpdateSolModel();
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.I))
+            ToggleInventory();
+        if(Input.GetKeyDown(KeyCode.G))
+            DropCurrentToolToWorld();
+    }
+
+    public void ToggleInventory()
+    {
+        if (invenPanel == null) return;
+        invenPanel.SetActive(!invenPanel.activeSelf);
     }
 
     public void UnlockTool(TutorialToolType tool)
@@ -65,7 +94,10 @@ public class TutorialInventory : MonoBehaviour
 
     public TutorialToolType CurrentTool()
     {
-        int idx = currentSlot - 1;
+        if (CurrentSlot == 0)
+            return TutorialToolType.Hand;
+
+        int idx = CurrentSlot;
         if (idx < 0 || idx >= slots.Count) return TutorialToolType.Hand;
         return slots[idx];
     }
@@ -95,47 +127,88 @@ public class TutorialInventory : MonoBehaviour
 
         OnToolAdded?.Invoke(tool);
 
+        RefreshInventoryUI();
+        UpdateSolModel();
+
         return true;
+    }
+
+    public void SelectHand()
+    {
+        CurrentSlot = 0;
+        UpdateSolModel();
+        RefreshInventoryUI();
     }
 
     // 슬롯 선택
     public void SelectSlot(int slot)
     {
-        if (slot < 1 || slot > slots.Count) return;
+        if (slot < 1 || slot >= slots.Count) return;
 
-        TutorialToolType want = slots[slot - 1];
+        TutorialToolType want = slots[slot];
         if (!IsUnlocked(want)) return;
 
-        currentSlot = slot;
+        CurrentSlot = slot;
 
-        if (currentToolImage != null)
-        {
-            currentToolImage.gameObject.SetActive(true);
-            currentToolImage.enabled = true;
-        }
+        UpdateSolModel();
+        RefreshInventoryUI();
+    }
 
-        UpdateCurrentToolImage();
+    public bool DropCurrentToolToWorld()
+    {
+        TutorialToolType tool = CurrentTool();
+        if (tool == TutorialToolType.Hand) return false;
+        if (dropPoint == null) return false;
 
-        if (currentToolAnimator != null)
-        {
-            currentToolAnimator.Play("HandToolBig", 0, 0f);
-        }
+        GameObject prefab = GetPrefabByTool(tool);
+        if (prefab == null) return false;
+
+        Instantiate(prefab, dropPoint.position, dropPoint.rotation);
+
+        RemoveCurrentTool();
+        return true;
+    }
+
+    private void RemoveCurrentTool()
+    {
+        if (CurrentSlot == 0) return;
+        if (CurrentSlot < 0 || CurrentSlot >= slots.Count) return;
+
+        TutorialToolType removedTool = slots[CurrentSlot];
+        slots.RemoveAt(CurrentSlot);
+
+        CurrentSlot = 0;
+
+        RefreshInventoryUI();
+        UpdateSolModel();
     }
 
     public IReadOnlyList<TutorialToolType> GetSlots() => slots;
 
     public bool HasAllTutorialTools() => hasMop && hasGun && hasSpanner;
 
-    void UpdateCurrentToolImage()
+    void RefreshInventoryUI()
     {
-        if (currentToolImage == null) return;
+        if (slotImages == null || slotImages.Length == 0) return;
 
-        TutorialToolType tool = CurrentTool();
-        currentToolImage.sprite = GetSpriteByTool(tool);
+        for (int i = 0; i < slotImages.Length; i++)
+        {
+            if (slotImages[i] == null) continue;
 
-        currentToolImage.enabled = currentToolImage.sprite != null;
+            int toolIndex = i + 1;
 
-        UpdateSolModel();
+            if (toolIndex < slots.Count)
+            {
+                Sprite sprite = GetSpriteByTool(slots[toolIndex]);
+                slotImages[i].sprite = sprite != null ? sprite : emptySlotSprite;
+                slotImages[i].enabled = true;
+            }
+            else
+            {
+                slotImages[i].sprite = emptySlotSprite;
+                slotImages[i].enabled = true;
+            }
+        }
     }
 
     void UpdateSolModel()
@@ -158,6 +231,20 @@ public class TutorialInventory : MonoBehaviour
                 return spannerSprite;
             default:
                 return handSprite;
+        }
+    }
+    GameObject GetPrefabByTool(TutorialToolType tool)
+    {
+        switch (tool)
+        {
+            case TutorialToolType.Gun:
+                return gunPrefab;
+            case TutorialToolType.Mop:
+                return mopPrefab;
+            case TutorialToolType.Spanner:
+                return spannerPrefab;
+            default:
+                return null;
         }
     }
 }

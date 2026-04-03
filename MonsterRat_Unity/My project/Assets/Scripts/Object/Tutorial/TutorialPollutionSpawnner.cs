@@ -1,98 +1,99 @@
 using UnityEngine;
-using Fusion;
 
-public class PollutionSpawner : NetworkBehaviour
+public class TutorialPollutionSpawnner : MonoBehaviour
 {
     [Header("Pollution")]
-    public NetworkPrefabRef pollutionPrefab;
+    public GameObject pollutionPrefab;
     public int spawnPollutionCount = 15;
     public BoxCollider spawnArea;
     public LayerMask pollutionMask;
     public LayerMask blockHitMask;
-    public LayerMask overlapBlockMask;
+    public LayerMask overlapBlockMask;      // 겹침 방지
     public float rayDistance = 20f;
     public float checkRadius = 0.2f;
 
     [Header("Target")]
-    public NetworkPrefabRef plantPrefab;
-    public NetworkPrefabRef monsterPrefab;
-    public NetworkPrefabRef woodPrefab;
+    public GameObject plantPrefab;
+    public GameObject monsterPrefab;
+    public GameObject woodPrefab;
     public int spawnPlantCount = 3;
     public LayerMask plantMask = ~0;
 
-    private bool pollutionSpawnedOnce = false;
+    bool pollutionSpawnedOnce = false;
 
-    public override void Spawned()
-    {
-        if (!HasStateAuthority) return;
-
-        PollutionSpawnOnce();
-    }
+    /*void Start() 
+    { 
+        SpawnRandomPollution(spawnPollutionCount); 
+    }*/
 
     public void PollutionSpawnOnce()
     {
-        if (!HasStateAuthority) return;
         if (pollutionSpawnedOnce) return;
-
         pollutionSpawnedOnce = true;
         SpawnRandomPollution(spawnPollutionCount);
     }
 
     public void WoodSpawnOnce()
     {
-        if (!HasStateAuthority) return;
         SpawnRandomWood();
     }
 
     public void TargetSpawnOnce()
     {
-        if (!HasStateAuthority) return;
         SpawnRandomPlant(spawnPlantCount);
     }
 
     public void MonsterSpawnOnce()
     {
-        if (!HasStateAuthority) return;
         SpawnMonster();
     }
 
+    // 오염물질 랜덤 생성
     void SpawnRandomPollution(int count)
     {
-        if (spawnArea == null) return;
+        if (pollutionPrefab == null || spawnArea == null) return;
 
         int spawned = 0;
         int tryCount = 0;
+        // 무한루프 방지
         int maxTry = count * 30;
 
         while (spawned < count && tryCount < maxTry)
         {
             tryCount++;
 
+            // 랜덤 위치
             Vector3 origin = GetRandomPointInBox(spawnArea);
+
+            // 임의 방향으로 raycast
             Vector3 dir = Random.onUnitSphere.normalized;
 
+            // 오염 생성
             if (Physics.Raycast(origin, dir, out RaycastHit hit, rayDistance, pollutionMask, QueryTriggerInteraction.Ignore) ||
-                Physics.Raycast(origin, -dir, out hit, rayDistance, pollutionMask, QueryTriggerInteraction.Ignore))
+            Physics.Raycast(origin, -dir, out hit, rayDistance, pollutionMask, QueryTriggerInteraction.Ignore))
             {
+                // 스폰 금지 레이어면 스킵
                 if (((1 << hit.collider.gameObject.layer) & blockHitMask) != 0)
                     continue;
 
                 Vector3 pos = hit.point;
 
+                // 스폰 박스 범위 안인지 체크
                 if (!spawnArea.bounds.Contains(pos))
                     continue;
 
+                // 주변에 오브젝트가 있는지 (중복 방지)
                 if (Physics.CheckSphere(pos + hit.normal * 0.02f, checkRadius, overlapBlockMask, QueryTriggerInteraction.Ignore))
                     continue;
 
                 Quaternion rot = Quaternion.FromToRotation(Vector3.up, hit.normal);
-
-                Runner.Spawn(pollutionPrefab, pos, rot);
+                Instantiate(pollutionPrefab, pos, rot);
                 spawned++;
             }
         }
     }
 
+    // 나무 랜덤 생성
     void SpawnRandomWood()
     {
         Vector3 center = spawnArea.transform.TransformPoint(spawnArea.center);
@@ -100,16 +101,20 @@ public class PollutionSpawner : NetworkBehaviour
 
         Vector3 randomPoint = GetRandomPointInBox(spawnArea);
         Vector3 origin = new Vector3(randomPoint.x, topY + 1f, randomPoint.z);
+        Vector3 dir = Vector3.down;
 
-        if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, rayDistance, plantMask, QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(origin, dir, out RaycastHit hit, rayDistance, plantMask, QueryTriggerInteraction.Ignore))
         {
-            Runner.Spawn(woodPrefab, hit.point, Quaternion.identity);
+            Vector3 pos = hit.point;
+            Quaternion rot = Quaternion.identity;
+            Instantiate(woodPrefab, pos, rot);
         }
     }
 
+    // 식물 랜덤 생성
     void SpawnRandomPlant(int count)
     {
-        if (spawnArea == null) return;
+        if (plantPrefab == null || spawnArea == null) return;
 
         int spawned = 0;
         int tryCount = 0;
@@ -122,17 +127,23 @@ public class PollutionSpawner : NetworkBehaviour
         {
             tryCount++;
 
+            // 랜덤 위치
             Vector3 randomPoint = GetRandomPointInBox(spawnArea);
             Vector3 origin = new Vector3(randomPoint.x, topY + 1f, randomPoint.z);
+            Vector3 dir = Vector3.down;
 
-            if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, rayDistance, plantMask, QueryTriggerInteraction.Ignore))
+            // 바닥만
+            if (Physics.Raycast(origin, dir, out RaycastHit hit, rayDistance, plantMask, QueryTriggerInteraction.Ignore))
             {
-                Runner.Spawn(plantPrefab, hit.point, Quaternion.identity);
+                Vector3 pos = hit.point;
+                Quaternion rot = Quaternion.identity;
+                Instantiate(plantPrefab, pos, rot);
                 spawned++;
             }
         }
     }
 
+    // 괴물 랜덤 생성
     void SpawnMonster()
     {
         Vector3 center = spawnArea.transform.TransformPoint(spawnArea.center);
@@ -140,13 +151,17 @@ public class PollutionSpawner : NetworkBehaviour
 
         Vector3 randomPoint = GetRandomPointInBox(spawnArea);
         Vector3 origin = new Vector3(randomPoint.x, topY + 1f, randomPoint.z);
+        Vector3 dir = Vector3.down;
 
-        if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, rayDistance, plantMask, QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(origin, dir, out RaycastHit hit, rayDistance, plantMask, QueryTriggerInteraction.Ignore))
         {
-            Runner.Spawn(monsterPrefab, hit.point, Quaternion.identity);
+            Vector3 pos = hit.point;
+            Quaternion rot = Quaternion.identity;
+            Instantiate(monsterPrefab, pos, rot);
         }
     }
 
+    // 랜덤 범위 지정
     Vector3 GetRandomPointInBox(BoxCollider box)
     {
         Vector3 center = box.transform.TransformPoint(box.center);

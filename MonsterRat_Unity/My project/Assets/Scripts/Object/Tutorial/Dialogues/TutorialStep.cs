@@ -66,7 +66,7 @@ public class TutorialStep : MonoBehaviour
                 spannerBtn.enabled = true;
             }
         }
-        else if(idx == 11)
+        else if(idx == 12)
         {
             if(btnOutLine != null)
                 btnOutLine.SetActive(true);
@@ -75,7 +75,7 @@ public class TutorialStep : MonoBehaviour
 
     void HandleLineShown(int idx)
     {
-        if (idx == 22)
+        if (idx == 23)
         {
             if (exitRange != null) 
                 exitRange.SetActive(true);
