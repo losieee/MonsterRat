@@ -166,7 +166,7 @@ public class TutorialManager : MonoBehaviour
     IEnumerator Tutorial2Tmi()
     {
         yield return new WaitForSeconds(5);
-        GetComponent<PollutionSpawner>().PollutionSpawnOnce();
+        GetComponent<TutorialPollutionSpawnner>().PollutionSpawnOnce();
 
         case3Started = true;
         reached60Once = false;

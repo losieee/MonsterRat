@@ -34,6 +34,8 @@ public class PhotonPollutionControl : NetworkBehaviour, IClearTarget
     // 대걸레 스크립트(TutorialMop)가 마우스 클릭 시 이 함수를 실행 
     public void CleanOnce()
     {
+        Debug.Log($"[CleanOnce] {name} / HasStateAuthority={Object.HasStateAuthority} / cleanCount={cleanCount}");
+
         // 내가 방장이면 바로 청소를 진행하고 게스트면 방장에게 부탁 
         if (Object.HasStateAuthority)
         {
@@ -41,6 +43,7 @@ public class PhotonPollutionControl : NetworkBehaviour, IClearTarget
         }
         else
         {
+            Debug.Log($"[RPC_RequestClean] {name}");
             RPC_RequestClean();
         }
     }

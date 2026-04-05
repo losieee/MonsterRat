@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 917456994525832298}
   - component: {fileID: 7025863058851059814}
   - component: {fileID: 6918955702640108115}
+  - component: {fileID: 7365069243499991238}
   m_Layer: 6
   m_Name: Photon_Rat_Pollution
   m_TagString: Untagged
@@ -32,7 +33,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 39.48836, y: 0.03473348, z: 25.64824}
-  m_LocalScale: {x: 0.41664, y: 0.0095039755, z: 0.41664}
+  m_LocalScale: {x: 1.5, y: 0.1, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -149,6 +150,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 6918955702640108115}
+  - {fileID: 7365069243499991238}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &6918955702640108115
 MonoBehaviour:
@@ -166,4 +168,21 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 0ca734de9a5f52d478d7c3098042d979, type: 2}
   - {fileID: 2100000, guid: 5cc6c1fc270dc4e449bd0d0a33987020, type: 2}
   - {fileID: 2100000, guid: d7e7e476b25230440bcd808b35c12e7f, type: 2}
-  _cleanCount: 1
+  _cleanCount: 0
+--- !u!114 &7365069243499991238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5675097730486047039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
+  _stateAuthorityChangeErrorCorrectionDelta: 0
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0
