@@ -1480,6 +1480,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fb8a775a7d11a443a150cf021c2971f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pollutionMask:
+    serializedVersion: 2
+    m_Bits: 0
+  cleanDistance: 3
   coolTime: 0.5
 --- !u!114 &355794691
 MonoBehaviour:
@@ -1774,9 +1778,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e137215608ef93346b4bc9eac81b9c7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clearGaugeFill: {fileID: 683129739}
-  totalSpawned: 0
-  cleanedCount: 0
+  _TotalSpawned: 0
+  _CleanedCount: 0
 --- !u!4 &392429215
 Transform:
   m_ObjectHideFlags: 0
@@ -1825,7 +1828,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdbe13016d83fd5469735bd54408197a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pollutionPrefab: {fileID: 3999510559161058140, guid: abc8d33c3698a8641bc0a0e88477af2d, type: 3}
+  pollutionPrefab:
+    RawGuidValue: 00000000000000000000000000000000
   spawnPollutionCount: 15
   spawnArea: {fileID: 392429216}
   pollutionMask:
@@ -1839,10 +1843,12 @@ MonoBehaviour:
     m_Bits: 73792
   rayDistance: 20
   checkRadius: 0.2
-  plantPrefab: {fileID: 3746059961616271515, guid: 8f1b3ee189223a044a049197cdee1806, type: 3}
-  zombiePrefab: {fileID: 4351208653060843658, guid: ca9078eda7d1a484cbdf1311fdd61793, type: 3}
-  monsterPrefab: {fileID: 3382355246623532821, guid: 0b2123acffcff6f4aaf05083702c0f36, type: 3}
-  woodPrefab: {fileID: 8400609172242118547, guid: e4aa3b6d96eb89e4bac1552177ec9c17, type: 3}
+  plantPrefab:
+    RawGuidValue: 00000000000000000000000000000000
+  monsterPrefab:
+    RawGuidValue: 00000000000000000000000000000000
+  woodPrefab:
+    RawGuidValue: 00000000000000000000000000000000
   spawnPlantCount: 3
   plantMask:
     serializedVersion: 2
@@ -1859,8 +1865,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7cfb2b44d3e3fdd46873cf91f0a9c92b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clearGaugeFill: {fileID: 683129739}
-  clearGaugeText: {fileID: 35999479}
   spawnRoot: {fileID: 392429215}
   phases:
   - name: 0~30
@@ -2013,6 +2017,11 @@ MonoBehaviour:
               m_BoolArgument: 0
             m_CallState: 2
       weight: 1
+  _BaselineTotal: 0
+  _RemainingTotal: 0
+  _LastStep: 0
+  _HasInitializedTargets:
+    _value: 0
 --- !u!1 &417971584
 GameObject:
   m_ObjectHideFlags: 0
@@ -3529,7 +3538,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 4b66f21097323d44ab40669b2fb9c53d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6c4246dd80904b747bd0f2b32a4b5bef, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
