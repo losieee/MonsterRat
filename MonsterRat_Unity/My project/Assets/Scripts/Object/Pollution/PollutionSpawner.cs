@@ -77,12 +77,12 @@ public class PollutionSpawner : NetworkBehaviour
                 if (((1 << hit.collider.gameObject.layer) & blockHitMask) != 0)
                     continue;
 
-                Vector3 pos = hit.point;
+                Vector3 pos = hit.point + hit.normal * 0.03f;
 
                 if (!spawnArea.bounds.Contains(pos))
                     continue;
 
-                if (Physics.CheckSphere(pos + hit.normal * 0.02f, checkRadius, overlapBlockMask, QueryTriggerInteraction.Ignore))
+                if (Physics.CheckSphere(pos, checkRadius, overlapBlockMask, QueryTriggerInteraction.Ignore))
                     continue;
 
                 Quaternion rot = Quaternion.FromToRotation(Vector3.up, hit.normal);

@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Fusion;  
+using Fusion;
+using System.Collections;
 
 public class PhotonPollutionControl : NetworkBehaviour, IClearTarget
 {
     public Material[] polstep;
     MeshRenderer render;
+    BoxCollider boxcol;
 
     //  변수로 만들어서 방에 있는 모든 사람이 똑같은 청소 횟수를 공유
     [Networked]
@@ -21,6 +23,7 @@ public class PhotonPollutionControl : NetworkBehaviour, IClearTarget
     void Awake()
     {
         render = GetComponent<MeshRenderer>();
+        boxcol = GetComponent<BoxCollider>();
     }
 
     // 대신 퓨전의 Spawned를 사용 (중간에 접속한 사람도 처리하기 위함)
@@ -29,13 +32,23 @@ public class PhotonPollutionControl : NetworkBehaviour, IClearTarget
         if (ClearManager.Instance != null)
             ClearManager.Instance.Register(this);
         UpdateMaterial();
+        StartCoroutine(RefreshCollider());
+    }
+
+    IEnumerator RefreshCollider()
+    {
+        yield return null;
+
+        if(boxcol != null)
+        {
+            boxcol.enabled = false;
+            boxcol.enabled = true;
+        }
     }
 
     // 대걸레 스크립트(TutorialMop)가 마우스 클릭 시 이 함수를 실행 
     public void CleanOnce()
     {
-        Debug.Log($"[CleanOnce] {name} / HasStateAuthority={Object.HasStateAuthority} / cleanCount={cleanCount}");
-
         // 내가 방장이면 바로 청소를 진행하고 게스트면 방장에게 부탁 
         if (Object.HasStateAuthority)
         {
@@ -43,7 +56,6 @@ public class PhotonPollutionControl : NetworkBehaviour, IClearTarget
         }
         else
         {
-            Debug.Log($"[RPC_RequestClean] {name}");
             RPC_RequestClean();
         }
     }

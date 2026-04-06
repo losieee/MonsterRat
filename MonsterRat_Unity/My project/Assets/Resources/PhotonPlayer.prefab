@@ -1949,6 +1949,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fb8a775a7d11a443a150cf021c2971f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MopController
+  pollutionMask:
+    serializedVersion: 2
+    m_Bits: 64
+  cleanDistance: 3
   coolTime: 1
 --- !u!114 &6815836651522158606
 MonoBehaviour:

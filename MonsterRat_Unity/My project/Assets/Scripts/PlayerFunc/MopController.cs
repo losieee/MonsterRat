@@ -5,6 +5,9 @@ public class MopController : InvenBase
 {
     public override ToolType Type => ToolType.Mop;
 
+    [SerializeField] private LayerMask pollutionMask;
+    [SerializeField] private float cleanDistance = 3f;
+
     public float coolTime = 1f;
     bool canClean = true;
 
@@ -13,40 +16,33 @@ public class MopController : InvenBase
         if (!canClean) return;
         if (Input.GetMouseButtonDown(0))
         {
-            if (interactor == null)
+            TryClean();
+        }
+    }
+
+    void TryClean()
+    {
+        if (interactor == null || interactor.cam == null)
+            return;
+
+        Ray ray = new Ray(interactor.cam.position, interactor.cam.forward);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, cleanDistance, pollutionMask, QueryTriggerInteraction.Ignore))
+        {
+            PhotonPollutionControl multiPol = hit.collider.GetComponentInParent<PhotonPollutionControl>();
+            if (multiPol != null)
             {
+                multiPol.CleanOnce();
+                StartCoroutine(Cooldown());
                 return;
             }
 
-            GameObject t = interactor.LookTarget;
-
-            Vector3 rayStart = Camera.main != null ? Camera.main.transform.position : transform.position;
-
-            Debug.Log($"[Mop] hit point = {t.name}");
-
-            if (t == null)
+            PollutionControl pol = hit.collider.GetComponentInParent<PollutionControl>();
+            if (pol != null)
             {
+                pol.CleanOnce();
+                StartCoroutine(Cooldown());
                 return;
-            }
-
-            if (t.layer == 6)
-            {
-                Debug.Log($"[Mop] hit = {t.name}");
-
-                PhotonPollutionControl multiPol = t.GetComponentInParent<PhotonPollutionControl>();
-                if (multiPol != null)
-                {
-                    multiPol.CleanOnce();
-                    StartCoroutine(Cooldown());
-                    return;
-                }
-
-                PollutionControl pol = t.GetComponentInParent<PollutionControl>();
-                if (pol != null)
-                {
-                    pol.CleanOnce();
-                    StartCoroutine(Cooldown());
-                }
             }
         }
     }
