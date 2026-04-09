@@ -1,18 +1,60 @@
+using Fusion;
 using UnityEngine;
 
 public class PlayerGas : MonoBehaviour
 {
     public float pollution = 0f;
     public float maxPollution = 100f;
+    public float checkInterval = 0.2f;
+    public float sampleHeightOffset = 0.8f;
 
-    // 오염도 증가 함수
+    private float timer = 0f;
+    private NetworkObject networkObject;
+    private GasZone[] gasZones;
+
+    private void Awake()
+    {
+        networkObject = GetComponentInParent<NetworkObject>();
+    }
+
+    private void Start()
+    {
+        gasZones = FindObjectsOfType<GasZone>(true);
+    }
+
+    private void Update()
+    {
+        if (networkObject == null || !networkObject.HasInputAuthority)
+            return;
+
+        if (gasZones == null || gasZones.Length == 0)
+            return;
+
+        timer -= Time.deltaTime;
+        if (timer > 0f) return;
+        timer = checkInterval;
+
+        Vector3 pos = networkObject.transform.position + Vector3.up * sampleHeightOffset;
+
+        for (int i = 0; i < gasZones.Length; i++)
+        {
+            GasZone zone = gasZones[i];
+            if (zone == null) continue;
+
+            if (!zone.Contains(pos)) continue;
+            if (!zone.IsDangerousAt(pos)) continue;
+
+            AddExposure(zone.exposurePerSec * checkInterval);
+            break;
+        }
+    }
+
     public void AddExposure(float amount)
     {
         pollution += amount;
         pollution = Mathf.Clamp(pollution, 0f, maxPollution);
     }
 
-    // 가스 게이지
     public float GetNormalized()
     {
         if (maxPollution <= 0f) return 0f;

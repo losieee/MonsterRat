@@ -11,8 +11,9 @@ public class MonsterLegless : NetworkBehaviour
         Roaming,
         Chasing,
         InvestigatingThrow,
+        InvestigatingFootstep,
         StunnedByGun,
-        WaitingAtThrowPoint
+        WaitingAtThrowPoint,
     }
 
     [SerializeField] private NavMeshAgent agent;
@@ -61,6 +62,8 @@ public class MonsterLegless : NetworkBehaviour
     private bool localFallbackMode;
     private bool overrideInvestigation;
     private bool resumeChaseAfterInvestigation;
+    private bool investigatingFootstep;
+    private Vector3 footstepTarget;
 
     // 프록시 화면에서 bool 전환이 너무 딱딱해 보이는 걸 조금 완화
     private float movingBlendVisual;
@@ -69,8 +72,12 @@ public class MonsterLegless : NetworkBehaviour
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_InvestigatePoint(Vector3 point)
     {
-        Debug.Log($"[Monster] RPC_InvestigatePoint: {point}");
         ThrownObject(point);
+    }
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_HearRunningSound(Vector3 point)
+    {
+        HearRunningSound(point);
     }
 
     private void Reset()
@@ -154,8 +161,18 @@ public class MonsterLegless : NetworkBehaviour
             return;
 
         // 박스, 총 소리 중 플레이어 추적 금지
-        if (!overrideInvestigation && currentTarget != null && HasDetectedPlayer && !IsBusy)
+        if (overrideInvestigation)
         {
+            float speedInvestigate = agent.velocity.magnitude;
+            IsMovingNet = speedInvestigate > movingThreshold;
+            return;
+        }
+
+        // 플레이어 추적이 발소리보다 우선
+        // 플레이어 추적이 발소리보다 우선
+        if (currentTarget != null && HasDetectedPlayer && !IsBusy)
+        {
+            investigatingFootstep = false;
             NetState = MonsterState.Chasing;
             agent.stoppingDistance = chaseStopDistance;
             agent.isStopped = false;
@@ -184,15 +201,35 @@ public class MonsterLegless : NetworkBehaviour
 
         while (true)
         {
-            // 타깃이 없으면 새타깃 탐색
-            if (currentTarget == null)
-            {
-                Transform visibleTarget = FindClosestVisiblePlayer();
+            Transform visibleTarget = FindClosestVisiblePlayer();
 
-                if (visibleTarget != null)
+            if (visibleTarget != null)
+            {
+                currentTarget = visibleTarget;
+                HasDetectedPlayer = true;
+
+                // 박스 / 총소리 조사 중이면 끊지 않고 플레이어만 기억
+                if (overrideInvestigation)
                 {
-                    currentTarget = visibleTarget;
-                    HasDetectedPlayer = true;
+                    // 조사 끝나면 플레이어 다시 추적
+                    resumeChaseAfterInvestigation = true;
+                }
+                // 발소리 조사 중이면 즉시 취소하고 플레이어 추적
+                else if (investigatingFootstep)
+                {
+                    investigatingFootstep = false;
+
+                    if (stateRoutine != null)
+                        StopCoroutine(stateRoutine);
+
+                    IsBusy = false;
+                    agent.isStopped = false;
+                    agent.stoppingDistance = chaseStopDistance;
+                    NetState = MonsterState.Chasing;
+                }
+                // 일반 상태면 바로 플레이어 추적
+                else
+                {
                     NetState = MonsterState.Chasing;
 
                     if (stateRoutine != null)
@@ -205,18 +242,101 @@ public class MonsterLegless : NetworkBehaviour
             }
             else
             {
-                // 추적 대상 사라지면 다시 랜덤 배회
-                if (!currentTarget.gameObject.activeInHierarchy)
+                // 현재 타겟이 사라졌으면 해제
+                if (currentTarget != null && !currentTarget.gameObject.activeInHierarchy)
                 {
                     currentTarget = null;
                     HasDetectedPlayer = false;
 
-                    if (!IsBusy)
+                    if (!IsBusy && !overrideInvestigation && !investigatingFootstep)
                         StartRoaming();
                 }
             }
 
             yield return wait;
+        }
+    }
+
+    // 발소리 청취
+    public void HearRunningSound(Vector3 soundPosition)
+    {
+        if (!CanRunAuthorityLogic())
+            return;
+
+        // 박스 / 총소리 조사가 더 우선
+        if (overrideInvestigation)
+            return;
+
+        // 이미 플레이어를 보고 추적 중이면 발소리는 무시
+        if (currentTarget != null && HasDetectedPlayer)
+            return;
+
+        if (!NavMesh.SamplePosition(soundPosition, out NavMeshHit hit, 3f, NavMesh.AllAreas))
+            return;
+
+        footstepTarget = hit.position;
+        investigatingFootstep = true;
+        IsBusy = true;
+
+        if (stateRoutine != null)
+            StopCoroutine(stateRoutine);
+
+        stateRoutine = StartCoroutine(VisitFootstepPos());
+    }
+
+    // 발소리 조사 코루틴
+    private IEnumerator VisitFootstepPos()
+    {
+        NetState = MonsterState.InvestigatingFootstep;
+
+        agent.ResetPath();
+        agent.isStopped = false;
+        agent.stoppingDistance = throwPointStopDistance;
+        agent.SetDestination(footstepTarget);
+
+        while (agent.pathPending)
+            yield return null;
+
+        if (!agent.hasPath)
+        {
+            investigatingFootstep = false;
+            IsBusy = false;
+            NetState = MonsterState.Idle;
+            StartRoaming();
+            yield break;
+        }
+
+        while (true)
+        {
+            // 플레이어를 이미 발견했으면 발소리 조사 중단
+            if (currentTarget != null && HasDetectedPlayer)
+            {
+                investigatingFootstep = false;
+                IsBusy = false;
+                NetState = MonsterState.Chasing;
+                yield break;
+            }
+
+            if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + 0.05f)
+                break;
+
+            yield return null;
+        }
+
+        investigatingFootstep = false;
+        IsBusy = false;
+
+        // 도착했는데 플레이어 못 봤으면 다시 배회
+        if (currentTarget != null && HasDetectedPlayer)
+        {
+            NetState = MonsterState.Chasing;
+        }
+        else
+        {
+            agent.ResetPath();
+            agent.isStopped = false;
+            NetState = MonsterState.Idle;
+            StartRoaming();
         }
     }
 
