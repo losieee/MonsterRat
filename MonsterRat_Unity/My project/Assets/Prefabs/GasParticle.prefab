@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5807591593568169252}
   - component: {fileID: 3858355900482752014}
   - component: {fileID: 6083612243893733246}
+  - component: {fileID: 8684089891284597975}
   m_Layer: 9
   m_Name: GasParticle
   m_TagString: Untagged
@@ -28,7 +29,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7836476100118409185}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.4979997, y: -0.23500001, z: -1.4948788}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -52,7 +53,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -4760,7 +4761,7 @@ ParticleSystem:
     vectorLabel1_3: W
 --- !u!199 &5807591593568169252
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -4776,6 +4777,11 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4797,9 +4803,11 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -4831,7 +4839,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!135 &3858355900482752014
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -4851,7 +4858,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 1.29
+  m_Radius: 2.5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &6083612243893733246
 MonoBehaviour:
@@ -4865,5 +4872,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 661c713fed25d9d43b206c59c0816059, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  initialParticles: 800
   pullStr: 10
   destroyDis: 0.2
+  maxMovePerFrame: 0.05
+  weight: 1
+--- !u!114 &8684089891284597975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7836476100118409185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bad9e65ed77e5942b6aeef966bda895, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GasZone
+  gas: {fileID: 6083612243893733246}
+  checkRadius: 5
+  minParticleCount: 5
+  exposurePerSec: 10
