@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3990397307060648068}
   m_Layer: 3
   m_Name: Meshy_AI_pan_0330101456_texture
-  m_TagString: Untagged
+  m_TagString: Box
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 4915991556560047690}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.053, z: 0}
+  m_LocalPosition: {x: 0, y: 0.05, z: 0}
   m_LocalScale: {x: 60, y: 60, z: 60}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -148,7 +148,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 1.1678448, y: 0.206357, z: 1.1696434}
-  m_Center: {x: 0.0007581711, y: 0.060482502, z: 0.003583908}
+  m_Center: {x: 0.0007581711, y: 0.05, z: 0.003583908}
 --- !u!54 &777471134760148745
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -243,4 +243,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f28b6bc4afee7347bcdbbe22e7d2efd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClearBox
-  weight: 1
+  weight: 2

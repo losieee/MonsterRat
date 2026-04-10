@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7155726985387916713}
   m_Layer: 3
   m_Name: Meshy_AI_tong_0330100517_texture
-  m_TagString: Untagged
+  m_TagString: Box
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 1174632808410380644}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.512, z: 0}
+  m_LocalPosition: {x: 0, y: 0.493, z: 0}
   m_LocalScale: {x: 55, y: 55, z: 55}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -121,7 +121,7 @@ Transform:
   m_GameObject: {fileID: 7496778751280640958}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 22.68, y: -4.6665, z: 40.53}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -148,7 +148,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 0.7737732, y: 1.1165857, z: 0.77659607}
-  m_Center: {x: 0.0035972595, y: 0.53105927, z: -0.015651703}
+  m_Center: {x: 0.0035972595, y: 0.49, z: -0.015651703}
 --- !u!54 &3521335801270865646
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -243,4 +243,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f28b6bc4afee7347bcdbbe22e7d2efd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClearBox
-  weight: 1
+  weight: 2

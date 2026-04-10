@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class RandomGasMaker : NetworkBehaviour
 {
     [SerializeField] private GasValveSync[] randomGas;
+    [SerializeField] private int spawnGas;
 
     [Networked, Capacity(6)]       // Capacity 가 크기 - 1스테이지 가스는 6개니까 6
     private NetworkArray<NetworkBool> GasActive => default;
@@ -40,7 +41,6 @@ public class RandomGasMaker : NetworkBehaviour
     void RandomSpawnGas()
     {
         int count = randomGas.Length;
-        int pickCount = 4;
 
         // 먼저 전부 false
         for (int i = 0; i < count; i++)
@@ -55,7 +55,7 @@ public class RandomGasMaker : NetworkBehaviour
             indices.Add(i);
         }
 
-        for (int i = 0; i < pickCount; i++)
+        for (int i = 0; i < spawnGas; i++)
         {
             int randIndex = Random.Range(0, indices.Count);
             int selected = indices[randIndex];

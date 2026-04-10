@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 292833786999896985}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 22.422, y: -4.6665, z: 42.526047}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -57,8 +57,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.004221, y: 0.9662739, z: 0.8944501}
-  m_Center: {x: 0.0051050186, y: -0.003402859, z: 0.4021519}
+  m_Size: {x: 1.004221, y: 0.9662739, z: 0.93150955}
+  m_Center: {x: 0.0051050186, y: -0.003402859, z: 0.44}
 --- !u!54 &3666605235673324567
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f28b6bc4afee7347bcdbbe22e7d2efd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClearBox
-  weight: 1
+  weight: 2
 --- !u!1 &2726416840550586939
 GameObject:
   m_ObjectHideFlags: 0
@@ -167,7 +167,7 @@ GameObject:
   - component: {fileID: 8820114391828185257}
   m_Layer: 3
   m_Name: Model
-  m_TagString: Untagged
+  m_TagString: Box
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -181,7 +181,7 @@ Transform:
   m_GameObject: {fileID: 2726416840550586939}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0, z: 0.401}
+  m_LocalPosition: {x: 0, y: 0, z: 0.431}
   m_LocalScale: {x: 55, y: 55, z: 55}
   m_ConstrainProportionsScale: 0
   m_Children: []

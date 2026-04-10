@@ -13,29 +13,18 @@ public class PhotonSpanner : InvenBase
 
     public override void Tick()
     {
-        
-
         // 좌클릭을 꾹 누르고 있을 때
         if (Input.GetMouseButton(0))
         {
             if (interactor == null) return;
 
-            GameObject t = interactor.LookTarget;
-
-            if (t == null)
+            if (!interactor.RaycastWorld(distance, out RaycastHit hit))
             {
                 ResetGauge();
                 return;
             }
 
-            float d = Vector3.Distance(interactor.transform.position, t.transform.position);
-            if (d > distance)
-            {
-                ResetGauge();
-                return;
-            }
-
-            GasValveSync valve = t.GetComponentInParent<GasValveSync>();
+            GasValveSync valve = hit.collider.GetComponentInParent<GasValveSync>();
 
             if (valve != null)
             {
@@ -44,7 +33,6 @@ public class PhotonSpanner : InvenBase
 
                 currentTime += Time.deltaTime;
 
-                // 게이지 채우기
                 if (currentTime <= fixTime)
                 {
                     if (fixGauge != null)
@@ -56,7 +44,7 @@ public class PhotonSpanner : InvenBase
                     ResetGauge();
                 }
             }
-            else  
+            else
             {
                 ResetGauge();
             }

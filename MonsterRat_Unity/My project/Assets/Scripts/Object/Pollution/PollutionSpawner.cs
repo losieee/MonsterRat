@@ -20,6 +20,7 @@ public class PollutionSpawner : NetworkBehaviour
     [SerializeField] private NetworkPrefabRef[] trashPrefabs;
     [SerializeField] private int spawnTrashCount = 5;
     [SerializeField] private LayerMask floorMask;
+    [SerializeField] private LayerMask spawnBlockMask;
     [SerializeField] private float trashSpawnHeightOffset = 1f;
 
     [Header("소환 범위")]
@@ -204,7 +205,12 @@ public class PollutionSpawner : NetworkBehaviour
             int randomIndex = Random.Range(0, trashPrefabs.Length);
             NetworkPrefabRef selectedTrashPrefab = trashPrefabs[randomIndex];
 
-            Runner.Spawn(selectedTrashPrefab, hit.point, Quaternion.identity);
+            Vector3 spawnPos = hit.point + Vector3.up * 0.15f;
+            
+            if (Physics.CheckSphere(spawnPos, 0.2f, spawnBlockMask, QueryTriggerInteraction.Ignore))
+                continue;
+
+            Runner.Spawn(selectedTrashPrefab, spawnPos, Quaternion.identity);
             spawned++;
         }
     }

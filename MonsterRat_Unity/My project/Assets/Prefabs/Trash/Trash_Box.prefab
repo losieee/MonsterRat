@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 5108389906765208496}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 24.22, y: -4.6665, z: 41.26}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -57,8 +57,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.0636635, y: 1.0577465, z: 0.94508064}
-  m_Center: {x: -0.005815506, y: -0.0058119893, z: 0.44883966}
+  m_Size: {x: 1.0636635, y: 1.0577465, z: 1}
+  m_Center: {x: -0.005815506, y: -0.0058119893, z: 0.44}
 --- !u!54 &4205011809869923513
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f28b6bc4afee7347bcdbbe22e7d2efd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClearBox
-  weight: 1
+  weight: 2
 --- !u!1 &6337537144951965409
 GameObject:
   m_ObjectHideFlags: 0
@@ -167,7 +167,7 @@ GameObject:
   - component: {fileID: 382747437400602111}
   m_Layer: 3
   m_Name: Meshy_AI_World_Map_Crate_0330095946_texture
-  m_TagString: Untagged
+  m_TagString: Box
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -181,7 +181,7 @@ Transform:
   m_GameObject: {fileID: 6337537144951965409}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0, z: 0.442}
+  m_LocalPosition: {x: 0, y: -0, z: 0.433}
   m_LocalScale: {x: 55, y: 55, z: 55}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -4672,6 +4672,12 @@ MonoBehaviour:
   interactMask:
     serializedVersion: 2
     m_Bits: 540744
+  useSphereCast: 1
+  sphereRadius: 0.2
+  showGizmo: 1
+  rayColor: {r: 1, g: 0, b: 0, a: 1}
+  hitColor: {r: 0, g: 1, b: 0, a: 1}
+  hitSphereRadius: 0.08
 --- !u!114 &8040449326264660451
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4716,12 +4722,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StandaloneHandGrab
   grabRange: 5
-  holdDistance: 3
-  pullSpeed: 10
+  holdDistance: 2
+  followSpeed: 15
+  maxFollowVelocity: 8
+  stopDistance: 0.02
+  throwForce: 6
+  minReleaseVelocity: 0.5
   interactLayer:
     serializedVersion: 2
     m_Bits: 8
+  grabBlock:
+    serializedVersion: 2
+    m_Bits: 17300941
+  grabPadding: 0.05
+  minHoldDistance: 0.6
+  grabDetectRadius: 0.2
   aimTransform: {fileID: 4338298656576687736}
+  playerRaycast: {fileID: 1634961478233974428}
   _GrabbedObject: {fileID: 0}
 --- !u!114 &1586983518938147771
 MonoBehaviour:
