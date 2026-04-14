@@ -36,28 +36,15 @@ public class ClearManager : NetworkBehaviour
         public List<RandomAction> actions = new List<RandomAction>();
     }
 
-    [System.Serializable]
-    public struct SpawnPlan
-    {
-        public int ratCount;
-        public int roachCount;
-
-        public SpawnPlan(int ratCount, int roachCount)
-        {
-            this.ratCount = ratCount;
-            this.roachCount = roachCount;
-        }
-
-        public int TotalCount => ratCount + roachCount;
-    }
-
     public Transform spawnRoot;
     public List<PhaseRandom> phases = new List<PhaseRandom>();
+    [SerializeField] private List<RandomAction> ratSpawnActions = new List<RandomAction>();
 
-    [Header("플레이어 근처 생성 (바퀴벌레)")]
+    [Header("플레이어 근처 생성")]
     [SerializeField] private NetworkPrefabRef roach;
+    [SerializeField] private NetworkPrefabRef boxHead;
     [SerializeField] private LayerMask floorMask;
-    [SerializeField] private float spawnNearPlayerRadius = 2.5f;
+    [SerializeField] private float spawnNearPlayerRadius = 2.5f;        // 플레이어 근처 소환할 반경
     [SerializeField] private float spawnHeightOffset = 2f;
     [SerializeField] private float groundCheckDistance = 5f;
     [SerializeField] private float overlapCheckRadius = 0.35f;
@@ -233,7 +220,7 @@ public class ClearManager : NetworkBehaviour
         Transform player = FindAnyPlayerTransform();
         if (player == null) return;
 
-        if (TryGetSpawnPositionNearPlayer(player, out Vector3 spawnPos))
+        if (TryGetSpawnPositionNearTarget(player, out Vector3 spawnPos))
         {
             Runner.Spawn(prefab, spawnPos, Quaternion.identity);
         }
@@ -252,7 +239,7 @@ public class ClearManager : NetworkBehaviour
     }
 
     // 플레이어 근처 바닥 찾기
-    bool TryGetSpawnPositionNearPlayer(Transform player, out Vector3 spawnPos)
+    bool TryGetSpawnPositionNearTarget(Transform targetPlayer, out Vector3 spawnPos)
     {
         spawnPos = Vector3.zero;
 
@@ -261,8 +248,7 @@ public class ClearManager : NetworkBehaviour
         for (int i = 0; i < maxTry; i++)
         {
             Vector2 rand2D = Random.insideUnitCircle * spawnNearPlayerRadius;
-
-            Vector3 origin = player.position + new Vector3(rand2D.x, spawnHeightOffset, rand2D.y);
+            Vector3 origin = targetPlayer.position + new Vector3(rand2D.x, spawnHeightOffset, rand2D.y);
 
             if (!Physics.Raycast(origin, Vector3.down, out RaycastHit hit, groundCheckDistance, floorMask, QueryTriggerInteraction.Ignore))
                 continue;
@@ -279,23 +265,111 @@ public class ClearManager : NetworkBehaviour
         return false;
     }
 
-    // 1스테이지 - 1Phase 전용
-    public void SpawnStage1Phase1()
+    /// <summary>
+    /// 이벤트 용 스폰 함수 모음집
+    /// </summary>
+    // 쥐 만 스폰
+    public void SpawnRatOnly()
     {
         if (!HasStateAuthority) return;
-
-        SpawnStage1Phase1Hazard();
+        int count = RollStage1to4Count();
+        SpawnFixedRats(count);
     }
 
-    public void SpawnStage1Phase1Hazard()
+    // 바퀴벌레 만 스폰
+    public void SpawnRoachOnly()
     {
         if (!HasStateAuthority) return;
+        int count = RollStage1to4Count();
 
-        SpawnPlan plan = BuildStage1Phase1Plan();
-        ExecuteStage1Phase1Plan(plan);
+        // 플레이어 중 1명 선택
+        Transform targetPlayer = FindAnyPlayerTransform();
+        if (targetPlayer == null) return;
+
+        SpawnRoachesNearTarget(targetPlayer, count);
     }
 
-    // 쥐 스폰에 쓰이는 Action 만 모음
+    // 혼합 스폰 (쥐는 무조건 1마리 스폰)
+    public void SpawnMixed()
+    {
+        if (!HasStateAuthority) return;
+        int totalCount = RollStage1to4Count();
+        int ratCount = 1;
+        int roachCount = Mathf.Max(0, totalCount - ratCount);
+
+        SpawnFixedRats(ratCount);
+        SpawnRoachesNearPlayer(roachCount);
+    }
+
+    public void SpawnBoxHead()
+    {
+        if (!HasStateAuthority) return;
+        SpawnOneNearPlayer(boxHead);
+    }
+
+    /// <summary>
+    /// 여기까지 모음집
+    /// </summary>
+
+    // 쥐 2(60%)~3(40%)마리 계산
+    int RollStage1to4Count()
+    {
+        float countRoll = Random.Range(0f, 100f);
+        return (countRoll < 60f) ? 2 : 3;
+    }
+
+    // 정해진 위치 중 쥐 랜덤 소환
+    void SpawnFixedRats(int count)
+    {
+        if (count <= 0) return;
+
+        List<RandomAction> spawnableRatActions = GetSpawnableActions(ratSpawnActions);
+        if (spawnableRatActions.Count == 0) return;
+
+        for (int i = 0; i < count; i++)
+        {
+            RandomAction ratPick = PickWeightedRandom(spawnableRatActions);
+            if (ratPick != null)
+                SpawnFromActionPoint(ratPick);
+        }
+    }
+
+    // 선택된 플레이어 근처에 count만큼 계산
+    void SpawnRoachesNearTarget(Transform targetPlayer, int count)
+    {
+        if (count <= 0) return;
+        if (targetPlayer == null) return;
+
+        for (int i = 0; i < count; i++)
+        {
+            SpawnOneNearTarget(roach, targetPlayer);
+        }
+    }
+
+    // 위에 함수에 나온 값만큼 스폰
+    void SpawnOneNearTarget(NetworkPrefabRef prefab, Transform targetPlayer)
+    {
+        if (!HasStateAuthority) return;
+        if (!prefab.IsValid) return;
+        if (targetPlayer == null) return;
+
+        if (TryGetSpawnPositionNearTarget(targetPlayer, out Vector3 spawnPos))
+        {
+            Runner.Spawn(prefab, spawnPos, Quaternion.identity);
+        }
+    }
+
+    // 바퀴벌레 플레이어 근처 스폰
+    void SpawnRoachesNearPlayer(int count)
+    {
+        if (count <= 0) return;
+
+        for (int i = 0; i < count; i++)
+        {
+            SpawnOneNearPlayer(roach);
+        }
+    }
+
     List<RandomAction> GetSpawnableActions(List<RandomAction> source)
     {
         List<RandomAction> result = new List<RandomAction>();
@@ -313,62 +387,6 @@ public class ClearManager : NetworkBehaviour
         }
 
         return result;
-    }
-
-    // BuildStage1Phase1Plan() 함수의 값을 받아 실제로 실행
-    void ExecuteStage1Phase1Plan(SpawnPlan plan)
-    {
-        PhaseRandom phase = FindPhase(10);
-        if (phase == null || phase.actions == null || phase.actions.Count == 0)
-            return;
-
-        // prefab, spawnPoint 없는 action은 제외
-        List<RandomAction> ratActions = GetSpawnableActions(phase.actions);
-        if (ratActions.Count == 0 && plan.ratCount > 0)
-            return;
-
-        // 쥐는 고정위치에서 스폰
-        for (int i = 0; i < plan.ratCount; i++)
-        {
-            RandomAction ratPick = PickWeightedRandom(phase.actions);
-            if (ratPick != null)
-                SpawnFromActionPoint(ratPick);
-        }
-        // 바퀴는 플레이어 근처에서 소환
-        for (int i = 0; i < plan.roachCount; i++)
-        {
-            SpawnOneNearPlayer(roach);
-        }
-    }
-
-    // 문서에 있는 확률을 기반으로 스폰
-    SpawnPlan BuildStage1Phase1Plan()
-    {
-        // Stage 1 - 쥐 40%, 바퀴벌레 40%, 혼합 20%
-        float typeRoll = Random.Range(0f, 100f);
-
-        // 총 마릿수 - 2마리 60%, 3마리 40%
-        float countRoll = Random.Range(0f, 100f);
-        int totalCount = (countRoll < 60f) ? 2 : 3;
-
-        // 쥐 40%
-        if (typeRoll < 40f)
-        {
-            return new SpawnPlan(totalCount, 0);
-        }
-        // 바퀴벌레 40%
-        else if (typeRoll < 80f)
-        {
-            return new SpawnPlan(0, totalCount);
-        }
-        // 혼합 20%
-        else
-        {
-            // stage 1~4에 혼합이면 무조건 쥐 1마리 고정
-            int ratCount = 1;
-            int roachCount = totalCount - ratCount;
-            return new SpawnPlan(ratCount, roachCount);
-        }
     }
 
     // 현재 step에 해당하는 PhaseRandom을 phases 리스트에서 탐색
