@@ -28,10 +28,17 @@ public class PhotonPollutionControl : NetworkBehaviour, IClearTarget
     // 대신 퓨전의 Spawned를 사용 (중간에 접속한 사람도 처리하기 위함)
     public override void Spawned()
     {
-        if (ClearManager.Instance != null)
-            ClearManager.Instance.Register(this);
         UpdateMaterial();
+        StartCoroutine(RegisterWhenManagerReady());
         StartCoroutine(RefreshCollider());
+    }
+
+    IEnumerator RegisterWhenManagerReady()
+    {
+        while (ClearManager.Instance == null)
+            yield return null;
+
+        ClearManager.Instance.Register(this);
     }
 
     IEnumerator RefreshCollider()
@@ -48,6 +55,12 @@ public class PhotonPollutionControl : NetworkBehaviour, IClearTarget
     // 대걸레 스크립트(TutorialMop)가 마우스 클릭 시 이 함수를 실행 
     public void CleanOnce()
     {
+        if (Object == null)
+        {
+            Debug.LogError($"[PhotonPollutionControl] Object is null: {name}");
+            return;
+        }
+
         // 내가 방장이면 바로 청소를 진행하고 게스트면 방장에게 부탁 
         if (Object.HasStateAuthority)
         {

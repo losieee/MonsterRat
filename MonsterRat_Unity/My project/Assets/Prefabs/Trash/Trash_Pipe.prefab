@@ -105,6 +105,7 @@ GameObject:
   - component: {fileID: 1233855340253194194}
   - component: {fileID: 2767404246966274136}
   - component: {fileID: 4064067549160262601}
+  - component: {fileID: 4229628609470451635}
   m_Layer: 3
   m_Name: Trash_Pipe
   m_TagString: Box
@@ -218,6 +219,7 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 1203780176807266453}
   - {fileID: 2767404246966274136}
+  - {fileID: 4229628609470451635}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &2767404246966274136
 MonoBehaviour:
@@ -244,3 +246,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClearBox
   weight: 2
+--- !u!114 &4229628609470451635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5813449650927834465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd529b396bddc56449cfd00d1e9f69f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ThrowObject
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  notifyCooldown: 0.5

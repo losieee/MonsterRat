@@ -10,6 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2115272742718865626}
   - component: {fileID: 5578457769943648817}
+  - component: {fileID: -2711261243953864808}
+  - component: {fileID: -5811227315651156435}
+  - component: {fileID: 5473567832068051912}
   m_Layer: 12
   m_Name: Roach
   m_TagString: Untagged
@@ -47,18 +50,75 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speedMin: 1.5
   speedMax: 3
-  directionChangeIntervalMin: 0.5
-  directionChangeIntervalMax: 3
-  wallCheckDistance: 1
-  bodyRadius: 0.13
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 34829
+  directionChangeIntervalMin: 1.5
+  directionChangeIntervalMax: 4
+  wanderRadius: 2.5
   idleChance: 0.5
   idleTimeMin: 0
   idleTimeMax: 2
-  pollutuinPreb: {fileID: 3999510559161058140, guid: abc8d33c3698a8641bc0a0e88477af2d, type: 3}
+  pollutuinPreb:
+    RawGuidValue: 34ae9c37f6b33be479c4abbdf54a8ecc
   pollutionSpawnThreshold: 0.8
+  lifeTime: 20
+--- !u!114 &-2711261243953864808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 441206952623887286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
+  SortKey: 3148264233
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 5578457769943648817}
+  - {fileID: -5811227315651156435}
+  ForceRemoteRenderTimeframe: 0
+--- !u!114 &-5811227315651156435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 441206952623887286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
+  _stateAuthorityChangeErrorCorrectionDelta: 0
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0
+--- !u!195 &5473567832068051912
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 441206952623887286}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.1
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 0.1
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &7365807401431565059
 GameObject:
   m_ObjectHideFlags: 0

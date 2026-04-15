@@ -1,8 +1,12 @@
 using UnityEngine;
 using Fusion;
+using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 public class PollutionSpawner : NetworkBehaviour
 {
+    public static PollutionSpawner Instance;
+
     [Header("얼룩")]
     [SerializeField] private NetworkPrefabRef pollutionPrefab;
     [SerializeField] private float pollutionThickness = 0.1f;         // 얼룩 두께
@@ -23,26 +27,38 @@ public class PollutionSpawner : NetworkBehaviour
     [SerializeField] private LayerMask spawnBlockMask;
     [SerializeField] private float trashSpawnHeightOffset = 1f;
 
+    [Header("가스")]
+    [SerializeField] private NetworkPrefabRef rangeGas;
+    
     [Header("소환 범위")]
     [SerializeField] private BoxCollider[] spawnArea;
-    [SerializeField] private int maxUsableSpawnAreas = 6;
 
     [SerializeField] private float rayDistance = 20f;
     [SerializeField] private float checkRadius = 0.2f;
 
-    [Header("Target")]
-    [SerializeField] private NetworkPrefabRef monsterPrefab;
-    [SerializeField] private NetworkPrefabRef woodPrefab;
+    [Header("오염 식물")]
+    [SerializeField] private NetworkPrefabRef plantPrefab;
     [SerializeField] private int spawnPlantCount = 3;
 
     private bool pollutionSpawnedOnce = false;
 
+    private readonly List<NetworkObject> spawnedGases = new List<NetworkObject>();
+    private bool gasCleared = false;
+
     public override void Spawned()
     {
+        Instance = this;
+        
         if (!HasStateAuthority) return;
 
         PollutionSpawnOnce();
         TrashSpawnOnce();
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
     }
 
     public void PollutionSpawnOnce()
@@ -57,7 +73,13 @@ public class PollutionSpawner : NetworkBehaviour
     public void WoodSpawnOnce()
     {
         if (!HasStateAuthority) return;
-        SpawnRandomWood();
+
+        Debug.Log("Wood");
+
+        for (int i = 0; i < spawnPlantCount; i++)
+        {
+            SpawnRandomPlant();
+        }
     }
 
     public void TrashSpawnOnce()
@@ -155,21 +177,78 @@ public class PollutionSpawner : NetworkBehaviour
     }
 
     // 길막용 나무
-    void SpawnRandomWood()
+    void SpawnRandomPlant()
     {
+        if (!HasValidSpawnAreas()) return;
+        if (!plantPrefab.IsValid) return;
+
+        int tryCount = 0;
+        int maxTry = 30;
+
+        while (tryCount < maxTry)
+        {
+            tryCount++;
+
+            BoxCollider selectedArea = GetRandomSpawnArea();
+            if (selectedArea == null) continue;
+
+            Vector3 center = selectedArea.transform.TransformPoint(selectedArea.center);
+            float topY = center.y + (selectedArea.size.y * 0.5f);
+
+            Vector3 randomPoint = GetRandomPointInBox(selectedArea, 0.3f, 0.1f, 0.3f);
+            Vector3 origin = new Vector3(randomPoint.x, topY + trashSpawnHeightOffset, randomPoint.z);
+
+            if (!Physics.Raycast(origin, Vector3.down, out RaycastHit hit, rayDistance, floorMask, QueryTriggerInteraction.Ignore))
+                continue;
+
+            if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Floor"))
+                continue;
+
+            Vector3 spawnPos = hit.point + Vector3.up * 0.15f;
+
+            if (Physics.CheckSphere(spawnPos, 0.2f, spawnBlockMask, QueryTriggerInteraction.Ignore))
+                continue;
+
+            Runner.Spawn(plantPrefab, spawnPos, Quaternion.identity);
+            return;
+        }
+    }
+
+    // 가스 생성
+    public void SpawnGas()
+    {
+        if (!HasStateAuthority) return;
+        if (!rangeGas.IsValid) return;
+
         BoxCollider selectedArea = GetRandomSpawnArea();
         if (selectedArea == null) return;
 
         Vector3 center = selectedArea.transform.TransformPoint(selectedArea.center);
-        float topY = center.y + (selectedArea.size.y * 0.5f);
 
-        Vector3 randomPoint = GetRandomPointInBox(selectedArea, 0.8f, 0.1f, 0.8f);
-        Vector3 origin = new Vector3(randomPoint.x, topY + 1f, randomPoint.z);
+        Debug.Log("Gas");
+        NetworkObject gasObj = Runner.Spawn(rangeGas, center, Quaternion.identity);
 
-        if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, rayDistance, floorMask, QueryTriggerInteraction.Ignore))
+        if (gasObj != null)
+            spawnedGases.Add(gasObj);
+    }
+
+    // 가스 전부 제거 (클리어 됐을 때 맵 깔끔하게)
+    public void DespawnAllGas()
+    {
+        if (!HasStateAuthority) return;
+        if (gasCleared) return;
+
+        gasCleared = true;
+
+        for (int i = spawnedGases.Count - 1; i >= 0; i--)
         {
-            Runner.Spawn(woodPrefab, hit.point, Quaternion.identity);
+            NetworkObject gas = spawnedGases[i];
+
+            if (gas != null)
+                Runner.Despawn(gas);
         }
+
+        spawnedGases.Clear();
     }
 
     // 쓰레기 생성
@@ -229,7 +308,7 @@ public class PollutionSpawner : NetworkBehaviour
 
         if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, rayDistance, floorMask, QueryTriggerInteraction.Ignore))
         {
-            Runner.Spawn(woodPrefab, hit.point, Quaternion.identity);
+            Runner.Spawn(plantPrefab, hit.point, Quaternion.identity);
         }
     }
 
@@ -282,7 +361,7 @@ public class PollutionSpawner : NetworkBehaviour
         if (spawnArea == null || spawnArea.Length == 0)
             return false;
 
-        for (int i = 0; i < Mathf.Min(maxUsableSpawnAreas, spawnArea.Length); i++)
+        for (int i = 0; i < spawnArea.Length; i++)
         {
             if (spawnArea[i] != null)
                 return true;
@@ -296,7 +375,7 @@ public class PollutionSpawner : NetworkBehaviour
         if (spawnArea == null || spawnArea.Length == 0)
             return null;
 
-        int usableCount = Mathf.Min(maxUsableSpawnAreas, spawnArea.Length);
+        int usableCount = spawnArea.Length;
 
         int safety = 20;
         while (safety-- > 0)

@@ -11,20 +11,33 @@ public interface IClearTarget
 
 public class ClearManager : NetworkBehaviour
 {
+    public enum SpawnDangerType
+    {
+        None,       // 그냥 일반 오브젝트 (wood, plant, gas, ...)
+        Weak,       // 약 위험군 (쥐, 바퀴벌레)
+        Monster     // 괴물 (BoxHead, Watcher, Legless)
+    }
+
+    private int weakMonsterSpawnCount = 0;      // 약위험군 출현 횟수
+    private bool clearedAllGas = false;         // 클리어 하고 가스를 삭제한 적이 있는가
+
     public static ClearManager Instance;
 
     [System.Serializable]
     public class RandomAction
     {
-        [Header("Objects")]
-        public GameObject prefab;
+        [Header("오브젝트 / 위치")]
+        public NetworkPrefabRef prefab;
         public Transform spawnPoint;
 
-        [Header("Events")]
+        [Header("실행시킬 함수")]
         public UnityEvent onInvoke;
 
-        [Header("Percent")]
+        [Header("확률")]
         public float weight = 1f;
+
+        [Header("위험성 타입")]
+        public SpawnDangerType dangerType = SpawnDangerType.None;
     }
 
     [System.Serializable]
@@ -38,6 +51,20 @@ public class ClearManager : NetworkBehaviour
 
     public Transform spawnRoot;
     public List<PhaseRandom> phases = new List<PhaseRandom>();
+    [SerializeField] private List<RandomAction> ratSpawnActions = new List<RandomAction>();
+    [SerializeField] private Animator clearDoorAnim;
+
+    [Header("플레이어 근처 생성")]
+    [SerializeField] private NetworkPrefabRef roach;
+    [SerializeField] private NetworkPrefabRef boxHead;
+    [SerializeField] private NetworkPrefabRef watcher;
+    [SerializeField] private NetworkPrefabRef legless;
+    [SerializeField] private LayerMask floorMask;
+    [SerializeField] private float spawnNearPlayerRadius = 2.5f;        // 플레이어 근처 소환할 반경
+    [SerializeField] private float spawnHeightOffset = 2f;
+    [SerializeField] private float groundCheckDistance = 5f;
+    [SerializeField] private float overlapCheckRadius = 0.35f;
+    [SerializeField] private LayerMask spawnBlockMask;
 
     // 로컬 참조용 리스트(디버그/확장용)
     private readonly List<IClearTarget> targets = new List<IClearTarget>();
@@ -67,7 +94,7 @@ public class ClearManager : NetworkBehaviour
     public override void Spawned()
     {
         Instance = this;
-
+        
         if (spawnRoot == null)
             spawnRoot = transform;
     }
@@ -78,6 +105,7 @@ public class ClearManager : NetworkBehaviour
             Instance = null;
     }
 
+    // 청소해야 할것들 등록
     public void Register(IClearTarget target)
     {
         if (target == null) return;
@@ -95,6 +123,7 @@ public class ClearManager : NetworkBehaviour
         HasInitializedTargets = true;
     }
 
+    // 해당 물체를 처리 했을 때 (등록 해제)
     public void Unregister(IClearTarget target)
     {
         if (target == null) return;
@@ -125,14 +154,17 @@ public class ClearManager : NetworkBehaviour
         RemainingTotal = Mathf.Clamp(RemainingTotal - delta, 0f, BaselineTotal);
     }
 
+    // 청소 상태(진행도) 초기화
     public void ResetProgress()
     {
         if (!HasStateAuthority) return;
 
         BaselineTotal = 0f;
         RemainingTotal = 0f;
+        weakMonsterSpawnCount = 0;
         LastStep = 0;
         HasInitializedTargets = false;
+        clearedAllGas = false;
     }
 
     private void Update()
@@ -141,8 +173,19 @@ public class ClearManager : NetworkBehaviour
         if (!HasStateAuthority) return;
 
         CheckStep(ClearRatio01);
+
+        if (!clearedAllGas && ClearPercent >= 100)
+        {
+            clearedAllGas = true;
+
+            if (PollutionSpawner.Instance != null)
+                PollutionSpawner.Instance.DespawnAllGas();
+
+            clearDoorAnim.SetTrigger("ClearDoorOpen");
+        }
     }
 
+    // 10% 단위로 step으로 변환
     void CheckStep(float clearRatio01)
     {
         int step = Mathf.FloorToInt(clearRatio01 * 10f) * 10;
@@ -159,26 +202,305 @@ public class ClearManager : NetworkBehaviour
         LastStep = step;
     }
 
+    // 현재 step에 맞는 PhaseRandom를 찾아 그 중 하나 랜덤 실행
     void RunRandomFromPhase(int step)
     {
+        int phaseTier = GetPhaseTier(step);
+
+        if ((phaseTier == 2 || phaseTier == 3) && weakMonsterSpawnCount >= 2)
+        {
+            ForceSpawnStrongByPhase(phaseTier);
+            return;
+        }
+
         PhaseRandom phase = FindPhase(step);
-        if (phase == null) return;
+        if (phase == null) return; 
         if (phase.actions == null || phase.actions.Count == 0) return;
 
         RandomAction pick = PickWeightedRandom(phase.actions);
         if (pick == null) return;
 
-        if (pick.prefab != null)
-        {
-            Transform point = pick.spawnPoint != null ? pick.spawnPoint : spawnRoot;
-            if (point == null) point = transform;
+        bool hasInvoke = pick.onInvoke != null && pick.onInvoke.GetPersistentEventCount() > 0;
 
-            Instantiate(pick.prefab, point.position, point.rotation);
+        if (hasInvoke)
+        {
+            pick.onInvoke.Invoke();
+            ClassifyAndRecordAction(pick);
+            return;
         }
 
-        pick.onInvoke?.Invoke();
+        if (pick.prefab.IsValid)
+        {
+            SpawnFromActionPoint(pick);
+            ClassifyAndRecordAction(pick);
+        }
     }
 
+    // Action에 있는 위험성 Type을 보고 기록해둠
+    void ClassifyAndRecordAction(RandomAction action)
+    {
+        if (action == null) return;
+        RecordSpawnResult(action.dangerType);
+    }
+
+    // RandomAction에서 설정된 spawnPoint 위치에 프리팹을 스폰 <- spawnPoint, 프리팹 둘다 RandomAction 안에서 지정한거임
+    void SpawnFromActionPoint(RandomAction action)
+    {
+        if (!HasStateAuthority) return;
+        if (action == null) return;
+        if (!action.prefab.IsValid) return;
+
+        Transform point = action.spawnPoint != null ? action.spawnPoint : spawnRoot;
+        if (point == null) point = transform;
+
+        Runner.Spawn(action.prefab, point.position, point.rotation);
+    }
+
+    // 플레이어 근처 소환
+    public void SpawnOneNearPlayer(NetworkPrefabRef prefab)
+    {
+        if (!HasStateAuthority) return;
+        if (!prefab.IsValid) return;
+
+        Transform player = FindAnyPlayerTransform();
+        if (player == null) return;
+
+        if (TryGetSpawnPositionNearTarget(player, out Vector3 spawnPos))
+        {
+            Runner.Spawn(prefab, spawnPos, Quaternion.identity);
+        }
+    }
+
+    // 플레이어 검색
+    Transform FindAnyPlayerTransform()
+    {
+        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+        if (players == null || players.Length == 0)
+            return null;
+
+        // 여러 명이면 한 명 랜덤 선택
+        int index = Random.Range(0, players.Length);
+        return players[index].transform;
+    }
+
+    // 플레이어 근처 바닥 찾기
+    bool TryGetSpawnPositionNearTarget(Transform targetPlayer, out Vector3 spawnPos)
+    {
+        spawnPos = Vector3.zero;
+
+        const int maxTry = 12;
+
+        for (int i = 0; i < maxTry; i++)
+        {
+            Vector2 rand2D = Random.insideUnitCircle * spawnNearPlayerRadius;
+            Vector3 origin = targetPlayer.position + new Vector3(rand2D.x, spawnHeightOffset, rand2D.y);
+
+            if (!Physics.Raycast(origin, Vector3.down, out RaycastHit hit, groundCheckDistance, floorMask, QueryTriggerInteraction.Ignore))
+                continue;
+
+            Vector3 candidate = hit.point + Vector3.up * 0.1f;
+
+            if (Physics.CheckSphere(candidate, overlapCheckRadius, spawnBlockMask, QueryTriggerInteraction.Ignore))
+                continue;
+
+            spawnPos = candidate;
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// 이벤트 용 스폰 함수 모음집
+    /// </summary>
+    // 쥐 만 스폰
+    public void SpawnRatOnly()
+    {
+        if (!HasStateAuthority) return;
+        int count = RollStage1to4Count();
+        Debug.Log("Rat");
+        SpawnFixedRats(count);
+    }
+
+    // 바퀴벌레 만 스폰
+    public void SpawnRoachOnly()
+    {
+        if (!HasStateAuthority) return;
+        int count = RollStage1to4Count();
+
+        // 플레이어 중 1명 선택
+        Transform targetPlayer = FindAnyPlayerTransform();
+        if (targetPlayer == null) return;
+
+        Debug.Log("Roach");
+        SpawnRoachesNearTarget(targetPlayer, count);
+    }
+
+    // 혼합 스폰 (쥐는 무조건 1마리 스폰)
+    public void SpawnMixed()
+    {
+        if (!HasStateAuthority) return;
+        int totalCount = RollStage1to4Count();
+        int ratCount = 1;
+        int roachCount = Mathf.Max(0, totalCount - ratCount);
+
+        Debug.Log("Mix");
+        SpawnFixedRats(ratCount);
+        SpawnRoachesNearPlayer(roachCount);
+    }
+
+    public void SpawnBoxHead()
+    {
+        if (!HasStateAuthority) return;
+        Debug.Log("BoxHead");
+        SpawnOneNearPlayer(boxHead);
+    }
+
+    public void SpawnWatcher()
+    {
+        if (!HasStateAuthority) return;
+        Debug.Log("Watcher");
+        SpawnOneNearPlayer(watcher);
+    }
+
+    public void SpawnLegless()
+    {
+        if (!HasStateAuthority) return;
+        Debug.Log("Legless");
+        SpawnOneNearPlayer(legless);
+    }
+
+    /// <summary>
+    /// 여기까지 모음집
+    /// </summary>
+    
+    // 현재 진행도가 무슨 step인지
+    int GetPhaseTier(int step)
+    {
+        if (step >= 10 && step < 30) return 1;  // 10~30%
+        if (step >= 30 && step < 60) return 2;  // 30~60%
+        if (step >= 60 && step < 90) return 3;  // 60~90%
+        return 0;
+    }
+
+    // 약 위험군 나오는걸 저장해두는 함수
+    void RecordSpawnResult(SpawnDangerType type)
+    {
+        if (type == SpawnDangerType.Weak)
+            weakMonsterSpawnCount++;
+        else if (type == SpawnDangerType.Monster)
+            weakMonsterSpawnCount = 0;
+    }
+
+    // 약 위험군이 2번 나왔을 때 Phase2(30~60%)일때는 박스헤드 스폰, Phase3(60~90%)일때는 괴물들 중 한마리 랜덤 스폰
+    void ForceSpawnStrongByPhase(int phaseTier)
+    {
+        if (phaseTier == 2)
+        {
+            SpawnBoxHead();
+            RecordSpawnResult(SpawnDangerType.Monster);
+        }
+        else if (phaseTier == 3)
+        {
+            int roll = Random.Range(0, 3);
+
+            switch (roll)
+            {
+                case 0:
+                    SpawnBoxHead();
+                    break;
+                case 1:
+                    SpawnWatcher();
+                    break;
+                default:
+                    SpawnLegless();
+                    break;
+            }
+
+            RecordSpawnResult(SpawnDangerType.Monster);
+        }
+    }
+
+    // 쥐 2(60%)~3(40%)마리 계산
+    int RollStage1to4Count()
+    {
+        float countRoll = Random.Range(0f, 100f);
+        return (countRoll < 60f) ? 2 : 3;
+    }
+
+    // 정해진 위치 중 쥐 랜덤 소환
+    void SpawnFixedRats(int count)
+    {
+        if (count <= 0) return;
+
+        List<RandomAction> spawnableRatActions = GetSpawnableActions(ratSpawnActions);
+        if (spawnableRatActions.Count == 0) return;
+
+        for (int i = 0; i < count; i++)
+        {
+            RandomAction ratPick = PickWeightedRandom(spawnableRatActions);
+            if (ratPick != null)
+                SpawnFromActionPoint(ratPick);
+        }
+    }
+
+    // 선택된 플레이어 근처에 count만큼 계산
+    void SpawnRoachesNearTarget(Transform targetPlayer, int count)
+    {
+        if (count <= 0) return;
+        if (targetPlayer == null) return;
+
+        for (int i = 0; i < count; i++)
+        {
+            SpawnOneNearTarget(roach, targetPlayer);
+        }
+    }
+
+    // 위에 함수에 나온 값만큼 스폰
+    void SpawnOneNearTarget(NetworkPrefabRef prefab, Transform targetPlayer)
+    {
+        if (!HasStateAuthority) return;
+        if (!prefab.IsValid) return;
+        if (targetPlayer == null) return;
+
+        if (TryGetSpawnPositionNearTarget(targetPlayer, out Vector3 spawnPos))
+        {
+            Runner.Spawn(prefab, spawnPos, Quaternion.identity);
+        }
+    }
+
+    // 바퀴벌레 플레이어 근처 스폰
+    void SpawnRoachesNearPlayer(int count)
+    {
+        if (count <= 0) return;
+
+        for (int i = 0; i < count; i++)
+        {
+            SpawnOneNearPlayer(roach);
+        }
+    }
+
+    List<RandomAction> GetSpawnableActions(List<RandomAction> source)
+    {
+        List<RandomAction> result = new List<RandomAction>();
+
+        if (source == null) return result;
+
+        for (int i = 0; i < source.Count; i++)
+        {
+            RandomAction a = source[i];
+            if (a == null) continue;
+            if (!a.prefab.IsValid) continue;
+            if (a.spawnPoint == null) continue;
+
+            result.Add(a);
+        }
+
+        return result;
+    }
+
+    // 현재 step에 해당하는 PhaseRandom을 phases 리스트에서 탐색
+    // PhaseRadom에서 랜덤으로 정한 값을 반환 - 뭐가 나올지 계산
     PhaseRandom FindPhase(int step)
     {
         for (int i = 0; i < phases.Count; i++)
@@ -192,6 +514,7 @@ public class ClearManager : NetworkBehaviour
         return null;
     }
 
+
     RandomAction PickWeightedRandom(List<RandomAction> list)
     {
         float total = 0f;
@@ -201,7 +524,8 @@ public class ClearManager : NetworkBehaviour
             var a = list[i];
             if (a == null) continue;
 
-            bool hasSomething = (a.prefab != null) || (a.onInvoke != null);
+            bool hasInvoke = a.onInvoke != null && a.onInvoke.GetPersistentEventCount() > 0;
+            bool hasSomething = a.prefab.IsValid || hasInvoke;
             if (!hasSomething) continue;
 
             total += Mathf.Max(0f, a.weight);
@@ -216,7 +540,8 @@ public class ClearManager : NetworkBehaviour
             var a = list[i];
             if (a == null) continue;
 
-            bool hasSomething = (a.prefab != null) || (a.onInvoke != null);
+            bool hasInvoke = a.onInvoke != null && a.onInvoke.GetPersistentEventCount() > 0;
+            bool hasSomething = a.prefab.IsValid || hasInvoke;
             if (!hasSomething) continue;
 
             float w = Mathf.Max(0f, a.weight);

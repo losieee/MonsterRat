@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -1296490530418355211}
   - component: {fileID: -6225736977602612103}
   - component: {fileID: 307737043142770034}
+  - component: {fileID: 8651831799157369711}
   m_Layer: 19
   m_Name: Spanner
   m_TagString: Item
@@ -176,6 +177,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 307737043142770034}
+  - {fileID: 8651831799157369711}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &307737043142770034
 MonoBehaviour:
@@ -200,3 +202,19 @@ MonoBehaviour:
     Position: 0.01
     Rotation: 0.01
     Scale: 0.01
+--- !u!114 &8651831799157369711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4320711194446946055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd529b396bddc56449cfd00d1e9f69f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ThrowObject
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  notifyCooldown: 0.5

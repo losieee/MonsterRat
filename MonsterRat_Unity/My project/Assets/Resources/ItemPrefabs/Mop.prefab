@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: -5292422849949581837}
   - component: {fileID: -4621979999927343588}
   - component: {fileID: 4354017341028429272}
+  - component: {fileID: 6484138852490145710}
   m_Layer: 19
   m_Name: Mop
   m_TagString: Item
@@ -147,6 +148,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 4354017341028429272}
+  - {fileID: 6484138852490145710}
   ForceRemoteRenderTimeframe: 0
 --- !u!54 &-4621979999927343588
 Rigidbody:
@@ -198,3 +200,19 @@ MonoBehaviour:
     Position: 0.01
     Rotation: 0.01
     Scale: 0.01
+--- !u!114 &6484138852490145710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6727388482724980731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd529b396bddc56449cfd00d1e9f69f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ThrowObject
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  notifyCooldown: 0.5
