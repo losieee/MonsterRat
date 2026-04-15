@@ -115,6 +115,8 @@ namespace SlimUI.ModernMenu
 
             // 불러온 데이터로 UI 및 게임 엔진 설정 업데이트
             ApplySettingsToUIAndEngine();
+
+            Debug.Log("세이브 파일 실제 위치: " + Application.persistentDataPath);
         }
 
         public void Update()

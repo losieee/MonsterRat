@@ -1,6 +1,6 @@
 using UnityEngine;
-
-public class InvenBase : MonoBehaviour
+using Fusion;
+public class InvenBase : NetworkBehaviour
 {
     protected PlayerUIState ui;
     protected PlayerRaycast interactor;

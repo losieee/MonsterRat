@@ -4318,6 +4318,7 @@ GameObject:
   - component: {fileID: 8684198720636296796}
   - component: {fileID: 6864045850872322591}
   - component: {fileID: 9006926379895828441}
+  - component: {fileID: 6803444661598496178}
   m_Layer: 0
   m_Name: PhotonPlayer
   m_TagString: Player
@@ -4535,9 +4536,12 @@ MonoBehaviour:
   - {fileID: 232426663093574612}
   - {fileID: 8912150048000606042}
   - {fileID: 3341103897251282659}
+  - {fileID: 8040449326264660451}
   - {fileID: 6815836651522158606}
   - {fileID: 2335744159757916608}
+  - {fileID: 1586983518938147771}
   - {fileID: 8684198720636296796}
+  - {fileID: 6803444661598496178}
   - {fileID: 1655036304726671577}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &1532325441129902764
@@ -4797,6 +4801,24 @@ MonoBehaviour:
   maxPollution: 100
   checkInterval: 0.2
   sampleHeightOffset: 0.8
+--- !u!114 &6803444661598496178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8289719037013333509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3fab791b00043d4d88acb887b1a9879, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PhotonGun
+  ratDistance: 8
+  ratAimRadius: 0.15
+  ratMask:
+    serializedVersion: 2
+    m_Bits: 256
+  pollutionPreb: {fileID: 5675097730486047039, guid: 34ae9c37f6b33be479c4abbdf54a8ecc, type: 3}
 --- !u!1 &8344781622765872656
 GameObject:
   m_ObjectHideFlags: 0
