@@ -105,6 +105,7 @@ GameObject:
   - component: {fileID: 495951478635275181}
   - component: {fileID: 5934044491469887392}
   - component: {fileID: 123745432199111043}
+  - component: {fileID: -785458281146622164}
   m_Layer: 3
   m_Name: Trash_Can
   m_TagString: Box
@@ -218,6 +219,7 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 4476019461249472427}
   - {fileID: 5934044491469887392}
+  - {fileID: -785458281146622164}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &5934044491469887392
 MonoBehaviour:
@@ -244,3 +246,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClearBox
   weight: 2
+--- !u!114 &-785458281146622164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7496778751280640958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd529b396bddc56449cfd00d1e9f69f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ThrowObject
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  notifyCooldown: 0.5

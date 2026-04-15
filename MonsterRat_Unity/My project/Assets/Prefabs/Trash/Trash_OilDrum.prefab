@@ -105,6 +105,7 @@ GameObject:
   - component: {fileID: 7028332676985894373}
   - component: {fileID: 5538552572496431445}
   - component: {fileID: 4144590657276491491}
+  - component: {fileID: 7044681451478975015}
   m_Layer: 3
   m_Name: Trash_OilDrum
   m_TagString: Box
@@ -218,6 +219,7 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 4607689867302571241}
   - {fileID: 5538552572496431445}
+  - {fileID: 7044681451478975015}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &5538552572496431445
 MonoBehaviour:
@@ -244,3 +246,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClearBox
   weight: 2
+--- !u!114 &7044681451478975015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 375244233207653637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd529b396bddc56449cfd00d1e9f69f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ThrowObject
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  notifyCooldown: 0.5

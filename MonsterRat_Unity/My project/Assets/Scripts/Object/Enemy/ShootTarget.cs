@@ -12,6 +12,7 @@ public class ShootTarget : NetworkBehaviour, IClearTarget
     public GameObject afterGasPrefab;
     public bool snapToGround = true;
     public float groundY = 0f;
+    public ParticleSystem boxheadParticle;
 
     private int hitCount = 0;
     private bool dead = false;
@@ -27,6 +28,9 @@ public class ShootTarget : NetworkBehaviour, IClearTarget
         {
             ClearManager.Instance.Register(this);
             registered = true;
+
+            boxheadParticle.Clear();
+            boxheadParticle.Play();
         }
     }
 

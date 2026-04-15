@@ -126,7 +126,7 @@ MonoBehaviour:
   viewAngle: 90
   eyeHeight: 1.6
   checkInterval: 0.1
-  chaseStopDistance: 1.5
+  chaseStopDistance: 0.5
   throwPointStopDistance: 0.5
   roamingRadius: 8
   roamingStopDistance: 0.3
@@ -135,10 +135,11 @@ MonoBehaviour:
   roamingTryCount: 8
   waitAtThrowPointTime: 3
   gunFreezeTime: 5
-  lifeTime: 20
+  lifeTime: 50
   isMovingParam: IsMoving
   movingThreshold: 0.05
   animDampSpeed: 10
+  repathDistanceThreshold: 0.4
 --- !u!114 &1561097895004343636
 MonoBehaviour:
   m_ObjectHideFlags: 0

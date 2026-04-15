@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5338303908585190700}
   - component: {fileID: 1653001264293820940}
   - component: {fileID: 638239171013142029}
+  - component: {fileID: -8276139293035113362}
   m_Layer: 19
   m_Name: Cube
   m_TagString: Item
@@ -158,7 +159,8 @@ MonoBehaviour:
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
-  NetworkedBehaviours: []
+  NetworkedBehaviours:
+  - {fileID: -8276139293035113362}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &638239171013142029
 MonoBehaviour:
@@ -173,3 +175,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemObject
   itemData: {fileID: 11400000, guid: aec415ce99c968b4db45f5342cc71cef, type: 2}
+--- !u!114 &-8276139293035113362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1326075656448094970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd529b396bddc56449cfd00d1e9f69f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ThrowObject
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  notifyCooldown: 0.5

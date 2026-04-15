@@ -1,9 +1,12 @@
 using UnityEngine;
 using Fusion;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 public class PollutionSpawner : NetworkBehaviour
 {
+    public static PollutionSpawner Instance;
+
     [Header("¾ó·è")]
     [SerializeField] private NetworkPrefabRef pollutionPrefab;
     [SerializeField] private float pollutionThickness = 0.1f;         // ¾ó·è µÎ²²
@@ -39,12 +42,23 @@ public class PollutionSpawner : NetworkBehaviour
 
     private bool pollutionSpawnedOnce = false;
 
+    private readonly List<NetworkObject> spawnedGases = new List<NetworkObject>();
+    private bool gasCleared = false;
+
     public override void Spawned()
     {
+        Instance = this;
+        
         if (!HasStateAuthority) return;
 
         PollutionSpawnOnce();
         TrashSpawnOnce();
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
     }
 
     public void PollutionSpawnOnce()
@@ -59,6 +73,9 @@ public class PollutionSpawner : NetworkBehaviour
     public void WoodSpawnOnce()
     {
         if (!HasStateAuthority) return;
+
+        Debug.Log("Wood");
+
         for (int i = 0; i < spawnPlantCount; i++)
         {
             SpawnRandomPlant();
@@ -208,7 +225,30 @@ public class PollutionSpawner : NetworkBehaviour
 
         Vector3 center = selectedArea.transform.TransformPoint(selectedArea.center);
 
-        Runner.Spawn(rangeGas, center, Quaternion.identity);
+        Debug.Log("Gas");
+        NetworkObject gasObj = Runner.Spawn(rangeGas, center, Quaternion.identity);
+
+        if (gasObj != null)
+            spawnedGases.Add(gasObj);
+    }
+
+    // °¡½º ÀüºÎ Á¦°Å (Å¬¸®¾î µÆÀ» ¶§ ¸Ê ±ò²ûÇÏ°Ô)
+    public void DespawnAllGas()
+    {
+        if (!HasStateAuthority) return;
+        if (gasCleared) return;
+
+        gasCleared = true;
+
+        for (int i = spawnedGases.Count - 1; i >= 0; i--)
+        {
+            NetworkObject gas = spawnedGases[i];
+
+            if (gas != null)
+                Runner.Despawn(gas);
+        }
+
+        spawnedGases.Clear();
     }
 
     // ¾²·¹±â »ý¼º
