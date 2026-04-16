@@ -47,7 +47,7 @@ public class OnlyPresentation : NetworkBehaviour
     public PollutionSpawner polSpawn;
     public List<PhaseRandom> phases = new List<PhaseRandom>();
     [SerializeField] private List<RandomAction> ratSpawnActions = new List<RandomAction>();
-    [SerializeField] private Animator clearDoorAnim;
+    [SerializeField] private NetworkDoor clearDoorAnim;
 
     [Header("플레이어 근처 생성")]
     [SerializeField] private NetworkPrefabRef roach;
@@ -188,7 +188,7 @@ public class OnlyPresentation : NetworkBehaviour
             if (PollutionSpawner.Instance != null)
                 PollutionSpawner.Instance.DespawnAllGas();
 
-            clearDoorAnim.SetTrigger("ClearDoorOpen");
+            clearDoorAnim.TryOpenDoor();
         }
     }
 
