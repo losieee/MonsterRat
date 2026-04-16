@@ -3,13 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Fusion;
 
-public interface IClearTarget
-{
-    float Remain01 { get; }
-    float Weight { get; }
-}
-
-public class ClearManager : NetworkBehaviour
+public class OnlyPresentation : NetworkBehaviour
 {
     public enum SpawnDangerType
     {
@@ -21,7 +15,7 @@ public class ClearManager : NetworkBehaviour
     private int weakMonsterSpawnCount = 0;      // 약위험군 출현 횟수
     private bool clearedAllGas = false;         // 클리어 하고 가스를 삭제한 적이 있는가
 
-    public static ClearManager Instance;
+    public static OnlyPresentation Instance;
 
     [System.Serializable]
     public class RandomAction
@@ -38,17 +32,6 @@ public class ClearManager : NetworkBehaviour
 
         [Header("위험성 타입")]
         public SpawnDangerType dangerType = SpawnDangerType.None;
-
-        [Header("쥐 스폰 개수 설정")]
-        public bool useSpawnCountOptions = false;
-        public List<RatSpawnCountOption> spawnCountOptions = new List<RatSpawnCountOption>();
-    }
-
-    [System.Serializable]
-    public class RatSpawnCountOption
-    {
-        [Min(1)] public int count = 1;
-        [Min(0f)] public float weight = 1f;
     }
 
     [System.Serializable]
@@ -61,6 +44,7 @@ public class ClearManager : NetworkBehaviour
     }
 
     public Transform spawnRoot;
+    public PollutionSpawner polSpawn;
     public List<PhaseRandom> phases = new List<PhaseRandom>();
     [SerializeField] private List<RandomAction> ratSpawnActions = new List<RandomAction>();
     [SerializeField] private Animator clearDoorAnim;
@@ -105,7 +89,7 @@ public class ClearManager : NetworkBehaviour
     public override void Spawned()
     {
         Instance = this;
-        
+
         if (spawnRoot == null)
             spawnRoot = transform;
     }
@@ -115,7 +99,7 @@ public class ClearManager : NetworkBehaviour
         if (Instance == this)
             Instance = null;
     }
-
+    
     // 청소해야 할것들 등록
     public void Register(IClearTarget target)
     {
@@ -183,7 +167,19 @@ public class ClearManager : NetworkBehaviour
         // 단계 이벤트는 권한 쪽에서만 처리
         if (!HasStateAuthority) return;
 
-        CheckStep(ClearRatio01);
+        if (Input.GetKeyDown(KeyCode.F1)) Persent10();
+        if (Input.GetKeyDown(KeyCode.F2)) Persent20();
+        if (Input.GetKeyDown(KeyCode.F3)) Persent30();
+        if (Input.GetKeyDown(KeyCode.F4)) Persent40();
+        if (Input.GetKeyDown(KeyCode.F5)) Persent50();
+        if (Input.GetKeyDown(KeyCode.F6)) Persent60();
+        if (Input.GetKeyDown(KeyCode.F7)) Persent70();
+        if (Input.GetKeyDown(KeyCode.F8)) Persent80();
+        if (Input.GetKeyDown(KeyCode.F9)) Persent90();
+        if (Input.GetKeyDown(KeyCode.F10)) Persent100();
+
+
+        //CheckStep(ClearRatio01);
 
         if (!clearedAllGas && ClearPercent >= 100)
         {
@@ -194,6 +190,73 @@ public class ClearManager : NetworkBehaviour
 
             clearDoorAnim.SetTrigger("ClearDoorOpen");
         }
+    }
+
+    void SetClearPercent(int percent)
+    {
+        if (!HasStateAuthority) return;
+
+        percent = Mathf.Clamp(percent, 0, 100);
+
+        // 아직 초기화 안 됐으면 테스트용 기준값 강제 세팅
+        if (!HasInitializedTargets || BaselineTotal <= 0f)
+        {
+            BaselineTotal = 100f;
+            HasInitializedTargets = true;
+        }
+
+        float clearRatio = percent / 100f;
+        RemainingTotal = BaselineTotal * (1f - clearRatio);
+    }
+
+    void Persent10()
+    {
+        SetClearPercent(10);
+        SpawnRatOnly();
+    }
+    void Persent20()
+    {
+        SetClearPercent(20);
+        SpawnRoachOnly();
+    }
+    void Persent30()
+    {
+        SetClearPercent(30);
+        SpawnMixed();
+    }
+    void Persent40()
+    {
+        SetClearPercent(40);
+        polSpawn.SpawnGas();
+    }
+    void Persent50()
+    {
+        SetClearPercent(50);
+        SpawnBoxHead();
+    }
+    void Persent60()
+    {
+        SetClearPercent(60);
+        polSpawn.WoodSpawnOnce();
+    }
+    void Persent70()
+    {
+        SetClearPercent(70);
+        SpawnLegless();
+    }
+    void Persent80()
+    {
+        SetClearPercent(80);
+        SpawnWatcher();
+    }
+    void Persent90()
+    {
+        SetClearPercent(90);
+        SpawnBoxHead();
+    }
+    void Persent100()
+    {
+        SetClearPercent(100);
     }
 
     // 10% 단위로 step으로 변환
@@ -225,7 +288,7 @@ public class ClearManager : NetworkBehaviour
         }
 
         PhaseRandom phase = FindPhase(step);
-        if (phase == null) return; 
+        if (phase == null) return;
         if (phase.actions == null || phase.actions.Count == 0) return;
 
         RandomAction pick = PickWeightedRandom(phase.actions);
@@ -328,63 +391,36 @@ public class ClearManager : NetworkBehaviour
     public void SpawnRatOnly()
     {
         if (!HasStateAuthority) return;
-
-        List<RandomAction> spawnableRatActions = GetSpawnableActions(ratSpawnActions);
-        if (spawnableRatActions.Count == 0) return;
-
-        RandomAction baseAction = PickWeightedRandom(spawnableRatActions);
-        if (baseAction == null) return;
-
-        int count = PickSpawnCount(baseAction, 2);
-
+        int count = RollStage1to4Count();
         Debug.Log("Rat");
-
-        for (int i = 0; i < count; i++)
-        {
-            RandomAction ratPick = PickWeightedRandom(spawnableRatActions);
-            if (ratPick != null)
-                SpawnFromActionPoint(ratPick);
-        }
+        SpawnFixedRats(count);
     }
 
     // 바퀴벌레 만 스폰
     public void SpawnRoachOnly()
     {
         if (!HasStateAuthority) return;
+        int count = RollStage1to4Count();
 
-        List<RandomAction> spawnableRoachActions = GetSpawnableActions(ratSpawnActions);
-        if (spawnableRoachActions.Count == 0) return;
+        // 플레이어 중 1명 선택
+        Transform targetPlayer = FindAnyPlayerTransform();
+        if (targetPlayer == null) return;
 
-        RandomAction baseAction = PickWeightedRandom(spawnableRoachActions);
-        if (baseAction == null) return;
-
-        int count = PickSpawnCount(baseAction, 1);
-
-        // PollutionSpawner에 있는 바퀴벌레 랜덤 스폰 함수를 불러옴
-        // 왜냐 - 랜덤 범위가 저기 있으니까
-        if (PollutionSpawner.Instance != null)
-        {
-            PollutionSpawner.Instance.SpawnRoachesInRandomAreas(roach, count);
-        }
+        Debug.Log("Roach");
+        SpawnRoachesNearTarget(targetPlayer, count);
     }
 
     // 혼합 스폰 (쥐는 무조건 1마리 스폰)
     public void SpawnMixed()
     {
         if (!HasStateAuthority) return;
-        List<RandomAction> spawnableRoachActions = GetSpawnableActions(ratSpawnActions);
-        if (spawnableRoachActions.Count == 0) return;
-
-        RandomAction baseAction = PickWeightedRandom(spawnableRoachActions);
-        if (baseAction == null) return;
-
+        int totalCount = RollStage1to4Count();
         int ratCount = 1;
-        int roachCount = PickSpawnCount(baseAction, 1);
+        int roachCount = Mathf.Max(0, totalCount - ratCount);
 
         Debug.Log("Mix");
         SpawnFixedRats(ratCount);
-        if (PollutionSpawner.Instance != null)
-            PollutionSpawner.Instance.SpawnRoachesInRandomAreas(roach, roachCount);
+        SpawnRoachesNearPlayer(roachCount);
     }
 
     public void SpawnBoxHead()
@@ -411,7 +447,7 @@ public class ClearManager : NetworkBehaviour
     /// <summary>
     /// 여기까지 모음집
     /// </summary>
-    
+
     // 현재 진행도가 무슨 step인지
     int GetPhaseTier(int step)
     {
@@ -459,43 +495,11 @@ public class ClearManager : NetworkBehaviour
         }
     }
 
-    // 쥐 마릿수 계산
-    int PickSpawnCount(RandomAction action, int defaultCount = 1)
+    // 쥐 2(60%)~3(40%)마리 계산
+    int RollStage1to4Count()
     {
-        if (action == null)
-            return defaultCount;
-
-        if (!action.useSpawnCountOptions || action.spawnCountOptions == null || action.spawnCountOptions.Count == 0)
-            return defaultCount;
-
-        float total = 0f;
-
-        for (int i = 0; i < action.spawnCountOptions.Count; i++)
-        {
-            var option = action.spawnCountOptions[i];
-            if (option == null) continue;
-
-            total += Mathf.Max(0f, option.weight);
-        }
-
-        if (total <= 0f)
-            return defaultCount;
-
-        float r = Random.Range(0f, total);
-
-        for (int i = 0; i < action.spawnCountOptions.Count; i++)
-        {
-            var option = action.spawnCountOptions[i];
-            if (option == null) continue;
-
-            float w = Mathf.Max(0f, option.weight);
-            r -= w;
-
-            if (r < 0f)
-                return Mathf.Max(1, option.count);
-        }
-
-        return defaultCount;
+        float countRoll = Random.Range(0f, 100f);
+        return (countRoll < 60f) ? 2 : 3;
     }
 
     // 정해진 위치 중 쥐 랜덤 소환
@@ -511,6 +515,42 @@ public class ClearManager : NetworkBehaviour
             RandomAction ratPick = PickWeightedRandom(spawnableRatActions);
             if (ratPick != null)
                 SpawnFromActionPoint(ratPick);
+        }
+    }
+
+    // 선택된 플레이어 근처에 count만큼 계산
+    void SpawnRoachesNearTarget(Transform targetPlayer, int count)
+    {
+        if (count <= 0) return;
+        if (targetPlayer == null) return;
+
+        for (int i = 0; i < count; i++)
+        {
+            SpawnOneNearTarget(roach, targetPlayer);
+        }
+    }
+
+    // 위에 함수에 나온 값만큼 스폰
+    void SpawnOneNearTarget(NetworkPrefabRef prefab, Transform targetPlayer)
+    {
+        if (!HasStateAuthority) return;
+        if (!prefab.IsValid) return;
+        if (targetPlayer == null) return;
+
+        if (TryGetSpawnPositionNearTarget(targetPlayer, out Vector3 spawnPos))
+        {
+            Runner.Spawn(prefab, spawnPos, Quaternion.identity);
+        }
+    }
+
+    // 바퀴벌레 플레이어 근처 스폰
+    void SpawnRoachesNearPlayer(int count)
+    {
+        if (count <= 0) return;
+
+        for (int i = 0; i < count; i++)
+        {
+            SpawnOneNearPlayer(roach);
         }
     }
 

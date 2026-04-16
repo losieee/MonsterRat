@@ -33,7 +33,7 @@ public class FootStepNoise : NetworkBehaviour
             MonsterLegless monster = hit.GetComponentInParent<MonsterLegless>();
             if (monster != null)
             {
-                monster.HearRunningSound(transform.position);
+                monster.RPC_HearRunningSound(transform.position);
             }
         }
     }

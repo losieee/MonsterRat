@@ -160,6 +160,14 @@ public class MonsterLegless : NetworkBehaviour
         if (agent == null || !agent.enabled || !agent.isOnNavMesh)
             return;
 
+        if (currentTarget == null && HasDetectedPlayer)
+        {
+            HasDetectedPlayer = false;
+
+            if (!IsBusy && !overrideInvestigation && !investigatingFootstep)
+                StartRoaming();
+        }
+
         // 박스, 총 소리 중 플레이어 추적 금지
         if (overrideInvestigation)
         {
@@ -168,7 +176,6 @@ public class MonsterLegless : NetworkBehaviour
             return;
         }
 
-        // 플레이어 추적이 발소리보다 우선
         // 플레이어 추적이 발소리보다 우선
         if (currentTarget != null && HasDetectedPlayer && !IsBusy)
         {
@@ -243,7 +250,7 @@ public class MonsterLegless : NetworkBehaviour
             else
             {
                 // 현재 타겟이 사라졌으면 해제
-                if (currentTarget != null && !currentTarget.gameObject.activeInHierarchy)
+                if (currentTarget == null || !currentTarget.gameObject.activeInHierarchy)
                 {
                     currentTarget = null;
                     HasDetectedPlayer = false;

@@ -35,10 +35,10 @@ public class PhotonPollutionControl : NetworkBehaviour, IClearTarget
 
     IEnumerator RegisterWhenManagerReady()
     {
-        while (ClearManager.Instance == null)
+        while (OnlyPresentation.Instance == null)
             yield return null;
 
-        ClearManager.Instance.Register(this);
+        OnlyPresentation.Instance.Register(this);
     }
 
     IEnumerator RefreshCollider()
@@ -109,7 +109,7 @@ public class PhotonPollutionControl : NetworkBehaviour, IClearTarget
 
     public override void Despawned(NetworkRunner runner, bool hasState)
     {
-        if (ClearManager.Instance != null)
-            ClearManager.Instance.Unregister(this);
+        if (OnlyPresentation.Instance != null)
+            OnlyPresentation.Instance.Unregister(this);
     }
 }

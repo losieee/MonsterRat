@@ -232,6 +232,68 @@ public class PollutionSpawner : NetworkBehaviour
             spawnedGases.Add(gasObj);
     }
 
+    // ¹ÙÄû¹ú·¹ ·£´ý ½ºÆù
+    public void SpawnRoachesInRandomAreas(NetworkPrefabRef roachPrefab, int count)
+    {
+        if (!HasStateAuthority) return;
+        if (!roachPrefab.IsValid) return;
+        if (!HasValidSpawnAreas()) return;
+        if (count <= 0) return;
+
+        List<BoxCollider> usableAreas = new List<BoxCollider>();
+        for (int i = 0; i < spawnArea.Length; i++)
+        {
+            if (spawnArea[i] != null)
+                usableAreas.Add(spawnArea[i]);
+        }
+
+        if (usableAreas.Count == 0) return;
+
+        // count°¡ 2~3ÀÌ¶ó¸é 1~count°³ÀÇ ¹üÀ§¸¦ ·£´ý ¼±ÅÃ
+        int areaPickCount = Mathf.Min(Random.Range(1, count + 1), usableAreas.Count);
+
+        // ¹üÀ§ ¼¯±â
+        for (int i = 0; i < usableAreas.Count; i++)
+        {
+            int swap = Random.Range(i, usableAreas.Count);
+            (usableAreas[i], usableAreas[swap]) = (usableAreas[swap], usableAreas[i]);
+        }
+
+        List<BoxCollider> selectedAreas = usableAreas.GetRange(0, areaPickCount);
+
+        int spawned = 0;
+        int tryCount = 0;
+        int maxTry = count * 20;
+
+        while (spawned < count && tryCount < maxTry)
+        {
+            tryCount++;
+
+            BoxCollider selectedArea = selectedAreas[Random.Range(0, selectedAreas.Count)];
+            if (selectedArea == null) continue;
+
+            Vector3 center = selectedArea.transform.TransformPoint(selectedArea.center);
+            float topY = center.y + (selectedArea.size.y * 0.5f);
+
+            Vector3 randomPoint = GetRandomPointInBox(selectedArea, 0.3f, 0.1f, 0.3f);
+            Vector3 origin = new Vector3(randomPoint.x, topY + trashSpawnHeightOffset, randomPoint.z);
+
+            if (!Physics.Raycast(origin, Vector3.down, out RaycastHit hit, rayDistance, floorMask, QueryTriggerInteraction.Ignore))
+                continue;
+
+            if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Floor"))
+                continue;
+
+            Vector3 spawnPos = hit.point + Vector3.up * 0.1f;
+
+            if (Physics.CheckSphere(spawnPos, 0.2f, spawnBlockMask, QueryTriggerInteraction.Ignore))
+                continue;
+
+            Runner.Spawn(roachPrefab, spawnPos, Quaternion.identity);
+            spawned++;
+        }
+    }
+
     // °¡½º ÀüºÎ Á¦°Å (Å¬¸®¾î µÆÀ» ¶§ ¸Ê ±ò²ûÇÏ°Ô)
     public void DespawnAllGas()
     {

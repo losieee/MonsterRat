@@ -20,9 +20,9 @@ public class ClearBox : MonoBehaviour, IClearTarget
     {
         while (!_registered)
         {
-            if (ClearManager.Instance != null)
+            if (OnlyPresentation.Instance != null)
             {
-                ClearManager.Instance.Register(this);
+                OnlyPresentation.Instance.Register(this);
                 _registered = true;
                 yield break;
             }
@@ -33,9 +33,9 @@ public class ClearBox : MonoBehaviour, IClearTarget
 
     void OnDestroy()
     {
-        if (_registered && ClearManager.Instance != null)
+        if (_registered && OnlyPresentation.Instance != null)
         {
-            ClearManager.Instance.Unregister(this);
+            OnlyPresentation.Instance.Unregister(this);
         }
     }
 }
