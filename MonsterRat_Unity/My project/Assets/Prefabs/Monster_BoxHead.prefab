@@ -5149,11 +5149,10 @@ GameObject:
   - component: {fileID: 3341567723180898337}
   - component: {fileID: 4414426380110893250}
   - component: {fileID: 2486666940014658729}
-  - component: {fileID: 1595615183113308168}
-  - component: {fileID: 3049130720955962515}
   - component: {fileID: 3963035350125805560}
   - component: {fileID: 1485993529084491086}
   - component: {fileID: -5581082855868526834}
+  - component: {fileID: 7776480702986218719}
   m_Layer: 13
   m_Name: Monster_BoxHead
   m_TagString: Untagged
@@ -5193,7 +5192,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: e4e0de3811000a644bea21603c9b9a63, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
@@ -5219,49 +5218,15 @@ MonoBehaviour:
   destroyOnDeath: 1
   remainPrefab:
     RawGuidValue: 34ae9c37f6b33be479c4abbdf54a8ecc
-  afterGasPrefab: {fileID: 7829667922064861134, guid: c29a50f290bdaf640af0bedf9792dd78, type: 3}
+  afterGasPrefab:
+    RawGuidValue: aafe4e8b76f62064ab1230c6afdafc81
   snapToGround: 1
-  groundY: 0
+  rayStartHeight: 2
+  rayDistance: 10
+  floorMask:
+    serializedVersion: 2
+    m_Bits: 128
   boxheadParticle: {fileID: 1968335039725316984}
---- !u!136 &1595615183113308168
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2497897307516042923}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.29
-  m_Height: 1.75
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.9, z: -0.07}
---- !u!114 &3049130720955962515
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2497897307516042923}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6bad9e65ed77e5942b6aeef966bda895, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GasZone
-  gas: {fileID: 660262710706257594}
-  checkRadius: 1.5
-  minParticleCount: 10
-  exposurePerSec: 10
 --- !u!114 &3963035350125805560
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5318,6 +5283,27 @@ MonoBehaviour:
   SyncParent: 0
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 0
+--- !u!65 &7776480702986218719
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2497897307516042923}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.6453581, y: 1.6635516, z: 0.49227047}
+  m_Center: {x: 0.0028027147, y: 0.86519563, z: -0.09137964}
 --- !u!1 &2677279934275796338
 GameObject:
   m_ObjectHideFlags: 0

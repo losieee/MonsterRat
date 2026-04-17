@@ -47,7 +47,7 @@ public class PhotonRatController : NetworkBehaviour
         agent.acceleration = 20f;
 
         if (hitbox != null)
-            hitbox.gameObject.SetActive(false);
+            hitbox.enabled = false;
     }
 
     public override void Spawned()
@@ -67,9 +67,10 @@ public class PhotonRatController : NetworkBehaviour
         
         if (IsDead || !HasStateAuthority) return;
 
+        FindPlayer();
+
         if (targetPlayer == null)
         {
-            FindPlayer();
             SetWalking(false);
             return;
         }
@@ -185,19 +186,50 @@ public class PhotonRatController : NetworkBehaviour
     IEnumerator ActivateHitbox()
     {
         isAttacking = true;
-        yield return new WaitForSeconds(attackAnimDuration);
+
+        if (hitbox != null)
+        {
+            hitbox.enabled = true;
+            CheckHitboxNow();
+        }
+
+        yield return new WaitForSeconds(hitboxActiveTime);
+
+        if(hitbox != null)
+            hitbox.enabled = false;
+
+        yield return new WaitForSeconds(attackAnimDuration - hitboxActiveTime);
         attackCooldownTimer = attackCooldown;
         isAttacking = false;
     }
 
+    // 가장 가까운 플레이어 찾기
     void FindPlayer()
     {
-        GameObject p = GameObject.FindGameObjectWithTag(playerTag);
-        if (p != null)
+        GameObject[] players = GameObject.FindGameObjectsWithTag(playerTag);
+
+        Transform closest = null;
+        CapsuleCollider closestCapsule = null;
+        float closestSqrDist = Mathf.Infinity;
+
+        Vector3 myPos = transform.position;
+
+        foreach (GameObject p in players)
         {
-            targetPlayer = p.transform;
-            playerCapsule = p.GetComponent<CapsuleCollider>();
+            if (p == null || !p.activeInHierarchy)
+                continue;
+
+            float sqrDist = (p.transform.position - myPos).sqrMagnitude;
+            if (sqrDist < closestSqrDist)
+            {
+                closestSqrDist = sqrDist;
+                closest = p.transform;
+                closestCapsule = p.GetComponent<CapsuleCollider>();
+            }
         }
+
+        targetPlayer = closest;
+        playerCapsule = closestCapsule;
     }
     float GetSurfaceDistanceToPlayer()
     {
@@ -215,6 +247,28 @@ public class PhotonRatController : NetworkBehaviour
         float ratRadius = agent != null ? agent.radius : 0.1f;
 
         return Mathf.Max(0f, centerDistance - playerRadius - ratRadius);
+    }
+
+    // 플레이어가 Hitbox 안에 있는지 확인 
+    void CheckHitboxNow()
+    {
+        if (hitbox == null) return;
+
+        Vector3 center = hitbox.bounds.center;
+        Vector3 halfExtents = hitbox.bounds.extents;
+        Quaternion rotation = hitbox.transform.rotation;
+
+        Collider[] hits = Physics.OverlapBox(center, halfExtents, rotation);
+
+        foreach (Collider col in hits)
+        {
+            HandOverDamage receiver = col.GetComponent<HandOverDamage>();
+            if (receiver != null)
+            {
+                receiver.Rpc_TakeRatHit(attackDamage);
+                break;
+            }
+        }
     }
 
     void MoveToPlayerEdge()

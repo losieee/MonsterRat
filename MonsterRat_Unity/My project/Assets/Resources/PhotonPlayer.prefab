@@ -2608,6 +2608,8 @@ GameObject:
   - component: {fileID: 6059536017928890074}
   - component: {fileID: 2528429686540772388}
   - component: {fileID: 9181909794059883418}
+  - component: {fileID: 3387480921863929230}
+  - component: {fileID: 3070064955132292280}
   m_Layer: 11
   m_Name: Camera
   m_TagString: Untagged
@@ -2733,6 +2735,40 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5460540949458167441}
   m_Enabled: 1
+--- !u!95 &3387480921863929230
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5460540949458167441}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ec4e84af75484c14ab6c4ab4363e53be, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &3070064955132292280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5460540949458167441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e0f0fe041d3b324ba9501dd96c02313, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHitAnim
 --- !u!1 &5679478958350902882
 GameObject:
   m_ObjectHideFlags: 0
@@ -4320,6 +4356,8 @@ GameObject:
   - component: {fileID: 9006926379895828441}
   - component: {fileID: 6803444661598496178}
   - component: {fileID: 4127117641017231365}
+  - component: {fileID: 3609349469311375477}
+  - component: {fileID: 397505550945006201}
   m_Layer: 11
   m_Name: PhotonPlayer
   m_TagString: Player
@@ -4544,6 +4582,7 @@ MonoBehaviour:
   - {fileID: 8684198720636296796}
   - {fileID: 6803444661598496178}
   - {fileID: 4127117641017231365}
+  - {fileID: 3609349469311375477}
   - {fileID: 1655036304726671577}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &1532325441129902764
@@ -4605,6 +4644,13 @@ MonoBehaviour:
   runSpeed: 6
   mouseSensitivity: 2
   myCamObj: {fileID: 1854414265921017584}
+  footSteps:
+  - {fileID: 8300000, guid: c11e9ef8d1e7d1e4e850bd1e3bdb7af0, type: 3}
+  - {fileID: 8300000, guid: 11c32f3d467f07c459e867ea135f241c, type: 3}
+  - {fileID: 8300000, guid: 21e759f95a457254ba1a40b1da456fc4, type: 3}
+  footstepAudioSource: {fileID: 5053122888985684548}
+  walkStepInterval: 0.5
+  runStepInterval: 0.3
 --- !u!114 &232426663093574612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4700,6 +4746,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   cleanDistance: 3
+  source: {fileID: 5053122888985684548}
+  mopSound: {fileID: 8300000, guid: 56c77cc603c176641935c1447b008f66, type: 3}
   coolTime: 1
 --- !u!114 &6815836651522158606
 MonoBehaviour:
@@ -4761,6 +4809,8 @@ MonoBehaviour:
   distance: 2
   fixTime: 5
   fixGauge: {fileID: 7955681951448313746}
+  source: {fileID: 5053122888985684548}
+  spannerSound: {fileID: 8300000, guid: 113f6c02a30e6524692a79b07d74249f, type: 3}
 --- !u!114 &8684198720636296796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4815,11 +4865,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3fab791b00043d4d88acb887b1a9879, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhotonGun
-  ratDistance: 8
+  ratDistance: 30
   ratAimRadius: 0.15
   ratMask:
     serializedVersion: 2
     m_Bits: 256
+  boxHeadMask:
+    serializedVersion: 2
+    m_Bits: 8192
   pollutionPreb: {fileID: 5675097730486047039, guid: 34ae9c37f6b33be479c4abbdf54a8ecc, type: 3}
 --- !u!114 &4127117641017231365
 MonoBehaviour:
@@ -4838,6 +4891,31 @@ MonoBehaviour:
   gasLayerMask:
     serializedVersion: 2
     m_Bits: 512
+--- !u!114 &3609349469311375477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8289719037013333509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42f61936cf2fec74483992c5716676e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HandOverDamage
+--- !u!114 &397505550945006201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8289719037013333509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e8fae0298f11cd479e5b87dc8ac1760, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerFootStepType
+  defaultType: 0
 --- !u!1 &8344781622765872656
 GameObject:
   m_ObjectHideFlags: 0

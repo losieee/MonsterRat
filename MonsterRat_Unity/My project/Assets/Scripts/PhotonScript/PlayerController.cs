@@ -21,16 +21,26 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
     [Header("연결 요소")]
     public GameObject myCamObj;
 
+    [Header("발소리")]
+    public AudioClip[] footSteps;
+    public AudioSource footstepAudioSource;
+    public float walkStepInterval = 0.5f;
+    public float runStepInterval = 0.3f;
+
     // 다시 익숙한 Rigidbody로 돌아옵니다!
     private Rigidbody rb;
     private float pitch = 0f;
     private float yaw = 0f;
     private Animator animator;
+    private float footstepTimer = 0f;
+    private PlayerFootStepType footStepType;
 
     public override void Spawned()
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponentInChildren<Animator>();
+        footstepAudioSource = GetComponent<AudioSource>();
+        footStepType = GetComponent<PlayerFootStepType>();
 
         if (HasInputAuthority)
         {
@@ -112,6 +122,72 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
                 animator.SetFloat("MoveX", input.moveInput.x * animMultiplier, 0.1f, Runner.DeltaTime);
                 animator.SetFloat("MoveY", input.moveInput.y * animMultiplier, 0.1f, Runner.DeltaTime);
             }
+
+            // 발소리
+            if (HasInputAuthority)
+            {
+                HandleFootstep(input, moveDir);
+            }
+        }
+    }
+
+    void HandleFootstep(MyNetworkInput input, Vector3 moveDir)
+    {
+        if (footstepAudioSource == null)
+            return;
+
+        bool isMoving = input.moveInput.sqrMagnitude > 0.01f && moveDir.sqrMagnitude > 0.001f;
+
+        if (!isMoving)
+        {
+            footstepTimer = 0f;
+            return;
+        }
+
+        footstepTimer -= Runner.DeltaTime;
+
+        float interval = input.isRunning ? runStepInterval : walkStepInterval;
+
+        if (footstepTimer <= 0f)
+        {
+            PlayFootstep();
+            footstepTimer = interval;
+        }
+    }
+
+    void PlayFootstep()
+    {
+        if (footstepAudioSource == null || footSteps == null || footSteps.Length == 0)
+            return;
+
+        AudioClip clip = null;
+
+        if (footStepType != null)
+        {
+            switch (footStepType.CurrentRangeType)
+            {
+                case FootStepRangeType.Metal:
+                    if (footSteps.Length > 1) clip = footSteps[1];
+                    break;
+
+                case FootStepRangeType.Water:
+                    if (footSteps.Length > 2) clip = footSteps[2];
+                    break;
+
+                case FootStepRangeType.Stone:
+                default:
+                    if (footSteps.Length > 0) clip = footSteps[0];
+                    break;
+            }
+        }
+        else
+        {
+            clip = footSteps[0];
+        }
+
+        if (clip != null)
+        {
+            footstepAudioSource.PlayOneShot(clip);
         }
     }
 

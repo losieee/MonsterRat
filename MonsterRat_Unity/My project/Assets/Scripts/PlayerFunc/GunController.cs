@@ -31,7 +31,7 @@ public class GunController : InvenBase
         if (TryShootRat()) return;
         if (TryShootRoach()) return;
         if (TryShootLegless()) return;
-        if (TryShootBoxHead()) return;
+        //if (TryShootBoxHead()) return;
         TrySpawnPollutionAtHit();
     }
 
@@ -140,7 +140,7 @@ public class GunController : InvenBase
     }
 
     // 박스헤드
-    bool TryShootBoxHead()
+    /*bool TryShootBoxHead()
     {
         if (interactor == null) return false;
 
@@ -155,7 +155,7 @@ public class GunController : InvenBase
         }
 
         return false;
-    }
+    }*/
 
     // 쥐 말고 다른곳 맞았을 때 프리팹 소환
     bool TrySpawnPollutionAtHit()

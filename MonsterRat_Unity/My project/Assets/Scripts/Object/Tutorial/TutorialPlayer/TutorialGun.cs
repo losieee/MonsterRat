@@ -22,8 +22,8 @@ public class TutorialGun : TutorialInvenBase
 
         if (TryShootRat()) return;
         if (TryShootRoach()) return;
-        if (TryShootTarget()) return;
-        TrySpawnPollutionAtHit();
+        //if (TryShootTarget()) return;
+        //TrySpawnPollutionAtHit();
     }
 
     // 바퀴 잡기
@@ -113,7 +113,7 @@ public class TutorialGun : TutorialInvenBase
     }
 
     // 꽃, 좀비, 몬스터 등등
-    bool TryShootTarget()
+    /*bool TryShootTarget()
     {
         if (interactor == null) return false;
 
@@ -128,7 +128,7 @@ public class TutorialGun : TutorialInvenBase
         }
 
         return false;
-    }
+    }*/
 
     // 쥐 말고 다른곳 맞았을 때 프리팹 소환
     bool TrySpawnPollutionAtHit()

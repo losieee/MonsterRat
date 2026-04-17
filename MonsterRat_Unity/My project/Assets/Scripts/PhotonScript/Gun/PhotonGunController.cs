@@ -1,6 +1,5 @@
 using Fusion;
 using UnityEngine;
-using Fusion;
 
 public class PhotonGun : InvenBase
 {
@@ -9,16 +8,18 @@ public class PhotonGun : InvenBase
     public float ratDistance = 8f;
     public float ratAimRadius = 0.15f;
     public LayerMask ratMask;
-    public GameObject pollutionPreb;  
+    public LayerMask boxHeadMask;
+    public GameObject pollutionPreb;
 
     public override void Tick()
     {
         if (!Input.GetMouseButtonDown(0)) return;
 
         if (TryShootRat()) return;
+        if (TryShootBoxHead()) return;
 
         // 쥐가 아닌 벽/바닥을 맞췄을 때
-        TrySpawnPollutionAtHit();
+        //TrySpawnPollutionAtHit();
     }
 
     bool TryShootRat()
@@ -47,8 +48,41 @@ public class PhotonGun : InvenBase
                 interactor.ForceSetLookTarget(rat.gameObject);
 
                 // 이거 튜토리얼이라서 일단 막았어요
-               // var tm = Object.FindAnyObjectByType<TutorialManager>();
-               // if (tm != null) tm.NotifyRatKilled(rat.gameObject);
+                // var tm = Object.FindAnyObjectByType<TutorialManager>();
+                // if (tm != null) tm.NotifyRatKilled(rat.gameObject);
+
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool TryShootBoxHead()
+    {
+        if (interactor == null) return false;
+
+        // 레이캐스트를 쏴서 박스헤드를 찾음
+        if (interactor.SphereCast(ratAimRadius, ratDistance, boxHeadMask, out RaycastHit hit))
+        {
+            GameObject hitObj = hit.collider.gameObject;
+
+            // 멀티플레이용 ShootTarget 가져오기
+            ShootTarget boxHead = hitObj.GetComponentInParent<ShootTarget>();
+            if (boxHead == null)
+            {
+                // 최상단 부모에서 한 번 더 검사
+                boxHead = hitObj.transform.root.GetComponent<ShootTarget>();
+            }
+
+            if (boxHead != null)
+            {
+                boxHead.ApplyHit();
+
+                interactor.ForceSetLookTarget(boxHead.gameObject);
+
+                // 이거 튜토리얼이라서 일단 막았어요
+                // var tm = Object.FindAnyObjectByType<TutorialManager>();
+                // if (tm != null) tm.NotifyRatKilled(rat.gameObject);
 
                 return true;
             }

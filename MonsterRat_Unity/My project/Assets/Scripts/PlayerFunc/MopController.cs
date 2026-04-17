@@ -8,6 +8,9 @@ public class MopController : InvenBase
     [SerializeField] private LayerMask pollutionMask;
     [SerializeField] private float cleanDistance = 3f;
 
+    [SerializeField] private AudioSource source;
+    [SerializeField] private AudioClip mopSound;
+
     public float coolTime = 1f;
     bool canClean = true;
 
@@ -33,6 +36,10 @@ public class MopController : InvenBase
             if (multiPol != null)
             {
                 multiPol.CleanOnce();
+                // 임시 사운드
+                source.clip = mopSound;
+                source.Play();
+
                 StartCoroutine(Cooldown());
                 return;
             }

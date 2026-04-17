@@ -1,6 +1,5 @@
 using Fusion;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ShootTarget : NetworkBehaviour, IClearTarget
@@ -9,9 +8,11 @@ public class ShootTarget : NetworkBehaviour, IClearTarget
     public float weight = 1f;
     public bool destroyOnDeath = true;
     public NetworkPrefabRef remainPrefab;
-    public GameObject afterGasPrefab;
+    public NetworkPrefabRef afterGasPrefab;
     public bool snapToGround = true;
-    public float groundY = 0f;
+    public float rayStartHeight = 2f;
+    public float rayDistance = 10f;
+    public LayerMask floorMask;
     public ParticleSystem boxheadParticle;
 
     private int hitCount = 0;
@@ -29,8 +30,7 @@ public class ShootTarget : NetworkBehaviour, IClearTarget
             ClearManager.Instance.Register(this);
             registered = true;
 
-            boxheadParticle.Clear();
-            boxheadParticle.Play();
+            StartCoroutine(ParticleClear());
         }
     }
 
@@ -61,19 +61,27 @@ public class ShootTarget : NetworkBehaviour, IClearTarget
         deathHandled = true;
         dead = true;
 
-        Vector3 pos = transform.position;
+        Vector3 spawnPos = transform.position;
+
         if (snapToGround)
-            pos.y = groundY;
+        {
+            Vector3 rayOrigin = transform.position + Vector3.up * rayStartHeight;
+
+            if (Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, rayDistance, floorMask, QueryTriggerInteraction.Ignore))
+            {
+                spawnPos = hit.point;
+            }
+        }
 
         if (remainPrefab.IsValid)
         {
-            Runner.Spawn(remainPrefab, pos, transform.rotation);
+            Runner.Spawn(remainPrefab, spawnPos, transform.rotation);
         }
 
         // 가스 연출은 로컬 이펙트면 권한 쪽에서만 1회 생성
         if (afterGasPrefab != null)
         {
-            Instantiate(afterGasPrefab, transform.position, Quaternion.identity);
+            Runner.Spawn(afterGasPrefab, transform.position, Quaternion.identity);
         }
 
         if (destroyOnDeath)
@@ -83,5 +91,12 @@ public class ShootTarget : NetworkBehaviour, IClearTarget
             else
                 gameObject.SetActive(false);
         }
+    }
+
+    IEnumerator ParticleClear()
+    {
+        yield return null;
+        boxheadParticle.Clear();
+        boxheadParticle.Play();
     }
 }

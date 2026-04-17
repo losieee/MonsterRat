@@ -130,13 +130,15 @@ GameObject:
   m_Component:
   - component: {fileID: 8223650824178301363}
   - component: {fileID: 3361789315333049335}
+  - component: {fileID: 3402594453968346714}
+  - component: {fileID: 1696267609266043687}
   m_Layer: 8
   m_Name: GameObject
   m_TagString: RatHitBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8223650824178301363
 Transform:
   m_ObjectHideFlags: 0
@@ -173,6 +175,42 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3402594453968346714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1465136802573517104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
+  SortKey: 4158142173
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 1696267609266043687}
+  ForceRemoteRenderTimeframe: 0
+--- !u!114 &1696267609266043687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1465136802573517104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
+  _stateAuthorityChangeErrorCorrectionDelta: 0
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0
 --- !u!1 &1687451708833516123
 GameObject:
   m_ObjectHideFlags: 0
@@ -525,7 +563,8 @@ MonoBehaviour:
   SortKey: 3879744003
   ObjectInterest: 1
   Flags: 786433
-  NestedObjects: []
+  NestedObjects:
+  - {fileID: 3402594453968346714}
   NetworkedBehaviours:
   - {fileID: 2531709221363825622}
   - {fileID: 6470702476836830005}
@@ -544,10 +583,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhotonRatController
   playerTag: Player
-  stopDistance: 0.7
+  stopDistance: 0.1
   repathInterval: 0.2
   hitbox: {fileID: 3361789315333049335}
-  attackDistance: 1
+  attackDistance: 0.5
   hitboxActiveTime: 0.1
   attackCooldown: 1
   attackDamage: 15

@@ -8,6 +8,8 @@ public class PhotonSpanner : InvenBase
     public float distance = 2f;
     public float fixTime = 5f;
     public Image fixGauge; // 여기에 민기님이 넣은 흰원 이미지 넣으면 될 듯 합니다.
+    public AudioSource source;
+    public AudioClip spannerSound;
 
     private float currentTime;
 
@@ -32,6 +34,17 @@ public class PhotonSpanner : InvenBase
                     fixGauge.gameObject.SetActive(true);
 
                 currentTime += Time.deltaTime;
+
+                if (source != null && spannerSound != null)
+                {
+                    if (source.clip != spannerSound)
+                        source.clip = spannerSound;
+
+                    source.loop = true;
+
+                    if (!source.isPlaying)
+                        source.Play();
+                }
 
                 if (currentTime <= fixTime)
                 {
@@ -63,6 +76,11 @@ public class PhotonSpanner : InvenBase
         {
             fixGauge.fillAmount = 0f;
             fixGauge.gameObject.SetActive(false); // UI 숨김
+
+            if (source != null && source.isPlaying)
+            {
+                source.Stop();
+            }
         }
     }
 }
