@@ -100,11 +100,12 @@ public class PhotonSpanner : InvenBase
         {
             fixGauge.fillAmount = 0f;
             fixGauge.gameObject.SetActive(false); // UI ¼û±è
+        }
 
-            if (source != null && source.isPlaying)
-            {
-                source.Stop();
-            }
+        if (isRepairingSoundPlaying)
+        {
+            Rpc_StopSpannerSound();
+            isRepairingSoundPlaying = false;
         }
     }
 }
