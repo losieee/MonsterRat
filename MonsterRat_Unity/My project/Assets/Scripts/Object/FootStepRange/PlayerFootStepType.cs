@@ -1,38 +1,41 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerFootStepType : MonoBehaviour
 {
     public FootStepRangeType defaultType = FootStepRangeType.Stone;
 
-    private readonly List<FootStepType> Range = new List<FootStepType>();
+    [Header("Ground Check")]
+    public Transform rayOrigin;
+    public float rayStartHeight = 0.2f;
+    public float rayDistance = 1.5f;
+    public LayerMask groundMask = ~0;
 
     public FootStepRangeType CurrentRangeType
     {
         get
         {
-            if (Range.Count > 0 && Range[Range.Count - 1] != null)
-                return Range[Range.Count - 1].footStepType;
+            Vector3 origin = rayOrigin != null
+                ? rayOrigin.position + Vector3.up * rayStartHeight
+                : transform.position + Vector3.up * rayStartHeight;
+
+            if (Physics.Raycast(origin, Vector3.down, out RaycastHit hit, rayDistance, groundMask, QueryTriggerInteraction.Ignore))
+            {
+                FootStepType type = hit.collider.GetComponent<FootStepType>();
+                if (type != null)
+                    return type.footStepType;
+            }
 
             return defaultType;
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnDrawGizmosSelected()
     {
-        FootStepType type = other.GetComponent<FootStepType>();
-        if (type != null && !Range.Contains(type))
-        {
-            Range.Add(type);
-        }
-    }
+        Vector3 origin = rayOrigin != null
+            ? rayOrigin.position + Vector3.up * rayStartHeight
+            : transform.position + Vector3.up * rayStartHeight;
 
-    private void OnTriggerExit(Collider other)
-    {
-        FootStepType type = other.GetComponent<FootStepType>();
-        if (type != null)
-        {
-            Range.Remove(type);
-        }
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(origin, origin + Vector3.down * rayDistance);
     }
 }

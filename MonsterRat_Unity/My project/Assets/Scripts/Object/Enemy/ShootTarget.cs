@@ -25,11 +25,14 @@ public class ShootTarget : NetworkBehaviour, IClearTarget
 
     public override void Spawned()
     {
+        Physics.SyncTransforms();       // <-- 박스헤드 자체 transform은 생성 됐는데
+                                        // 콜라이더는 이 위치를 못따라와서 이상한곳에 생성 (이거땜에 게스트가 안맞았던거임)
+                                        // 진짜 매우매우매우매우 중요한 부분 별 5개 ★★★★★
+
         if (ClearManager.Instance != null)
         {
             ClearManager.Instance.Register(this);
             registered = true;
-
             StartCoroutine(ParticleClear());
         }
     }
@@ -44,9 +47,9 @@ public class ShootTarget : NetworkBehaviour, IClearTarget
     }
 
     // 총에서 호출할 함수
-    public void ApplyHit()
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void Rpc_RequestHit()
     {
-        if (!HasStateAuthority) return;
         if (dead) return;
 
         hitCount++;
@@ -79,7 +82,7 @@ public class ShootTarget : NetworkBehaviour, IClearTarget
         }
 
         // 가스 연출은 로컬 이펙트면 권한 쪽에서만 1회 생성
-        if (afterGasPrefab != null)
+        if (afterGasPrefab.IsValid)
         {
             Runner.Spawn(afterGasPrefab, transform.position, Quaternion.identity);
         }

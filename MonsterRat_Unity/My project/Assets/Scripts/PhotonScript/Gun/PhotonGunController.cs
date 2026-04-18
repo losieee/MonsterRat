@@ -15,8 +15,11 @@ public class PhotonGun : InvenBase
     {
         if (!Input.GetMouseButtonDown(0)) return;
 
-        if (TryShootRat()) return;
-        if (TryShootBoxHead()) return;
+        bool rat = TryShootRat();
+        if (rat) return;
+
+        bool box = TryShootBoxHead();
+        if (box) return;
 
         // 쥐가 아닌 벽/바닥을 맞췄을 때
         //TrySpawnPollutionAtHit();
@@ -61,29 +64,20 @@ public class PhotonGun : InvenBase
     {
         if (interactor == null) return false;
 
-        // 레이캐스트를 쏴서 박스헤드를 찾음
         if (interactor.SphereCast(ratAimRadius, ratDistance, boxHeadMask, out RaycastHit hit))
         {
             GameObject hitObj = hit.collider.gameObject;
 
-            // 멀티플레이용 ShootTarget 가져오기
             ShootTarget boxHead = hitObj.GetComponentInParent<ShootTarget>();
             if (boxHead == null)
             {
-                // 최상단 부모에서 한 번 더 검사
                 boxHead = hitObj.transform.root.GetComponent<ShootTarget>();
             }
 
             if (boxHead != null)
             {
-                boxHead.ApplyHit();
-
+                boxHead.Rpc_RequestHit();
                 interactor.ForceSetLookTarget(boxHead.gameObject);
-
-                // 이거 튜토리얼이라서 일단 막았어요
-                // var tm = Object.FindAnyObjectByType<TutorialManager>();
-                // if (tm != null) tm.NotifyRatKilled(rat.gameObject);
-
                 return true;
             }
         }

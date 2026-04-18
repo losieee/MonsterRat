@@ -124,8 +124,8 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
             }
 
             // 발소리
-            if (HasInputAuthority)
-            {
+            if (HasInputAuthority && Runner.IsForward)
+            {   
                 HandleFootstep(input, moveDir);
             }
         }
@@ -137,52 +137,65 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
             return;
 
         bool isMoving = input.moveInput.sqrMagnitude > 0.01f && moveDir.sqrMagnitude > 0.001f;
+        float interval = input.isRunning ? runStepInterval : walkStepInterval;
 
         if (!isMoving)
         {
-            footstepTimer = 0f;
+            footstepTimer = interval;
             return;
         }
 
         footstepTimer -= Runner.DeltaTime;
 
-        float interval = input.isRunning ? runStepInterval : walkStepInterval;
+        if (footstepTimer > 0f)
+            return;
 
-        if (footstepTimer <= 0f)
-        {
-            PlayFootstep();
-            footstepTimer = interval;
-        }
+        FootStepRangeType currentType = footStepType != null
+            ? footStepType.CurrentRangeType
+            : FootStepRangeType.Stone;
+
+        Rpc_PlayFootstep(currentType);
+        footstepTimer = interval;
     }
 
-    void PlayFootstep()
+    // 다른 사람한테도 발소리 들릴 수 있도록
+    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    public void Rpc_PlayFootstep(FootStepRangeType stepType)
+    {
+        if (HasInputAuthority)
+        {
+            footstepAudioSource.volume = 0.6f;
+        }
+        else
+        {
+            footstepAudioSource.volume = 1f;
+        }
+
+        PlayFootstep(stepType);
+    }
+
+    // 타입 별 발소리 (돌, 철, 물)
+    void PlayFootstep(FootStepRangeType stepType)
     {
         if (footstepAudioSource == null || footSteps == null || footSteps.Length == 0)
             return;
 
         AudioClip clip = null;
 
-        if (footStepType != null)
+        switch (stepType)
         {
-            switch (footStepType.CurrentRangeType)
-            {
-                case FootStepRangeType.Metal:
-                    if (footSteps.Length > 1) clip = footSteps[1];
-                    break;
+            case FootStepRangeType.Metal:
+                if (footSteps.Length > 1) clip = footSteps[1];
+                break;
 
-                case FootStepRangeType.Water:
-                    if (footSteps.Length > 2) clip = footSteps[2];
-                    break;
+            case FootStepRangeType.Water:
+                if (footSteps.Length > 2) clip = footSteps[2];
+                break;
 
-                case FootStepRangeType.Stone:
-                default:
-                    if (footSteps.Length > 0) clip = footSteps[0];
-                    break;
-            }
-        }
-        else
-        {
-            clip = footSteps[0];
+            case FootStepRangeType.Stone:
+            default:
+                if (footSteps.Length > 0) clip = footSteps[0];
+                break;
         }
 
         if (clip != null)

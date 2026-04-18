@@ -1,3 +1,4 @@
+using Fusion;
 using System.Collections;
 using UnityEngine;
 
@@ -37,8 +38,7 @@ public class MopController : InvenBase
             {
                 multiPol.CleanOnce();
                 // 임시 사운드
-                source.clip = mopSound;
-                source.Play();
+                Rpc_PlayMopSound();
 
                 StartCoroutine(Cooldown());
                 return;
@@ -52,6 +52,16 @@ public class MopController : InvenBase
                 return;
             }
         }
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    public void Rpc_PlayMopSound()
+    {
+        if (source == null || mopSound == null)
+            return;
+
+        float volumeScale = HasInputAuthority ? 0.85f : 1f;
+        source.PlayOneShot(mopSound, volumeScale);
     }
 
     IEnumerator Cooldown()

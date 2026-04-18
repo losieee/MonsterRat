@@ -4957,6 +4957,7 @@ GameObject:
   - component: {fileID: 235821667}
   - component: {fileID: 235821666}
   - component: {fileID: 235821665}
+  - component: {fileID: 235821668}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (37)
   m_TagString: Untagged
@@ -5058,6 +5059,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 235821663}
   m_Mesh: {fileID: -5478233085961861262, guid: 849923a7e9faf5d4e90fc80256ef1c17, type: 3}
+--- !u!114 &235821668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 235821663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!1 &251107650
 GameObject:
   m_ObjectHideFlags: 0
@@ -27434,6 +27448,7 @@ GameObject:
   - component: {fileID: 1597969138}
   - component: {fileID: 1597969137}
   - component: {fileID: 1597969136}
+  - component: {fileID: 1597969139}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (38)
   m_TagString: Untagged
@@ -27535,6 +27550,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1597969134}
   m_Mesh: {fileID: -5478233085961861262, guid: 849923a7e9faf5d4e90fc80256ef1c17, type: 3}
+--- !u!114 &1597969139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1597969134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!1001 &1602136319
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -40180,6 +40208,7 @@ GameObject:
   - component: {fileID: 3877685476290766575}
   - component: {fileID: 1311876993306874405}
   - component: {fileID: 3031478089767975081}
+  - component: {fileID: 3877685476290766576}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01_t
   m_TagString: Untagged
@@ -40215,6 +40244,7 @@ GameObject:
   - component: {fileID: 3845534669043835497}
   - component: {fileID: 1349639673032365731}
   - component: {fileID: 3071351933864377391}
+  - component: {fileID: 3845534669043835498}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01
   m_TagString: Untagged
@@ -44152,6 +44182,7 @@ GameObject:
   - component: {fileID: 2833988455903428690}
   - component: {fileID: 49731141271188632}
   - component: {fileID: 4077427115523431956}
+  - component: {fileID: 4077427115523431957}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01_curve (5)
   m_TagString: Untagged
@@ -44171,6 +44202,7 @@ GameObject:
   - component: {fileID: 2833988456707233574}
   - component: {fileID: 49731140999144428}
   - component: {fileID: 4077427116330240352}
+  - component: {fileID: 4077427116330240353}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01_curve (8)
   m_TagString: Untagged
@@ -44190,6 +44222,7 @@ GameObject:
   - component: {fileID: 2833988456631571632}
   - component: {fileID: 49731141191983226}
   - component: {fileID: 4077427116540054262}
+  - component: {fileID: 4077427116540054263}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01_curve (2)
   m_TagString: Untagged
@@ -44209,6 +44242,7 @@ GameObject:
   - component: {fileID: 2833988456499670407}
   - component: {fileID: 49731140791605581}
   - component: {fileID: 4077427116135101377}
+  - component: {fileID: 4077427116135101378}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01_curve (7)
   m_TagString: Untagged
@@ -44228,6 +44262,7 @@ GameObject:
   - component: {fileID: 2833988456393504085}
   - component: {fileID: 49731140754637215}
   - component: {fileID: 4077427116039940883}
+  - component: {fileID: 4077427116039940884}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01_curve (1)
   m_TagString: Untagged
@@ -44247,6 +44282,7 @@ GameObject:
   - component: {fileID: 2833988456269814811}
   - component: {fileID: 49731140899432657}
   - component: {fileID: 4077427116163613277}
+  - component: {fileID: 4077427116163613278}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01_curve (6)
   m_TagString: Untagged
@@ -44266,6 +44302,7 @@ GameObject:
   - component: {fileID: 2833988455303936429}
   - component: {fileID: 49731142011719015}
   - component: {fileID: 4077427115183417323}
+  - component: {fileID: 4077427115183417324}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01_curve (4)
   m_TagString: Untagged
@@ -46671,6 +46708,7 @@ GameObject:
   - component: {fileID: 2196233775140520622}
   - component: {fileID: 4151863326045353572}
   - component: {fileID: 124730647536737512}
+  - component: {fileID: 4151863326045353573}
   m_Layer: 2
   m_Name: msp_floor_scaffolding_stairs
   m_TagString: Untagged
@@ -46690,6 +46728,7 @@ GameObject:
   - component: {fileID: 1792413681049886748}
   - component: {fileID: 4556263996253508822}
   - component: {fileID: 512945919159189082}
+  - component: {fileID: 4556263996253508823}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01_curve
   m_TagString: Untagged
@@ -47568,6 +47607,7 @@ GameObject:
   - component: {fileID: 1999822439941456408}
   - component: {fileID: 4333655399472314066}
   - component: {fileID: 288649077136006238}
+  - component: {fileID: 4333655399472314067}
   m_Layer: 0
   m_Name: msp_floor_scaffolding_modular_corner
   m_TagString: Untagged
@@ -53011,6 +53051,7 @@ GameObject:
   - component: {fileID: 877727831834779430}
   - component: {fileID: 3155518768322227180}
   - component: {fileID: 1436621856345096544}
+  - component: {fileID: 4287861450043773060}
   m_Layer: 2
   m_Name: msp_floor_scaffolding_stairs (1)
   m_TagString: Untagged
@@ -53507,6 +53548,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 700906029335050102}
   m_Mesh: {fileID: -5478233085961861262, guid: 849923a7e9faf5d4e90fc80256ef1c17, type: 3}
+--- !u!114 &3845534669043835498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 700906029335050102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!33 &3877685476290766575
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -53515,6 +53569,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 663231308880671728}
   m_Mesh: {fileID: -3414498794171092084, guid: 81a31612926831b469839d6821ea283f, type: 3}
+--- !u!114 &3877685476290766576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 663231308880671728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!64 &3900079899113436978
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -54793,6 +54860,19 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -1603829338256113422, guid: e11d18e076e9ed64999f8d98ad9036b2, type: 3}
+--- !u!114 &4077427115183417324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995185095447522482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!64 &4077427115523431956
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -54815,6 +54895,19 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -1603829338256113422, guid: e11d18e076e9ed64999f8d98ad9036b2, type: 3}
+--- !u!114 &4077427115523431957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995185093765879117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!64 &4077427116039940883
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -54837,6 +54930,19 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -1603829338256113422, guid: e11d18e076e9ed64999f8d98ad9036b2, type: 3}
+--- !u!114 &4077427116039940884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995185094257221706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!64 &4077427116135101377
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -54859,6 +54965,19 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -1603829338256113422, guid: e11d18e076e9ed64999f8d98ad9036b2, type: 3}
+--- !u!114 &4077427116135101378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995185094243334296}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 2
 --- !u!64 &4077427116163613277
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -54881,6 +55000,19 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -1603829338256113422, guid: e11d18e076e9ed64999f8d98ad9036b2, type: 3}
+--- !u!114 &4077427116163613278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995185094406064388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 2
 --- !u!64 &4077427116330240352
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -54903,6 +55035,19 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -1603829338256113422, guid: e11d18e076e9ed64999f8d98ad9036b2, type: 3}
+--- !u!114 &4077427116330240353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995185094035817017}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!64 &4077427116540054262
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -54925,6 +55070,19 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -1603829338256113422, guid: e11d18e076e9ed64999f8d98ad9036b2, type: 3}
+--- !u!114 &4077427116540054263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995185094111412655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!65 &4128315462903630302
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -54996,6 +55154,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &4151863326045353573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2494604702948792241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 1
 --- !u!33 &4185878129038667044
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -55670,6 +55841,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2133281146}
   m_LocalEulerAnglesHint: {x: 0, y: 270, z: 0}
+--- !u!114 &4287861450043773060
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3515723518979541561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 1
 --- !u!23 &4333655399472314066
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -55720,6 +55904,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &4333655399472314067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2820591267269809927}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 1
 --- !u!1 &4365626523860961647
 GameObject:
   m_ObjectHideFlags: 0
@@ -57283,6 +57480,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &4556263996253508823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2610932776189834499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!33 &4670189568475484075
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -57303,6 +57513,7 @@ GameObject:
   - component: {fileID: 9051150717222900459}
   - component: {fileID: 6519192279977502241}
   - component: {fileID: 7087982710834629805}
+  - component: {fileID: 9051150717222900460}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01_t (2)
   m_TagString: Untagged
@@ -57322,6 +57533,7 @@ GameObject:
   - component: {fileID: 9051150717761028953}
   - component: {fileID: 6519192279444092819}
   - component: {fileID: 7087982711370177823}
+  - component: {fileID: 9051150717761028954}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01_t (1)
   m_TagString: Untagged
@@ -67434,6 +67646,7 @@ GameObject:
   - component: {fileID: 6466298405551554846}
   - component: {fileID: 9104061187804607956}
   - component: {fileID: 5079320427062107992}
+  - component: {fileID: 9104061187804607957}
   m_Layer: 7
   m_Name: msp_floor_scaffolding_modular_corner (2)
   m_TagString: Untagged
@@ -72429,6 +72642,7 @@ GameObject:
   - component: {fileID: 6172147075645678878}
   - component: {fileID: 8233468909488132564}
   - component: {fileID: 5361086995364641624}
+  - component: {fileID: 8233468909488132565}
   m_Layer: 0
   m_Name: msp_floor_scaffolding_modular (2)
   m_TagString: Untagged
@@ -72448,6 +72662,7 @@ GameObject:
   - component: {fileID: 6172147075369569922}
   - component: {fileID: 8233468909212039752}
   - component: {fileID: 5361086995103862980}
+  - component: {fileID: 8233468909212039753}
   m_Layer: 7
   m_Name: msp_floor_scaffolding_modular (6)
   m_TagString: Untagged
@@ -72467,6 +72682,7 @@ GameObject:
   - component: {fileID: 6172147076096929788}
   - component: {fileID: 8233468909134142262}
   - component: {fileID: 5361086996121285050}
+  - component: {fileID: 8233468909134142263}
   m_Layer: 7
   m_Name: msp_floor_scaffolding_modular (5)
   m_TagString: Untagged
@@ -72486,6 +72702,7 @@ GameObject:
   - component: {fileID: 6172147075979441616}
   - component: {fileID: 8233468908748177690}
   - component: {fileID: 5361086995701902230}
+  - component: {fileID: 8233468908748177691}
   m_Layer: 7
   m_Name: msp_floor_scaffolding_modular (11)
   m_TagString: Untagged
@@ -72505,6 +72722,7 @@ GameObject:
   - component: {fileID: 6172147074554259859}
   - component: {fileID: 8233468910546263385}
   - component: {fileID: 5361086994308577237}
+  - component: {fileID: 8233468910546263386}
   m_Layer: 7
   m_Name: msp_floor_scaffolding_modular (9)
   m_TagString: Untagged
@@ -72524,6 +72742,7 @@ GameObject:
   - component: {fileID: 6172147074519126090}
   - component: {fileID: 8233468910712464512}
   - component: {fileID: 5361086994545020428}
+  - component: {fileID: 8233468910712464513}
   m_Layer: 7
   m_Name: msp_floor_scaffolding_modular (7)
   m_TagString: Untagged
@@ -72543,6 +72762,7 @@ GameObject:
   - component: {fileID: 6172147074534322441}
   - component: {fileID: 8233468910725580227}
   - component: {fileID: 5361086994529840975}
+  - component: {fileID: 8233468910725580228}
   m_Layer: 0
   m_Name: msp_floor_scaffolding_modular (10)
   m_TagString: Untagged
@@ -72562,6 +72782,7 @@ GameObject:
   - component: {fileID: 6172147075119359337}
   - component: {fileID: 8233468910035554723}
   - component: {fileID: 5361086994817219375}
+  - component: {fileID: 8233468910035554724}
   m_Layer: 0
   m_Name: msp_floor_scaffolding_modular (4)
   m_TagString: Untagged
@@ -72581,6 +72802,7 @@ GameObject:
   - component: {fileID: 6172147074923150552}
   - component: {fileID: 8233468909774325778}
   - component: {fileID: 5361086994677883550}
+  - component: {fileID: 8233468909774325779}
   m_Layer: 0
   m_Name: msp_floor_scaffolding_modular (1)
   m_TagString: Untagged
@@ -72600,6 +72822,7 @@ GameObject:
   - component: {fileID: 6172147074877866766}
   - component: {fileID: 8233468909729036228}
   - component: {fileID: 5361086994588933448}
+  - component: {fileID: 8233468909729036229}
   m_Layer: 7
   m_Name: msp_floor_scaffolding_modular (8)
   m_TagString: Untagged
@@ -72619,6 +72842,7 @@ GameObject:
   - component: {fileID: 6172147074812866932}
   - component: {fileID: 8233468909932447166}
   - component: {fileID: 5361086994788167474}
+  - component: {fileID: 8233468909932447167}
   m_Layer: 0
   m_Name: msp_floor_scaffolding_modular (3)
   m_TagString: Untagged
@@ -72988,6 +73212,7 @@ GameObject:
   - component: {fileID: 6315352252573157581}
   - component: {fileID: 8088557428045970439}
   - component: {fileID: 5216598070093502091}
+  - component: {fileID: 8088557428045970440}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (12)
   m_TagString: Untagged
@@ -73007,6 +73232,7 @@ GameObject:
   - component: {fileID: 6315352252515817334}
   - component: {fileID: 8088557427990717372}
   - component: {fileID: 5216598070016624944}
+  - component: {fileID: 8088557427990717373}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (19)
   m_TagString: Untagged
@@ -73026,6 +73252,7 @@ GameObject:
   - component: {fileID: 6315352252326438995}
   - component: {fileID: 8088557427801300121}
   - component: {fileID: 5216598069803365909}
+  - component: {fileID: 8088557427801300122}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (31)
   m_TagString: Untagged
@@ -73045,6 +73272,7 @@ GameObject:
   - component: {fileID: 6315352252166664617}
   - component: {fileID: 8088557427974964579}
   - component: {fileID: 5216598069896032239}
+  - component: {fileID: 8088557427974964580}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (26)
   m_TagString: Untagged
@@ -73064,6 +73292,7 @@ GameObject:
   - component: {fileID: 6315352253119161903}
   - component: {fileID: 8088557427520279269}
   - component: {fileID: 5216598070621255785}
+  - component: {fileID: 8088557427520279270}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (15)
   m_TagString: Untagged
@@ -73083,6 +73312,7 @@ GameObject:
   - component: {fileID: 6315352253025540908}
   - component: {fileID: 8088557427493711846}
   - component: {fileID: 5216598070513599850}
+  - component: {fileID: 8088557427493711847}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (18)
   m_TagString: Untagged
@@ -73102,6 +73332,7 @@ GameObject:
   - component: {fileID: 6315352253024712926}
   - component: {fileID: 8088557427492965396}
   - component: {fileID: 5216598070514378392}
+  - component: {fileID: 8088557427492965397}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (25)
   m_TagString: Untagged
@@ -73121,6 +73352,7 @@ GameObject:
   - component: {fileID: 6315352252949084038}
   - component: {fileID: 8088557427683672908}
   - component: {fileID: 5216598070724225472}
+  - component: {fileID: 8088557427683672909}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (21)
   m_TagString: Untagged
@@ -73140,6 +73372,7 @@ GameObject:
   - component: {fileID: 6315352252966369211}
   - component: {fileID: 8088557427702956913}
   - component: {fileID: 5216598070707005949}
+  - component: {fileID: 8088557427702956914}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (22)
   m_TagString: Untagged
@@ -73159,6 +73392,7 @@ GameObject:
   - component: {fileID: 6315352252998622869}
   - component: {fileID: 8088557427666119263}
   - component: {fileID: 5216598070741778643}
+  - component: {fileID: 8088557427666119264}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (7)
   m_TagString: Untagged
@@ -73178,6 +73412,7 @@ GameObject:
   - component: {fileID: 6315352252938802338}
   - component: {fileID: 8088557427608363112}
   - component: {fileID: 5216598070667381476}
+  - component: {fileID: 8088557427608363113}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (20)
   m_TagString: Untagged
@@ -73197,6 +73432,7 @@ GameObject:
   - component: {fileID: 6315352252818810503}
   - component: {fileID: 8088557427284939341}
   - component: {fileID: 5216598070317627585}
+  - component: {fileID: 8088557427284939342}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (1)
   m_TagString: Untagged
@@ -73216,6 +73452,7 @@ GameObject:
   - component: {fileID: 6315352252834263331}
   - component: {fileID: 8088557427302516201}
   - component: {fileID: 5216598070302175077}
+  - component: {fileID: 8088557427302516202}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (3)
   m_TagString: Untagged
@@ -73235,6 +73472,7 @@ GameObject:
   - component: {fileID: 6315352252619529772}
   - component: {fileID: 8088557427354069734}
   - component: {fileID: 5216598070382739562}
+  - component: {fileID: 8088557427354069735}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (35)
   m_TagString: Untagged
@@ -73254,6 +73492,7 @@ GameObject:
   - component: {fileID: 6315352252637622425}
   - component: {fileID: 8088557427374244947}
   - component: {fileID: 5216598070364663519}
+  - component: {fileID: 8088557427374244948}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (6)
   m_TagString: Untagged
@@ -73273,6 +73512,7 @@ GameObject:
   - component: {fileID: 6315352252663255657}
   - component: {fileID: 8088557427330655907}
   - component: {fileID: 5216598070406122543}
+  - component: {fileID: 8088557427330655908}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (29)
   m_TagString: Untagged
@@ -73292,6 +73532,7 @@ GameObject:
   - component: {fileID: 6315352251408762871}
   - component: {fileID: 8088557429098165053}
   - component: {fileID: 5216598068909152689}
+  - component: {fileID: 8088557429098165054}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (14)
   m_TagString: Untagged
@@ -73330,6 +73571,7 @@ GameObject:
   - component: {fileID: 6315352251456800396}
   - component: {fileID: 8088557429079093830}
   - component: {fileID: 5216598068928223434}
+  - component: {fileID: 8088557429079093831}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (2)
   m_TagString: Untagged
@@ -73349,6 +73591,7 @@ GameObject:
   - component: {fileID: 6315352251452119438}
   - component: {fileID: 8088557429074472260}
   - component: {fileID: 5216598068932839368}
+  - component: {fileID: 8088557429074472261}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (34)
   m_TagString: Untagged
@@ -73368,6 +73611,7 @@ GameObject:
   - component: {fileID: 6315352251277814305}
   - component: {fileID: 8088557429235670763}
   - component: {fileID: 5216598069040116839}
+  - component: {fileID: 8088557429235670764}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (33)
   m_TagString: Untagged
@@ -73387,6 +73631,7 @@ GameObject:
   - component: {fileID: 6315352251298642695}
   - component: {fileID: 8088557429187317709}
   - component: {fileID: 5216598069086332225}
+  - component: {fileID: 8088557429187317710}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (13)
   m_TagString: Untagged
@@ -73406,6 +73651,7 @@ GameObject:
   - component: {fileID: 6315352251297188593}
   - component: {fileID: 8088557429187984955}
   - component: {fileID: 5216598069087769783}
+  - component: {fileID: 8088557429187984956}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (23)
   m_TagString: Untagged
@@ -73425,6 +73671,7 @@ GameObject:
   - component: {fileID: 6315352251196667424}
   - component: {fileID: 8088557428886110954}
   - component: {fileID: 5216598068718544998}
+  - component: {fileID: 8088557428886110955}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (27)
   m_TagString: Untagged
@@ -73444,6 +73691,7 @@ GameObject:
   - component: {fileID: 6315352251256078467}
   - component: {fileID: 8088557428876375113}
   - component: {fileID: 5216598068726226629}
+  - component: {fileID: 8088557428876375114}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (30)
   m_TagString: Untagged
@@ -73463,6 +73711,7 @@ GameObject:
   - component: {fileID: 6315352251087900951}
   - component: {fileID: 8088557429045732829}
   - component: {fileID: 5216598068827361105}
+  - component: {fileID: 8088557429045732830}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (17)
   m_TagString: Untagged
@@ -73482,6 +73731,7 @@ GameObject:
   - component: {fileID: 6315352251094667739}
   - component: {fileID: 8088557429050500369}
   - component: {fileID: 5216598068820529053}
+  - component: {fileID: 8088557429050500370}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (16)
   m_TagString: Untagged
@@ -73501,6 +73751,7 @@ GameObject:
   - component: {fileID: 6315352251948760692}
   - component: {fileID: 8088557428562365118}
   - component: {fileID: 5216598069442846770}
+  - component: {fileID: 8088557428562365119}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (4)
   m_TagString: Untagged
@@ -73520,6 +73771,7 @@ GameObject:
   - component: {fileID: 6315352251935856764}
   - component: {fileID: 8088557428549446838}
   - component: {fileID: 5216598069455799866}
+  - component: {fileID: 8088557428549446839}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (10)
   m_TagString: Untagged
@@ -73539,6 +73791,7 @@ GameObject:
   - component: {fileID: 6315352251881445951}
   - component: {fileID: 8088557428763504373}
   - component: {fileID: 5216598069644362873}
+  - component: {fileID: 8088557428763504374}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (8)
   m_TagString: Untagged
@@ -73558,6 +73811,7 @@ GameObject:
   - component: {fileID: 6315352251869774265}
   - component: {fileID: 8088557428753937779}
   - component: {fileID: 5216598069656035327}
+  - component: {fileID: 8088557428753937780}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (24)
   m_TagString: Untagged
@@ -73577,6 +73831,7 @@ GameObject:
   - component: {fileID: 6315352251755093644}
   - component: {fileID: 8088557428368714310}
   - component: {fileID: 5216598069233844426}
+  - component: {fileID: 8088557428368714311}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (9)
   m_TagString: Untagged
@@ -73596,6 +73851,7 @@ GameObject:
   - component: {fileID: 6315352251795305869}
   - component: {fileID: 8088557428341735751}
   - component: {fileID: 5216598069260823499}
+  - component: {fileID: 8088557428341735752}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (11)
   m_TagString: Untagged
@@ -73615,6 +73871,7 @@ GameObject:
   - component: {fileID: 6315352251636219847}
   - component: {fileID: 8088557428451150605}
   - component: {fileID: 5216598069419843969}
+  - component: {fileID: 8088557428451150606}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (5)
   m_TagString: Untagged
@@ -73634,6 +73891,7 @@ GameObject:
   - component: {fileID: 6315352251576236939}
   - component: {fileID: 8088557428393299777}
   - component: {fileID: 5216598069345609165}
+  - component: {fileID: 8088557428393299778}
   m_Layer: 7
   m_Name: msp_tunnel_floor_01 (36)
   m_TagString: Untagged
@@ -73915,6 +74173,7 @@ GameObject:
   - component: {fileID: 6012021142929350559}
   - component: {fileID: 8397535629421964117}
   - component: {fileID: 5525716940226445785}
+  - component: {fileID: 8397535629421964118}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (51)
   m_TagString: Untagged
@@ -73934,6 +74193,7 @@ GameObject:
   - component: {fileID: 6012021142856109613}
   - component: {fileID: 8397535629348666087}
   - component: {fileID: 5525716940165533803}
+  - component: {fileID: 8397535629348666088}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (34)
   m_TagString: Untagged
@@ -73953,6 +74213,7 @@ GameObject:
   - component: {fileID: 6012021142789201619}
   - component: {fileID: 8397535629550184985}
   - component: {fileID: 5525716940366659733}
+  - component: {fileID: 8397535629550184986}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (31)
   m_TagString: Untagged
@@ -73972,6 +74233,7 @@ GameObject:
   - component: {fileID: 6012021142805608145}
   - component: {fileID: 8397535629566542363}
   - component: {fileID: 5525716940350269591}
+  - component: {fileID: 8397535629566542364}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (42)
   m_TagString: Untagged
@@ -73991,6 +74253,7 @@ GameObject:
   - component: {fileID: 6012021142699941664}
   - component: {fileID: 8397535629530131434}
   - component: {fileID: 5525716940254593382}
+  - component: {fileID: 8397535629530131435}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (25)
   m_TagString: Untagged
@@ -74010,6 +74273,7 @@ GameObject:
   - component: {fileID: 6012021142693730221}
   - component: {fileID: 8397535629523886951}
   - component: {fileID: 5525716940260805099}
+  - component: {fileID: 8397535629523886952}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (16)
   m_TagString: Untagged
@@ -74029,6 +74293,7 @@ GameObject:
   - component: {fileID: 6012021142726347541}
   - component: {fileID: 8397535629487341535}
   - component: {fileID: 5525716940295296339}
+  - component: {fileID: 8397535629487341536}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (52)
   m_TagString: Untagged
@@ -74048,6 +74313,7 @@ GameObject:
   - component: {fileID: 6012021142616031210}
   - component: {fileID: 8397535629110725408}
   - component: {fileID: 5525716939868692908}
+  - component: {fileID: 8397535629110725409}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (41)
   m_TagString: Untagged
@@ -74067,6 +74333,7 @@ GameObject:
   - component: {fileID: 6012021142534083169}
   - component: {fileID: 8397535629297133227}
   - component: {fileID: 5525716940084907047}
+  - component: {fileID: 8397535629297133228}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (43)
   m_TagString: Untagged
@@ -74086,6 +74353,7 @@ GameObject:
   - component: {fileID: 6012021142419972864}
   - component: {fileID: 8397535629248059338}
   - component: {fileID: 5525716939997707590}
+  - component: {fileID: 8397535629248059339}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (9)
   m_TagString: Untagged
@@ -74105,6 +74373,7 @@ GameObject:
   - component: {fileID: 6012021143442993082}
   - component: {fileID: 8397535628930997104}
   - component: {fileID: 5525716940719518204}
+  - component: {fileID: 8397535628930997105}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (50)
   m_TagString: Untagged
@@ -74124,6 +74393,7 @@ GameObject:
   - component: {fileID: 6012021143491610375}
   - component: {fileID: 8397535628910425037}
   - component: {fileID: 5525716940737993025}
+  - component: {fileID: 8397535628910425038}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (13)
   m_TagString: Untagged
@@ -74143,6 +74413,7 @@ GameObject:
   - component: {fileID: 6012021143419072729}
   - component: {fileID: 8397535628839961619}
   - component: {fileID: 5525716940676329119}
+  - component: {fileID: 8397535628839961620}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (28)
   m_TagString: Untagged
@@ -74162,6 +74433,7 @@ GameObject:
   - component: {fileID: 6012021143301935349}
   - component: {fileID: 8397535629058417727}
   - component: {fileID: 5525716940860493491}
+  - component: {fileID: 8397535629058417728}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (11)
   m_TagString: Untagged
@@ -74181,6 +74453,7 @@ GameObject:
   - component: {fileID: 6012021143317291264}
   - component: {fileID: 8397535629071635914}
   - component: {fileID: 5525716940845219654}
+  - component: {fileID: 8397535629071635915}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (36)
   m_TagString: Untagged
@@ -74200,6 +74473,7 @@ GameObject:
   - component: {fileID: 6012021143185415455}
   - component: {fileID: 8397535628671363541}
   - component: {fileID: 5525716940440142681}
+  - component: {fileID: 8397535628671363542}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (14)
   m_TagString: Untagged
@@ -74219,6 +74493,7 @@ GameObject:
   - component: {fileID: 6012021143056145994}
   - component: {fileID: 8397535628810463872}
   - component: {fileID: 5525716940569477132}
+  - component: {fileID: 8397535628810463873}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (21)
   m_TagString: Untagged
@@ -74238,6 +74513,7 @@ GameObject:
   - component: {fileID: 6012021143008148676}
   - component: {fileID: 8397535628697503758}
   - component: {fileID: 5525716940550316674}
+  - component: {fileID: 8397535628697503759}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (40)
   m_TagString: Untagged
@@ -74257,6 +74533,7 @@ GameObject:
   - component: {fileID: 6012021141828621604}
   - component: {fileID: 8397535630535795182}
   - component: {fileID: 5525716939112581986}
+  - component: {fileID: 8397535630535795183}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (22)
   m_TagString: Untagged
@@ -74276,6 +74553,7 @@ GameObject:
   - component: {fileID: 6012021141833337672}
   - component: {fileID: 8397535630540521346}
   - component: {fileID: 5525716939107865870}
+  - component: {fileID: 8397535630540521347}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (37)
   m_TagString: Untagged
@@ -74295,6 +74573,7 @@ GameObject:
   - component: {fileID: 6012021141764184767}
   - component: {fileID: 8397535630471392885}
   - component: {fileID: 5525716939042800889}
+  - component: {fileID: 8397535630471392886}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (20)
   m_TagString: Untagged
@@ -74314,6 +74593,7 @@ GameObject:
   - component: {fileID: 6012021141755006313}
   - component: {fileID: 8397535630462220707}
   - component: {fileID: 5525716939051979567}
+  - component: {fileID: 8397535630462220708}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (15)
   m_TagString: Untagged
@@ -74333,6 +74613,7 @@ GameObject:
   - component: {fileID: 6012021141795710725}
   - component: {fileID: 8397535630435800015}
   - component: {fileID: 5525716939078400323}
+  - component: {fileID: 8397535630435800016}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (38)
   m_TagString: Untagged
@@ -74352,6 +74633,7 @@ GameObject:
   - component: {fileID: 6012021141627132503}
   - component: {fileID: 8397535630602677917}
   - component: {fileID: 5525716939179918353}
+  - component: {fileID: 8397535630602677918}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (45)
   m_TagString: Untagged
@@ -74371,6 +74653,7 @@ GameObject:
   - component: {fileID: 6012021141674377127}
   - component: {fileID: 8397535630584925037}
   - component: {fileID: 5525716939199799777}
+  - component: {fileID: 8397535630584925038}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (44)
   m_TagString: Untagged
@@ -74390,6 +74673,7 @@ GameObject:
   - component: {fileID: 6012021141561325431}
   - component: {fileID: 8397535630270546877}
   - component: {fileID: 5525716938843089201}
+  - component: {fileID: 8397535630270546878}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (17)
   m_TagString: Untagged
@@ -74409,6 +74693,7 @@ GameObject:
   - component: {fileID: 6012021141586106473}
   - component: {fileID: 8397535630228204707}
   - component: {fileID: 5525716938885400111}
+  - component: {fileID: 8397535630228204708}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (10)
   m_TagString: Untagged
@@ -74428,6 +74713,7 @@ GameObject:
   - component: {fileID: 6012021141480035110}
   - component: {fileID: 8397535630189307884}
   - component: {fileID: 5525716938790079840}
+  - component: {fileID: 8397535630189307885}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (35)
   m_TagString: Untagged
@@ -74447,6 +74733,7 @@ GameObject:
   - component: {fileID: 6012021142356006678}
   - component: {fileID: 8397535629991502812}
   - component: {fileID: 5525716939659004240}
+  - component: {fileID: 8397535629991502813}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (18)
   m_TagString: Untagged
@@ -74466,6 +74753,7 @@ GameObject:
   - component: {fileID: 6012021142397104319}
   - component: {fileID: 8397535629963379829}
   - component: {fileID: 5525716939685031673}
+  - component: {fileID: 8397535629963379830}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (39)
   m_TagString: Untagged
@@ -74485,6 +74773,7 @@ GameObject:
   - component: {fileID: 6012021142393566614}
   - component: {fileID: 8397535629961937244}
   - component: {fileID: 5525716939688569808}
+  - component: {fileID: 8397535629961937245}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (29)
   m_TagString: Untagged
@@ -74504,6 +74793,7 @@ GameObject:
   - component: {fileID: 6012021142388814876}
   - component: {fileID: 8397535629955154134}
   - component: {fileID: 5525716939693255258}
+  - component: {fileID: 8397535629955154135}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (27)
   m_TagString: Untagged
@@ -74523,6 +74813,7 @@ GameObject:
   - component: {fileID: 6012021142317079036}
   - component: {fileID: 8397535629950479670}
   - component: {fileID: 5525716939563714490}
+  - component: {fileID: 8397535629950479671}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (46)
   m_TagString: Untagged
@@ -74542,6 +74833,7 @@ GameObject:
   - component: {fileID: 6012021142302997648}
   - component: {fileID: 8397535629936379994}
   - component: {fileID: 5525716939577811670}
+  - component: {fileID: 8397535629936379995}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (49)
   m_TagString: Untagged
@@ -74561,6 +74853,7 @@ GameObject:
   - component: {fileID: 6012021142306765512}
   - component: {fileID: 8397535629940215298}
   - component: {fileID: 5525716939573978254}
+  - component: {fileID: 8397535629940215299}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (23)
   m_TagString: Untagged
@@ -74580,6 +74873,7 @@ GameObject:
   - component: {fileID: 6012021142336449590}
   - component: {fileID: 8397535629902797052}
   - component: {fileID: 5525716939611402864}
+  - component: {fileID: 8397535629902797053}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (47)
   m_TagString: Untagged
@@ -74599,6 +74893,7 @@ GameObject:
   - component: {fileID: 6012021142261922862}
   - component: {fileID: 8397535630098696420}
   - component: {fileID: 5525716939820212840}
+  - component: {fileID: 8397535630098696421}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (26)
   m_TagString: Untagged
@@ -74618,6 +74913,7 @@ GameObject:
   - component: {fileID: 6012021142267864457}
   - component: {fileID: 8397535630104678723}
   - component: {fileID: 5525716939814271951}
+  - component: {fileID: 8397535630104678724}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (33)
   m_TagString: Untagged
@@ -74637,6 +74933,7 @@ GameObject:
   - component: {fileID: 6012021142151007699}
   - component: {fileID: 8397535630054947097}
   - component: {fileID: 5525716939729785749}
+  - component: {fileID: 8397535630054947098}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (12)
   m_TagString: Untagged
@@ -74656,6 +74953,7 @@ GameObject:
   - component: {fileID: 6012021142120381151}
   - component: {fileID: 8397535629686722069}
   - component: {fileID: 5525716939424818329}
+  - component: {fileID: 8397535629686722070}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (48)
   m_TagString: Untagged
@@ -74675,6 +74973,7 @@ GameObject:
   - component: {fileID: 6012021142033226136}
   - component: {fileID: 8397535629668756818}
   - component: {fileID: 5525716939310630878}
+  - component: {fileID: 8397535629668756819}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (24)
   m_TagString: Untagged
@@ -74694,6 +74993,7 @@ GameObject:
   - component: {fileID: 6012021142037387542}
   - component: {fileID: 8397535629672852956}
   - component: {fileID: 5525716939306534736}
+  - component: {fileID: 8397535629672852957}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (19)
   m_TagString: Untagged
@@ -74713,6 +75013,7 @@ GameObject:
   - component: {fileID: 6012021142049912097}
   - component: {fileID: 8397535629618250219}
   - component: {fileID: 5525716939361135463}
+  - component: {fileID: 8397535629618250220}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (30)
   m_TagString: Untagged
@@ -74732,6 +75033,7 @@ GameObject:
   - component: {fileID: 6012021141942653810}
   - component: {fileID: 8397535629779511224}
   - component: {fileID: 5525716939468311860}
+  - component: {fileID: 8397535629779511225}
   m_Layer: 7
   m_Name: msp_floor_modular_plain (32)
   m_TagString: Untagged
@@ -75057,6 +75359,7 @@ GameObject:
   - component: {fileID: 5540425753315717699}
   - component: {fileID: 7712269877710407305}
   - component: {fileID: 5990417497909652485}
+  - component: {fileID: 8884564448027622887}
   m_Layer: 0
   m_Name: msp_floor_scaffolding_modular
   m_TagString: Untagged
@@ -75861,6 +76164,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557427284939342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362022924268440}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557427302516201
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -75910,6 +76226,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557427302516202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362022942368828}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557427330655907
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -75959,6 +76288,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557427330655908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362023188924278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557427354069734
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -76008,6 +76350,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557427354069735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362023131990835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557427374244947
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -76057,6 +76412,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557427374244948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362023147464070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557427492965396
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -76106,6 +76474,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557427492965397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362022751923649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557427493711846
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -76155,6 +76536,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557427493711847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362022751145523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557427520279269
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -76204,6 +76598,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557427520279270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362022691025712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557427608363112
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -76253,6 +76660,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557427608363113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362022913311165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557427666119263
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -76302,6 +76722,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557427666119264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362022853495690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557427683672908
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -76351,6 +76784,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557427683672909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362022802383513}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557427702956913
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -76400,6 +76846,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557427702956914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362022810329764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557427801300121
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -76449,6 +76908,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557427801300122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362022451952972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557427974964579
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -76498,6 +76970,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557427974964580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362022544614582}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557427990717372
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -76547,6 +77032,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557427990717373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362022220612201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557428045970439
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -76596,6 +77094,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557428045970440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362022163275218}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557428341735751
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -76645,6 +77156,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557428341735752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362024048500882}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557428368714310
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -76694,6 +77218,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557428368714311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362024029916051}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557428393299777
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -76743,6 +77280,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557428393299778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362024233954964}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557428451150605
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -76792,6 +77342,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557428451150606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362024173972184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557428549446838
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -76841,6 +77404,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557428549446839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362023807274339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557428562365118
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -76890,6 +77466,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557428562365119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362023802710891}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557428753937779
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -76939,6 +77528,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557428753937780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362023873287334}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557428763504373
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -76988,6 +77590,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557428763504374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362023870009120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557428876375113
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -77037,6 +77652,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557428876375114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362023513904540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557428886110954
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -77086,6 +77714,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557428886110955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362023472669503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557429045732829
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -77135,6 +77776,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557429045732830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362023615038472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557429050500369
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -77184,6 +77838,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557429050500370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362023616595140}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557429063719300
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -77282,6 +77949,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557429074472261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362023326256273}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557429079093830
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -77331,6 +78011,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557429079093831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362023313249171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557429098165053
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -77380,6 +78073,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557429098165054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362023260623592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557429187317709
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -77429,6 +78135,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557429187317710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362023437807128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557429187984955
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -77478,6 +78197,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557429187984956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362023439245294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8088557429235670763
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -77527,6 +78259,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8088557429235670764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7728362023399980862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8149680320391951822
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -77969,6 +78714,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8233468908748177691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7585139472959217871}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 1
 --- !u!23 &8233468909134142262
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -78019,6 +78777,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8233468909134142263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7585139472808180451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 1
 --- !u!23 &8233468909212039752
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -78069,6 +78840,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8233468909212039753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7585139472470236061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 1
 --- !u!23 &8233468909488132564
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -78119,6 +78903,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8233468909488132565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7585139472227692545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 1
 --- !u!23 &8233468909729036228
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -78169,6 +78966,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8233468909729036229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7585139474127951377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 1
 --- !u!23 &8233468909774325778
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -78219,6 +79029,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8233468909774325779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7585139474057521607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 1
 --- !u!23 &8233468909932447166
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -78269,6 +79092,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8233468909932447167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7585139474192966763}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 1
 --- !u!23 &8233468910035554723
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -78319,6 +79155,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8233468910035554724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7585139473827754102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 1
 --- !u!23 &8233468910546263385
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -78369,6 +79218,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8233468910546263386
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7585139473285561484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 1
 --- !u!23 &8233468910712464512
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -78419,6 +79281,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8233468910712464513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7585139473379394901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 1
 --- !u!23 &8233468910725580227
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -78469,6 +79344,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8233468910725580228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7585139473397769238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 1
 --- !u!4 &8262656597313682485
 Transform:
   m_ObjectHideFlags: 0
@@ -80446,6 +81334,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535628671363542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507350078883840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535628697503758
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -80495,6 +81396,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535628697503759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507350323276251}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535628810463872
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -80544,6 +81458,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535628810463873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507350216608597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535628839961619
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -80593,6 +81520,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535628839961620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507349912413638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535628910425037
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -80642,6 +81582,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535628910425038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507349848248856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535628930997104
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -80691,6 +81644,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535628930997105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507349821389477}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629058417727
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -80740,6 +81706,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629058417728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507349928805866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629071635914
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -80789,6 +81768,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629071635915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507349947085855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629110725408
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -80838,6 +81830,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629110725409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507349650041589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629248059338
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -80887,6 +81892,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629248059339
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507349737109023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629297133227
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -80936,6 +81954,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629297133228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507349698479998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629348666087
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -80985,6 +82016,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629348666088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507349368068914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629421964117
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -81034,6 +82078,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629421964118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507349303151232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629487341535
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -81083,6 +82140,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629487341536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507349506219530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629523886951
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -81132,6 +82202,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629523886952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507349471724210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629530131434
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -81181,6 +82264,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629530131435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507349465516607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629550184985
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -81230,6 +82326,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629550184986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507349434977228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629566542363
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -81279,6 +82388,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629566542364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507349452137422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629618250219
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -81328,6 +82450,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629618250220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507351248019518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629668756818
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -81377,6 +82512,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629668756819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507351231073415}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629672852956
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -81426,6 +82574,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629672852957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507351235365897}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629686722069
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -81475,6 +82636,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629686722070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507351177490368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629779511224
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -81524,6 +82698,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629779511225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507351388751469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629902797052
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -81573,6 +82760,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629902797053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507350994975017}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629936379994
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -81622,6 +82822,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629936379995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507350961383823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629940215298
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -81671,6 +82884,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629940215299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507350965940183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629950479670
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -81720,6 +82946,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629950479671
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507350955674851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629955154134
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -81769,6 +83008,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629955154135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507350909051139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629961937244
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -81818,6 +83070,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629961937245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507350904365193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629963379829
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -81867,6 +83132,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629963379830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507350900827552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535629991502812
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -81916,6 +83194,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535629991502813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507350883189257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535630054947097
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -81965,6 +83256,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535630054947098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507351079803084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535630098696420
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -82014,6 +83318,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535630098696421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507351036012849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535630104678723
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -82063,6 +83380,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535630104678724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507351063621782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535630189307884
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -82112,6 +83442,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535630189307885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507350676964921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535630228204707
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -82161,6 +83504,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535630228204708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507350646459766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535630270546877
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -82210,6 +83566,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535630270546878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507350604145256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535630435800015
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -82259,6 +83628,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535630435800016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507350436803098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535630462220707
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -82308,6 +83690,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535630462220708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507350410385526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535630471392885
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -82357,6 +83752,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535630471392886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507350401208224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535630535795182
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -82406,6 +83814,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535630535795183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507350336766011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535630540521346
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -82455,6 +83876,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535630540521347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507350357220951}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535630584925037
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -82504,6 +83938,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535630584925038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507350583372472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &8397535630602677917
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -82553,6 +84000,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8397535630602677918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8037507350538325832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!1 &8471000220208899753
 GameObject:
   m_ObjectHideFlags: 0
@@ -85610,6 +87070,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2133281146}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8884564448027622887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8072562589368870748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 1
 --- !u!23 &8983648332222699264
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -86126,6 +87599,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4717571902588618740}
   m_Mesh: {fileID: -3414498794171092084, guid: 81a31612926831b469839d6821ea283f, type: 3}
+--- !u!114 &9051150717222900460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4717571902588618740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!33 &9051150717761028953
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -86134,6 +87620,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4717571903124166214}
   m_Mesh: {fileID: -3414498794171092084, guid: 81a31612926831b469839d6821ea283f, type: 3}
+--- !u!114 &9051150717761028954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4717571903124166214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 0
 --- !u!23 &9104061187804607956
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -86184,6 +87683,19 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &9104061187804607957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7302836496827683841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d43518319524c74ea53b942b16676ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FootStepType
+  footStepType: 1
 --- !u!1 &9127673424733975973
 GameObject:
   m_ObjectHideFlags: 0

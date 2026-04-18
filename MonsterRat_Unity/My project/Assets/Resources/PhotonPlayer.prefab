@@ -4416,7 +4416,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -4461,7 +4461,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -4649,7 +4649,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 11c32f3d467f07c459e867ea135f241c, type: 3}
   - {fileID: 8300000, guid: 21e759f95a457254ba1a40b1da456fc4, type: 3}
   footstepAudioSource: {fileID: 5053122888985684548}
-  walkStepInterval: 0.5
+  walkStepInterval: 0.6
   runStepInterval: 0.3
 --- !u!114 &232426663093574612
 MonoBehaviour:
@@ -4747,7 +4747,7 @@ MonoBehaviour:
     m_Bits: 64
   cleanDistance: 3
   source: {fileID: 5053122888985684548}
-  mopSound: {fileID: 8300000, guid: 56c77cc603c176641935c1447b008f66, type: 3}
+  mopSound: {fileID: 8300000, guid: 01579221a165d6946a519408f29e8d7c, type: 3}
   coolTime: 1
 --- !u!114 &6815836651522158606
 MonoBehaviour:
@@ -4810,7 +4810,7 @@ MonoBehaviour:
   fixTime: 5
   fixGauge: {fileID: 7955681951448313746}
   source: {fileID: 5053122888985684548}
-  spannerSound: {fileID: 8300000, guid: 113f6c02a30e6524692a79b07d74249f, type: 3}
+  spannerSound: {fileID: 8300000, guid: dfcb7c4a60d76ce4a9b56d55c0deb9df, type: 3}
 --- !u!114 &8684198720636296796
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4916,6 +4916,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerFootStepType
   defaultType: 0
+  rayOrigin: {fileID: 0}
+  rayStartHeight: 0.2
+  rayDistance: 2
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &8344781622765872656
 GameObject:
   m_ObjectHideFlags: 0

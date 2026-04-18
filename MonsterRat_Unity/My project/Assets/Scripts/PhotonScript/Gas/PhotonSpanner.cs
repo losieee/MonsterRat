@@ -1,3 +1,4 @@
+using Fusion;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,13 +13,17 @@ public class PhotonSpanner : InvenBase
     public AudioClip spannerSound;
 
     private float currentTime;
+    private bool isRepairingSoundPlaying = false;
 
     public override void Tick()
     {
-        // 좌클릭을 꾹 누르고 있을 때
         if (Input.GetMouseButton(0))
         {
-            if (interactor == null) return;
+            if (interactor == null)
+            {
+                ResetGauge();
+                return;
+            }
 
             if (!interactor.RaycastWorld(distance, out RaycastHit hit))
             {
@@ -35,15 +40,10 @@ public class PhotonSpanner : InvenBase
 
                 currentTime += Time.deltaTime;
 
-                if (source != null && spannerSound != null)
+                if (!isRepairingSoundPlaying)
                 {
-                    if (source.clip != spannerSound)
-                        source.clip = spannerSound;
-
-                    source.loop = true;
-
-                    if (!source.isPlaying)
-                        source.Play();
+                    Rpc_StartSpannerSound();
+                    isRepairingSoundPlaying = true;
                 }
 
                 if (currentTime <= fixTime)
@@ -67,6 +67,30 @@ public class PhotonSpanner : InvenBase
         {
             ResetGauge();
         }
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    public void Rpc_StartSpannerSound()
+    {
+        if (source == null || spannerSound == null)
+            return;
+
+        source.clip = spannerSound;
+        source.loop = true;
+        source.volume = HasInputAuthority ? 0.85f : 1f;
+
+        if (!source.isPlaying)
+            source.Play();
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    public void Rpc_StopSpannerSound()
+    {
+        if (source == null)
+            return;
+
+        if (source.isPlaying)
+            source.Stop();
     }
 
     private void ResetGauge()

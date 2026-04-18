@@ -82,6 +82,8 @@ public class PlayerRaycast : MonoBehaviour
         hit = default;
         if (cam == null) return false;
 
+        Physics.SyncTransforms();
+
         Ray ray = new Ray(cam.position, cam.forward);
         return Physics.Raycast(ray, out hit, maxDist, ~0, QueryTriggerInteraction.Ignore);
     }
@@ -91,6 +93,8 @@ public class PlayerRaycast : MonoBehaviour
     {
         hit = default;
         if (cam == null) return false;
+
+        Physics.SyncTransforms();
 
         Ray ray = new Ray(cam.position, cam.forward);
         return Physics.SphereCast(ray, radius, out hit, maxDist, mask, QueryTriggerInteraction.Ignore);
