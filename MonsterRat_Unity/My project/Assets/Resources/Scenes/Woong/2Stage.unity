@@ -4512,21 +4512,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 16142560414437843, guid: 021ce1bbb4dac7941849105a1e653257, type: 3}
-      propertyPath: m_FillAmount
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 793354799357157269, guid: 021ce1bbb4dac7941849105a1e653257, type: 3}
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
       value: 1801810542
-      objectReference: {fileID: 0}
-    - target: {fileID: 1812413129572957405, guid: 021ce1bbb4dac7941849105a1e653257, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 500
-      objectReference: {fileID: 0}
-    - target: {fileID: 1812413129572957405, guid: 021ce1bbb4dac7941849105a1e653257, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -100
       objectReference: {fileID: 0}
     - target: {fileID: 1948312482900459159, guid: 021ce1bbb4dac7941849105a1e653257, type: 3}
       propertyPath: m_Pivot.x
@@ -4614,7 +4602,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3309560025720407332, guid: 021ce1bbb4dac7941849105a1e653257, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -20066,7 +20054,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkDoor
   anim: {fileID: 1198942557}
-  safeZone: {fileID: 4380985245760834377}
 --- !u!1001 &1202146854
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39383,6 +39370,28 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4815713438439203926, guid: 19a7fe93bf1bc0243afd5bacff66e568, type: 3}
   m_PrefabInstance: {fileID: 323964024695094092}
   m_PrefabAsset: {fileID: 0}
+--- !u!64 &353852189197918660
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2867841535798602397}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 3477176812772559159, guid: 777f76e242fdfcc419fa98114be6458b, type: 3}
 --- !u!4 &355347501859811434
 Transform:
   m_ObjectHideFlags: 0
@@ -50384,11 +50393,9 @@ GameObject:
   - component: {fileID: 3208619030958223399}
   - component: {fileID: 1956978515775438722}
   - component: {fileID: 4380985245760834376}
-  - component: {fileID: 4380985245760834379}
-  - component: {fileID: 4380985245760834378}
-  - component: {fileID: 4380985245760834377}
+  - component: {fileID: 353852189197918660}
   m_Layer: 2
-  m_Name: SafeZoneTrigger
+  m_Name: msp_pipe_opening
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -57005,68 +57012,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &4380985245760834377
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2867841535798602397}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb3d09beed252af43b12df2de91fcd21, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SafeZoneTrigger
-  lobbySceneName: 2Stage
-  timeToEvacuate: 3
-  interactionUI: {fileID: 210819254}
-  progressCircle: {fileID: 210819256}
-  infoText: {fileID: 210819255}
-  _PlayersInZoneCount: 0
-  _IsDoorOpened:
-    _value: 0
-  _IsEvacuating:
-    _value: 0
---- !u!114 &4380985245760834378
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2867841535798602397}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 3348329868
-  ObjectInterest: 1
-  Flags: 262145
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 4380985245760834377}
-  ForceRemoteRenderTimeframe: 0
---- !u!65 &4380985245760834379
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2867841535798602397}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 4.229755, y: 4.229754, z: 4.583981}
-  m_Center: {x: 2.454892e-15, y: -0.00000026936908, z: -0.8334148}
 --- !u!1 &4423687370011897601
 GameObject:
   m_ObjectHideFlags: 0

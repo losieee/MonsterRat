@@ -2,12 +2,12 @@
 using System.Collections;
 using UnityEngine.UI;
 using TMPro;
-using System.IO; // JSON 파일 저장을 위해 필요
+using System.IO; 
 
 namespace SlimUI.ModernMenu
 {
 
-    // JSON으로 저장할 데이터 클래스 정의
+    // json으로 저장할 데이터 클래스 
     [System.Serializable]
     public class GameSettingsData
     {
@@ -40,21 +40,15 @@ namespace SlimUI.ModernMenu
     {
 
         [Header("UI PANEL REFERENCE")]
-        [Tooltip("ESC를 눌렀을 때 껐다 켜질 전체 설정 UI 패널(Canvas 또는 Panel)을 연결하세요.")]
         public GameObject settingsPanel;
         public static bool isMenuOpen = false;
 
-        // ==========================================
-        // [최종 추가본] ESC 키 사용 여부 스위치
         [Header("UI BEHAVIOR")]
-        [Tooltip("체크를 해제하면 이 씬에서는 ESC 키로 설정창을 켜고 끌 수 없습니다. (로비 씬용)")]
         public bool canUseEscKey = true;
-        // ==========================================
-
         public enum Platform { Desktop, Mobile };
         public Platform platform;
 
-        // // toggle buttons
+        // // toggle buttons   필요음슴
         // [Header("MOBILE SETTINGS")]
         // public GameObject mobileSFXtext;
         // public GameObject mobileMusictext;
@@ -107,7 +101,7 @@ namespace SlimUI.ModernMenu
             // 저장 경로 설정 (OS별로 안전한 영구 저장 경로 자동 지정됨)
             saveFilePath = Application.persistentDataPath + "/GameSettings.json";
 
-            // 시작 시 JSON 파일 불러오기 (파일이 없으면 기본값 생성)
+            // 시작 시 JSON 파일 불러오기 
             LoadSettings();
 
             // 시작할 때는 메뉴를 숨겨둡니다.
@@ -156,21 +150,21 @@ namespace SlimUI.ModernMenu
             }
         }
 
-        // JSON 세이브로드 로직
+        // json 세이브로드 로직
         private void LoadSettings()
         {
             if (File.Exists(saveFilePath))
             {
                 string json = File.ReadAllText(saveFilePath);
                 currentSettings = JsonUtility.FromJson<GameSettingsData>(json);
-                Debug.Log("설정 파일 불러오기 성공: " + saveFilePath);
+               // Debug.Log("설정 파일 불러오기 성공: " + saveFilePath);
             }
             else
             {
                 // 파일이 없으면 새 객체 생성 (기본값)
                 currentSettings = new GameSettingsData();
                 SaveSettings();
-                Debug.Log("새 설정 파일 생성됨: " + saveFilePath);
+               // Debug.Log("새 설정 파일 생성됨: " + saveFilePath);
             }
         }
 
