@@ -53,11 +53,6 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
         else
         {
             myCamObj.SetActive(false);
-
-            // ?? [핵심 해결 포인트] ??
-            // 이전에는 여기에 rb.isKinematic = true; 가 있어서 덜덜 떨렸습니다.
-            // 방장 화면에서도 게스트가 중력을 받아야 하므로 그 줄을 완전히 삭제했습니다!
-
             var listener = GetComponentInChildren<AudioListener>();
             if (listener != null) listener.enabled = false;
         }
@@ -74,6 +69,11 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
     void Update()
     {
         if (!HasInputAuthority) return;
+
+        if (SlimUI.ModernMenu.UISettingsManager.isMenuOpen || PhotonPlayerUIState.isGlobalStoreOpen)
+        {
+            return; 
+        }
 
         yaw += Input.GetAxis("Mouse X") * mouseSensitivity;
         pitch -= Input.GetAxis("Mouse Y") * mouseSensitivity;
