@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
-using Fusion; // Fusion 네임스페이스 추가
+using Fusion;
 
 public class PhotonRatController : NetworkBehaviour
 {
@@ -36,6 +36,9 @@ public class PhotonRatController : NetworkBehaviour
     [Networked, OnChangedRender(nameof(OnDeadStateChanged))]
     public NetworkBool IsDead { get; set; }
 
+    // 걷는 상태 공유
+    [Networked] public NetworkBool IsWalking { get; set; }
+
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -52,30 +55,25 @@ public class PhotonRatController : NetworkBehaviour
 
     public override void Spawned()
     {
-
-        //IsDead = false;
         FindPlayer();
         if (IsDead)
         {
             OnDeadStateChanged();
-
         }
     }
 
     public override void FixedUpdateNetwork()
     {
-        
         if (IsDead || !HasStateAuthority) return;
 
         FindPlayer();
 
         if (targetPlayer == null)
         {
-            SetWalking(false);
+            IsWalking = false; // ★ 함수 대신 네트워크 변수 조작
             return;
         }
 
-        // 공격 쿨타임 감소
         if (attackCooldownTimer > 0f)
             attackCooldownTimer -= Runner.DeltaTime;
 
@@ -86,14 +84,13 @@ public class PhotonRatController : NetworkBehaviour
                 agent.isStopped = true;
                 agent.ResetPath();
             }
-            SetWalking(false);
+            IsWalking = false; // 이거 바꿨어요
             LookAtTarget();
             return;
         }
 
         float surfaceDistance = GetSurfaceDistanceToPlayer();
 
-        // 공격 범위 진입 시
         if (surfaceDistance <= attackDistance)
         {
             if (!agent.isStopped)
@@ -102,7 +99,7 @@ public class PhotonRatController : NetworkBehaviour
                 agent.ResetPath();
             }
 
-            SetWalking(false);
+            IsWalking = false; // 이거 바꿈 
             LookAtTarget();
 
             if (!isAttacking && attackCooldownTimer <= 0f)
@@ -112,7 +109,6 @@ public class PhotonRatController : NetworkBehaviour
         }
         else
         {
-            // 추적 로직
             if (agent.isStopped) agent.isStopped = false;
 
             repathTimer -= Runner.DeltaTime;
@@ -123,7 +119,16 @@ public class PhotonRatController : NetworkBehaviour
             }
 
             bool walking = agent.velocity.sqrMagnitude > 0.1f && !agent.isStopped && !isAttacking;
-            SetWalking(walking);
+            IsWalking = walking; 
+        }
+    }
+
+    // Render로 호스트 클라 모두 동시 실행
+    public override void Render()
+    {
+        if (animator != null && !IsDead)
+        {
+            animator.SetBool(walkParam, IsWalking);
         }
     }
 
@@ -151,7 +156,11 @@ public class PhotonRatController : NetworkBehaviour
         if (IsDead)
         {
             if (agent != null) agent.enabled = false;
-            if (animator != null) animator.enabled = false;
+            if (animator != null)
+            {
+                animator.SetBool(walkParam, false);
+                animator.enabled = false;
+            }
 
             Rigidbody rb = GetComponentInChildren<Rigidbody>();
             if (rb != null)
@@ -178,14 +187,13 @@ public class PhotonRatController : NetworkBehaviour
         transform.LookAt(lookPos);
     }
 
-    void SetWalking(bool walking)
-    {
-        if (animator != null) animator.SetBool(walkParam, walking);
-    }
-
+    // 공격 애니메이션실행
     IEnumerator ActivateHitbox()
     {
         isAttacking = true;
+
+        // 쥐가 공격할때 방장이 클라이언트한테 공격한다고 알려주기
+        Rpc_PlayAttackAnim();
 
         if (hitbox != null)
         {
@@ -195,7 +203,7 @@ public class PhotonRatController : NetworkBehaviour
 
         yield return new WaitForSeconds(hitboxActiveTime);
 
-        if(hitbox != null)
+        if (hitbox != null)
             hitbox.enabled = false;
 
         yield return new WaitForSeconds(attackAnimDuration - hitboxActiveTime);
@@ -203,7 +211,16 @@ public class PhotonRatController : NetworkBehaviour
         isAttacking = false;
     }
 
-    // 가장 가까운 플레이어 찾기
+    //호스트 클라 모두 공격 애니메이션 볼 수 있게
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void Rpc_PlayAttackAnim()
+    {
+        if (animator != null && !IsDead)
+        {
+            animator.SetTrigger(attackTrigger);
+        }
+    }
+
     void FindPlayer()
     {
         GameObject[] players = GameObject.FindGameObjectsWithTag(playerTag);
@@ -231,6 +248,7 @@ public class PhotonRatController : NetworkBehaviour
         targetPlayer = closest;
         playerCapsule = closestCapsule;
     }
+
     float GetSurfaceDistanceToPlayer()
     {
         if (targetPlayer == null) return Mathf.Infinity;
@@ -249,7 +267,6 @@ public class PhotonRatController : NetworkBehaviour
         return Mathf.Max(0f, centerDistance - playerRadius - ratRadius);
     }
 
-    // 플레이어가 Hitbox 안에 있는지 확인 
     void CheckHitboxNow()
     {
         if (hitbox == null) return;
