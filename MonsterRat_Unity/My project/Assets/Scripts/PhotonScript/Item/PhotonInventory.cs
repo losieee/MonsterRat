@@ -3,13 +3,15 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using Fusion;
 using System.Linq;
-using System; // Enum 파싱용
+using System;
+using System.Security; // Enum 파싱용
 
 public class PhotonInventory : NetworkBehaviour
 {
     [Header("UI 설정")]
     public GameObject inventoryPanel;
     public List<Slot> inventorySlots;
+    public GameObject[] selectSlots;
 
     [Header("씬 및 버리기 설정")]
     public Transform dropPoint;
@@ -62,6 +64,12 @@ public class PhotonInventory : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.BackQuote))
         {
             currentSelectedSlot = -1;
+
+            for (int i = 0; i < selectSlots.Length; i++)
+            {
+                selectSlots[i].SetActive(false);
+            }
+
             RPC_ChangeTool(ToolType.Hand);
         }
         if (Input.GetKeyDown(KeyCode.Alpha1)) SelectSlot(0);
@@ -139,6 +147,14 @@ public class PhotonInventory : NetworkBehaviour
 
         currentSelectedSlot = slotIndex;
         ItemData data = heldItems[slotIndex];
+
+        // 인벤토리 몇번을 사용하고 있는지 표시
+        for (int i = 0; i < selectSlots.Length; i++)
+        {
+            selectSlots[i].SetActive(false);
+        }
+
+        selectSlots[slotIndex].SetActive(true);
 
         if (Enum.TryParse(data.itemName, true, out ToolType type))
         {

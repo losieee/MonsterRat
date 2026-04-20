@@ -490,7 +490,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 23.262, y: -4.665, z: 26.104}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2.5, y: 2.5, z: 2.5}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3981939710228043285}
@@ -583,10 +583,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhotonRatController
   playerTag: Player
-  stopDistance: 0.1
-  repathInterval: 0.2
+  stopDistance: 1
+  repathInterval: 0.3
   hitbox: {fileID: 3361789315333049335}
-  attackDistance: 0.5
+  attackDistance: 1.2
   hitboxActiveTime: 0.1
   attackCooldown: 1
   attackDamage: 15
@@ -595,7 +595,10 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 128
+  _NetMoveSpeed: 0
   _IsDead:
+    _value: 0
+  _IsWalking:
     _value: 0
 --- !u!114 &7924361020083346697
 MonoBehaviour:

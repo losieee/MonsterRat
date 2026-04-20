@@ -22,6 +22,10 @@ public class PhotonRatController : NetworkBehaviour
     public GameObject bloodPreb;
     public LayerMask groundMask;
 
+    [Header("Animation")]
+    private string moveSpeedParam = "MoveSpeed";
+    [Networked] public float NetMoveSpeed { get; set; }
+
     private string walkParam = "isWalking";
     private string attackTrigger = "Attack";
 
@@ -32,6 +36,7 @@ public class PhotonRatController : NetworkBehaviour
     float repathTimer;
     bool isAttacking;
     float attackCooldownTimer;
+    private float baseSpeed = 9f;
 
     [Networked, OnChangedRender(nameof(OnDeadStateChanged))]
     public NetworkBool IsDead { get; set; }
@@ -43,11 +48,15 @@ public class PhotonRatController : NetworkBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
+
         agent.stoppingDistance = stopDistance;
         agent.updateRotation = true;
         agent.updatePosition = true;
+
         agent.angularSpeed = 360f;
-        agent.acceleration = 20f;
+        agent.acceleration = 6f;
+        agent.autoBraking = true;
+        baseSpeed = agent.speed;
 
         if (hitbox != null)
             hitbox.enabled = false;
@@ -118,8 +127,42 @@ public class PhotonRatController : NetworkBehaviour
                 MoveToPlayerEdge();
             }
 
-            bool walking = agent.velocity.sqrMagnitude > 0.1f && !agent.isStopped && !isAttacking;
-            IsWalking = walking; 
+            float currentSpeed = agent.velocity.magnitude;
+
+            // 로컬 기준 속도
+            Vector3 localVel = transform.InverseTransformDirection(agent.velocity);
+            float forwardSpeed = Mathf.Abs(localVel.z);
+
+            // 다음 경로 방향과 현재 바라보는 방향 차이
+            Vector3 toCorner = agent.steeringTarget - transform.position;
+            toCorner.y = 0f;
+
+            float turnAngle = 0f;
+
+            if (toCorner.sqrMagnitude > 0.001f)
+            {
+                turnAngle = Vector3.Angle(transform.forward, toCorner.normalized);
+
+                float speedFactor = Mathf.InverseLerp(120f, 0f, turnAngle);
+                float targetSpeed = Mathf.Lerp(baseSpeed * 0.45f, baseSpeed, speedFactor);
+
+                agent.speed = Mathf.Lerp(agent.speed, targetSpeed, 6f * Runner.DeltaTime);
+            }
+
+            // 코너를 크게 돌수록 값이 줄어듦
+            float turnPenalty = Mathf.InverseLerp(100f, 0f, turnAngle);
+
+            // 애니메이션용 속도: "앞으로 가는 속도" 위주 + 회전 패널티
+            float animSpeed = 0f;
+            if (agent.speed > 0.01f)
+            {
+                animSpeed = Mathf.Clamp01((forwardSpeed / agent.speed) * turnPenalty);
+            }
+
+            NetMoveSpeed = animSpeed;
+
+            bool walking = currentSpeed > 0.05f && !agent.isStopped && !isAttacking;
+            IsWalking = walking;
         }
     }
 
@@ -129,6 +172,7 @@ public class PhotonRatController : NetworkBehaviour
         if (animator != null && !IsDead)
         {
             animator.SetBool(walkParam, IsWalking);
+            animator.SetFloat(moveSpeedParam, NetMoveSpeed, 0.1f, Time.deltaTime);
         }
     }
 
