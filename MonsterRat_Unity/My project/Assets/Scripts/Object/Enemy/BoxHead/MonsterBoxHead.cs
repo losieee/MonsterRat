@@ -2,7 +2,7 @@ using Fusion;
 using System.Collections;
 using UnityEngine;
 
-public class ShootTarget : NetworkBehaviour, IClearTarget
+public class MonsterBoxHead : NetworkBehaviour, IClearTarget
 {
     public int maxHits = 3;
     public float weight = 1f;

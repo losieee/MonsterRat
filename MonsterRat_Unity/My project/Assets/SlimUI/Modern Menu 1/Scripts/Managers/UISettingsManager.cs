@@ -12,6 +12,7 @@ namespace SlimUI.ModernMenu
     public class GameSettingsData
     {
         public float musicVolume = 1.0f;
+        public float effectVolume = 1.0f;
         public float xSensitivity = 1.0f;
         public float ySensitivity = 1.0f;
         public float mouseSmoothing = 0.0f;
@@ -38,6 +39,7 @@ namespace SlimUI.ModernMenu
 
     public class UISettingsManager : MonoBehaviour
     {
+        public static UISettingsManager Instance;
 
         [Header("UI PANEL REFERENCE")]
         public GameObject settingsPanel;
@@ -84,8 +86,13 @@ namespace SlimUI.ModernMenu
         [Header("CONTROLS SETTINGS")]
         public GameObject invertmousetext;
 
+        [Header("AUDIO SETTINGS")]
+        public AudioSource bgmSource;
+        public AudioSource sfxSource;
+
         // sliders
-        public GameObject musicSlider;
+        public Slider musicSlider;
+        public Slider effectSlider;
         public GameObject sensitivityXSlider;
         public GameObject sensitivityYSlider;
         public GameObject mouseSmoothSlider;
@@ -96,10 +103,19 @@ namespace SlimUI.ModernMenu
         private GameSettingsData currentSettings;
         private string saveFilePath;
 
+        private bool isInitializing = false;        // 초기화중에는 Json값 저장 못하게 막음
+
+        private void Awake()
+        {
+            Instance = this;
+        }
+
         public void Start()
         {
             // 저장 경로 설정 (OS별로 안전한 영구 저장 경로 자동 지정됨)
             saveFilePath = Application.persistentDataPath + "/GameSettings.json";
+
+            isInitializing = true;
 
             // 시작 시 JSON 파일 불러오기 
             LoadSettings();
@@ -109,6 +125,8 @@ namespace SlimUI.ModernMenu
 
             // 불러온 데이터로 UI 및 게임 엔진 설정 업데이트
             ApplySettingsToUIAndEngine();
+
+            isInitializing = false;
 
             Debug.Log("세이브 파일 실제 위치: " + Application.persistentDataPath);
         }
@@ -170,17 +188,28 @@ namespace SlimUI.ModernMenu
 
         public void SaveSettings()
         {
+            if (isInitializing) return;
+
             // 1. Music Slider 저장 및 전체 볼륨 조절
             if (musicSlider != null)
             {
-                Slider slider = musicSlider.GetComponent<Slider>();
-                if (slider != null)
-                {
-                    currentSettings.musicVolume = slider.value;
-                    PlayerPrefs.SetFloat("MusicVolume", currentSettings.musicVolume);
-                    AudioListener.volume = currentSettings.musicVolume;
-                }
+                currentSettings.musicVolume = musicSlider.value;
+                PlayerPrefs.SetFloat("MusicVolume", currentSettings.musicVolume);
+
+                if (bgmSource != null)
+                    bgmSource.volume = currentSettings.musicVolume;
             }
+
+            if (effectSlider != null)
+            {
+                currentSettings.effectVolume = effectSlider.value;
+                PlayerPrefs.SetFloat("EffectVolume", currentSettings.effectVolume);
+
+                if (sfxSource != null)
+                    sfxSource.volume = currentSettings.effectVolume;
+            }
+
+            PlayerPrefs.Save();
 
             // 2. Sensitivity X 저장
             if (sensitivityXSlider != null)
@@ -239,7 +268,15 @@ namespace SlimUI.ModernMenu
                 difficultynormaltextLINE.gameObject.SetActive(false);
             }
 
-            if (musicSlider) musicSlider.GetComponent<Slider>().value = currentSettings.musicVolume;
+            if (musicSlider) musicSlider.SetValueWithoutNotify(currentSettings.musicVolume);
+            if (effectSlider) effectSlider.SetValueWithoutNotify(currentSettings.effectVolume);
+
+            if (bgmSource != null)
+                bgmSource.volume = currentSettings.musicVolume;
+
+            if (sfxSource != null)
+                sfxSource.volume = currentSettings.effectVolume;
+
             if (sensitivityXSlider) sensitivityXSlider.GetComponent<Slider>().value = currentSettings.xSensitivity;
             if (sensitivityYSlider) sensitivityYSlider.GetComponent<Slider>().value = currentSettings.ySensitivity;
             if (mouseSmoothSlider) mouseSmoothSlider.GetComponent<Slider>().value = currentSettings.mouseSmoothing;
@@ -281,7 +318,17 @@ namespace SlimUI.ModernMenu
             if (fullscreentext) fullscreentext.GetComponent<TMP_Text>().text = Screen.fullScreen ? "on" : "off";
         }
 
-        public void MusicSlider() { SaveSettings(); }
+        public void MusicSlider()
+        {
+            if (isInitializing) return;
+            SaveSettings();
+        }
+
+        public void EffectSlider()
+        {
+            if (isInitializing) return;
+            SaveSettings();
+        }
         public void SensitivityXSlider() { SaveSettings(); }
         public void SensitivityYSlider() { SaveSettings(); }
         public void SensitivitySmoothing() { SaveSettings(); }
@@ -463,5 +510,8 @@ namespace SlimUI.ModernMenu
             if (texturehightextLINE) texturehightextLINE.gameObject.SetActive(true);
             SaveSettings();
         }
+
+        public float EffectVolume => currentSettings != null ? currentSettings.effectVolume : 1f;
+        public float MusicVolume => currentSettings != null ? currentSettings.musicVolume : 1f;
     }
 }

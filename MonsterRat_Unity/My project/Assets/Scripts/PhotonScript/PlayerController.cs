@@ -162,14 +162,17 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
     [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
     public void Rpc_PlayFootstep(FootStepRangeType stepType)
     {
+        float sfxVolume = 1f;
+
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+        {
+            sfxVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+        }
+
         if (HasInputAuthority)
-        {
-            footstepAudioSource.volume = 0.6f;
-        }
+            footstepAudioSource.volume = 0.6f * sfxVolume;
         else
-        {
-            footstepAudioSource.volume = 1f;
-        }
+            footstepAudioSource.volume = 1f * sfxVolume;
 
         PlayFootstep(stepType);
     }

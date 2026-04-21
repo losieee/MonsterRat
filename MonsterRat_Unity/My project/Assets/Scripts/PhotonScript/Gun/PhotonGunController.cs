@@ -68,10 +68,10 @@ public class PhotonGun : InvenBase
         {
             GameObject hitObj = hit.collider.gameObject;
 
-            ShootTarget boxHead = hitObj.GetComponentInParent<ShootTarget>();
+            MonsterBoxHead boxHead = hitObj.GetComponentInParent<MonsterBoxHead>();
             if (boxHead == null)
             {
-                boxHead = hitObj.transform.root.GetComponent<ShootTarget>();
+                boxHead = hitObj.transform.root.GetComponent<MonsterBoxHead>();
             }
 
             if (boxHead != null)

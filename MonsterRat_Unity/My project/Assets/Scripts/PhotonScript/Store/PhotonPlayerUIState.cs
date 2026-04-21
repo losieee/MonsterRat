@@ -7,6 +7,7 @@ public class PhotonPlayerUIState : NetworkBehaviour
     [Header("UI ¼³Á¤")]
     public GameObject storePanel;
     public float storeDetectRadius = 2.5f;
+    public GameObject aimDot;
 
     bool inStoreZone;
     bool uiOpen;
@@ -101,6 +102,7 @@ public class PhotonPlayerUIState : NetworkBehaviour
         isGlobalStoreOpen = true;  
 
         if (storePanel != null) storePanel.SetActive(true);
+        if (aimDot != null) aimDot.SetActive(false);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         OnStoreOpened?.Invoke();
@@ -112,6 +114,7 @@ public class PhotonPlayerUIState : NetworkBehaviour
         isGlobalStoreOpen = false;  
 
         if (storePanel != null) storePanel.SetActive(false);
+        if (aimDot != null) aimDot.SetActive(true);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         OnStoreClosed?.Invoke();

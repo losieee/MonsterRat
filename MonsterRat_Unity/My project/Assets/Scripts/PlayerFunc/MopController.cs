@@ -60,8 +60,15 @@ public class MopController : InvenBase
         if (source == null || mopSound == null)
             return;
 
-        float volumeScale = HasInputAuthority ? 0.85f : 1f;
-        source.PlayOneShot(mopSound, volumeScale);
+        float effectVolume = 1f;
+
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+            effectVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+
+        float baseVolume = HasInputAuthority ? 0.85f : 1f;
+        float finalVolume = baseVolume * effectVolume;
+
+        source.PlayOneShot(mopSound, finalVolume);
     }
 
     IEnumerator Cooldown()

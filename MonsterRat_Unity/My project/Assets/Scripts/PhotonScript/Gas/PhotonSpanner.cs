@@ -77,7 +77,15 @@ public class PhotonSpanner : InvenBase
 
         source.clip = spannerSound;
         source.loop = true;
-        source.volume = HasInputAuthority ? 0.85f : 1f;
+
+        float effectVolume = 1f;
+
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+            effectVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+
+        float baseVolume = HasInputAuthority ? 0.85f : 1f;
+        float finalVolume = baseVolume * effectVolume;
+        source.volume = finalVolume;
 
         if (!source.isPlaying)
             source.Play();
