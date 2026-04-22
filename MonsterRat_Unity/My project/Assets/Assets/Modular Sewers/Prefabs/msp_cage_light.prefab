@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7461721227755498235}
   - component: {fileID: 4600899706563643535}
-  - component: {fileID: 9080582231790289767}
+  - component: {fileID: 8612164484984980487}
   m_Layer: 0
   m_Name: Point Light
   m_TagString: Untagged
@@ -43,9 +43,9 @@ Light:
   m_Enabled: 1
   serializedVersion: 12
   m_Type: 2
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 46.207855
-  m_Range: 10
+  m_Color: {r: 0.83555835, g: 0.9150943, b: 0.7294856, a: 1}
+  m_Intensity: 1
+  m_Range: 14.44
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize2D: {x: 10, y: 10}
@@ -98,7 +98,7 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
---- !u!114 &9080582231790289767
+--- !u!114 &8612164484984980487
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -109,7 +109,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalLightData
+  m_EditorClassIdentifier: 
   m_UsePipelineSettings: 1
   m_AdditionalLightsShadowResolutionTier: 2
   m_CustomShadowLayers: 0
@@ -149,31 +149,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c87b1de2d59ec4d4ab0166977e48f701, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 41.54721
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c87b1de2d59ec4d4ab0166977e48f701, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 1.5707748
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c87b1de2d59ec4d4ab0166977e48f701, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 7.904991
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c87b1de2d59ec4d4ab0166977e48f701, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: -0.7071046
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c87b1de2d59ec4d4ab0166977e48f701, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: 0.000000015454372
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c87b1de2d59ec4d4ab0166977e48f701, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0.707109
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c87b1de2d59ec4d4ab0166977e48f701, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: 0.000000015454273
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c87b1de2d59ec4d4ab0166977e48f701, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -181,7 +181,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c87b1de2d59ec4d4ab0166977e48f701, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: -270
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c87b1de2d59ec4d4ab0166977e48f701, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z

@@ -16,6 +16,9 @@ public class TutorialGun : TutorialInvenBase
     public GameObject bloodPreb;
     public GameObject pollutionPreb;
 
+    [Header("Animation")]
+    public Animator anim;
+
     public override void Tick()
     {
         if (!Input.GetMouseButtonDown(0)) return;
@@ -67,6 +70,8 @@ public class TutorialGun : TutorialInvenBase
 
         if (interactor.SphereCast(ratAimRadius, ratDistance, ratMask, out RaycastHit hit))
         {
+            anim.SetTrigger("Shoot");
+
             GameObject hitObj = hit.collider.gameObject;
             RatController rat = hitObj.GetComponentInParent<RatController>();
             GameObject ratObj = rat != null ? rat.gameObject : hitObj.transform.root.gameObject;
@@ -76,6 +81,7 @@ public class TutorialGun : TutorialInvenBase
             {
                 if (!rc.enabled) return false;
                 rc.enabled = false;
+                rc.TakeDamage();
             }
             if (rc != null) rc.enabled = false;
             //ratObj.transform.GetChild(1).gameObject.SetActive(false);

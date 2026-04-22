@@ -8,8 +8,10 @@ public class TutotialSpanner : TutorialInvenBase
     public float distance = 2f;
     public float fixTime = 5f;
     public Image fixGauge;
+    public Animator anim;
 
     float currentTime;
+    bool isPlaying = false;
 
     public override void Tick()
     {
@@ -18,16 +20,14 @@ public class TutotialSpanner : TutorialInvenBase
             GameObject t = interactor != null ? interactor.LookTarget : null;
             if (t == null)
             {
-                currentTime = 0f;
-                fixGauge.fillAmount = 0f;
+                ResetFix();
                 return;
             }
 
             float d = Vector3.Distance(interactor.transform.position, t.transform.position);
             if (d > distance)
             {
-                currentTime = 0f;
-                fixGauge.fillAmount = 0f;
+                ResetFix();
                 return;
             }
 
@@ -38,26 +38,43 @@ public class TutotialSpanner : TutorialInvenBase
                 if (currentTime <= fixTime)
                 {
                     fixGauge.fillAmount = currentTime / fixTime;
+                    SpannerAnim(true);
                 }
                 else
                 {
                     Destroy(t.gameObject);
-                    currentTime = 0f;
-                    fixGauge.fillAmount = 0f;
+                    ResetFix();
                 }
             }
             else
             {
-                currentTime = 0f;
-                fixGauge.fillAmount = 0f;
+                ResetFix();
             }
         }
 
         if (Input.GetMouseButtonUp(0))
         {
-            currentTime = 0;
-            fixGauge.fillAmount = 0;
+            ResetFix();
         }
+    }
+
+    void ResetFix()
+    {
+        currentTime = 0f;
+
+        if (fixGauge != null)
+            fixGauge.fillAmount = 0f;
+
+        SpannerAnim(false);
+    }
+
+    void SpannerAnim(bool play)
+    {
+        if (anim == null) return;
+        if (isPlaying == play) return;
+
+        isPlaying = play;
+        anim.SetBool("isFixed", play);
     }
 }
  

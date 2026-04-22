@@ -28,6 +28,9 @@ public class TutorialDialogueSystem : MonoBehaviour
     public float minStayTime = 1.2f;        // 최소 시간
     public float maxStayTime = 6.0f;        // 최대 시간
 
+    [Header("설정")]
+    public GameObject optionPanel;
+
     // 자동 진행 멈출 인덱스
     public List<int> pauseIndices = new List<int>() { };
 
@@ -289,10 +292,11 @@ public class TutorialDialogueSystem : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
 
         TutorialScreenFader.Instance.FadeIn(2f);
+        PlayerMov.instance.canControl = true;
 
         yield return new WaitForSeconds(1f);
 
-        
+        optionPanel.SetActive(true);
     }
 
     private IEnumerator FadeDialogueOnly(float from, float to, float duration)

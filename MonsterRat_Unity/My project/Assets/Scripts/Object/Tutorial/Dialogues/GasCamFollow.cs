@@ -9,6 +9,7 @@ public class GasCamFollow : MonoBehaviour
     public GameObject gasAction1;
     public GameObject gasAction2;
     public GameObject spannerPos;
+    public GameObject playerHand;
 
     public MonoBehaviour[] cameraControlScripts;
 
@@ -33,6 +34,7 @@ public class GasCamFollow : MonoBehaviour
 
         if (tutorialManager != null)
             tutorialManager.NotifyGasCamEntered();
+        playerHand.SetActive(false);
 
         StartCoroutine(Co_FadeSnapLock());
     }
@@ -79,6 +81,7 @@ public class GasCamFollow : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         dialogue.ResumeAuto();
+        playerHand.SetActive(true);
         gameObject.SetActive(false);
     }
 

@@ -26,6 +26,7 @@ public class TutorialInventory : MonoBehaviour
     [Header("인벤 이미지")]
     public GameObject invenPanel;
     public Image[] slotImages;
+    public GameObject[] selectImages;
     public Sprite emptySlotSprite;
     public Sprite handSprite;
     public Sprite gunSprite;
@@ -34,6 +35,8 @@ public class TutorialInventory : MonoBehaviour
 
     [Header("아이템 모델")]
     public GameObject solModel;
+    public GameObject gunModel;
+    public GameObject spannerModel;
 
     [Header("아이템 드롭")]
     public Transform dropPoint;
@@ -66,6 +69,9 @@ public class TutorialInventory : MonoBehaviour
 
         RefreshInventoryUI();
         UpdateSolModel();
+        UpdateGunModel();
+        UpdateSpannerModel();
+        UpdateSelectImages(-1);
     }
 
     void Update()
@@ -74,6 +80,17 @@ public class TutorialInventory : MonoBehaviour
             ToggleInventory();
         if(Input.GetKeyDown(KeyCode.G))
             DropCurrentToolToWorld();
+    }
+
+    void UpdateSelectImages(int activeIndex)
+    {
+        if (selectImages == null || selectImages.Length == 0) return;
+
+        for (int i = 0; i < selectImages.Length; i++)
+        {
+            if (selectImages[i] == null) continue;
+            selectImages[i].SetActive(i == activeIndex);
+        }
     }
 
     public void ToggleInventory()
@@ -129,6 +146,8 @@ public class TutorialInventory : MonoBehaviour
 
         RefreshInventoryUI();
         UpdateSolModel();
+        UpdateGunModel();
+        UpdateSpannerModel();
 
         return true;
     }
@@ -137,7 +156,11 @@ public class TutorialInventory : MonoBehaviour
     {
         CurrentSlot = 0;
         UpdateSolModel();
+        UpdateGunModel();
+        UpdateSpannerModel();
         RefreshInventoryUI();
+
+        UpdateSelectImages(-1);
     }
 
     // 슬롯 선택
@@ -151,7 +174,11 @@ public class TutorialInventory : MonoBehaviour
         CurrentSlot = slot;
 
         UpdateSolModel();
+        UpdateGunModel();
+        UpdateSpannerModel();
         RefreshInventoryUI();
+
+        UpdateSelectImages(slot - 1);
     }
 
     public bool DropCurrentToolToWorld()
@@ -181,6 +208,8 @@ public class TutorialInventory : MonoBehaviour
 
         RefreshInventoryUI();
         UpdateSolModel();
+        UpdateGunModel();
+        UpdateSpannerModel();
     }
 
     public IReadOnlyList<TutorialToolType> GetSlots() => slots;
@@ -215,6 +244,18 @@ public class TutorialInventory : MonoBehaviour
     {
         if (solModel == null) return;
         solModel.SetActive(CurrentTool() == TutorialToolType.Mop);
+    }
+
+    void UpdateGunModel()
+    {
+        if (gunModel == null) return;
+        gunModel.SetActive(CurrentTool() == TutorialToolType.Gun);
+    }
+
+    void UpdateSpannerModel()
+    {
+        if (spannerModel == null) return;
+        spannerModel.SetActive(CurrentTool() == TutorialToolType.Spanner);
     }
 
     Sprite GetSpriteByTool(TutorialToolType tool)

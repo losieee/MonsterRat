@@ -8,6 +8,9 @@ public class PlayerGas : MonoBehaviour
     public float checkInterval = 0.2f;
     public float sampleHeightOffset = 0.8f;
 
+    [Header("Mode")]
+    public bool useNetworkAuthority = true;
+
     private float timer = 0f;
     private NetworkObject networkObject;
     private GasZone[] gasZones;
@@ -24,7 +27,7 @@ public class PlayerGas : MonoBehaviour
 
     private void Update()
     {
-        if (networkObject == null || !networkObject.HasInputAuthority)
+        if (!CanProcessGas())
             return;
 
         if (gasZones == null || gasZones.Length == 0)
@@ -34,7 +37,7 @@ public class PlayerGas : MonoBehaviour
         if (timer > 0f) return;
         timer = checkInterval;
 
-        Vector3 pos = networkObject.transform.position + Vector3.up * sampleHeightOffset;
+        Vector3 pos = transform.position + Vector3.up * sampleHeightOffset;
 
         for (int i = 0; i < gasZones.Length; i++)
         {
@@ -47,6 +50,14 @@ public class PlayerGas : MonoBehaviour
             AddExposure(zone.exposurePerSec * checkInterval);
             break;
         }
+    }
+
+    bool CanProcessGas()
+    {
+        if (!useNetworkAuthority)
+            return true;
+
+        return networkObject != null && networkObject.HasInputAuthority;
     }
 
     public void AddExposure(float amount)

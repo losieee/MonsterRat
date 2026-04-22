@@ -18,8 +18,15 @@ public class RatController : MonoBehaviour
     public float attackDamage = 15f;
     public float attackAnimDuration = 0.8f;
 
-    private string walkParam = "isWalking";
+    private string moveSpeedParam = "MoveSpeed";
+    private string turnParam = "Turn";
     private string attackTrigger = "Attack";
+    private string deadTrigger = "Dead";
+
+    [Header("Animation")]
+    public float walkRange = 1.2f;      // 이 거리 안으로 들어오면 걷는 애니메이션
+    public float runSpeed = 3.5f;       // 멀리 있을 때
+    public float walkSpeed = 1.6f;      // 가까이 있을 때
 
     NavMeshAgent agent;
     Animator animator;
@@ -28,29 +35,35 @@ public class RatController : MonoBehaviour
     float repathTimer;
     bool isAttacking;
     float attackCooldownTimer;
+    private float baseSpeed;
+    float animMoveSpeed;
+    float animTurn;
+    bool isDead = false;
+
 
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
+
+        agent.obstacleAvoidanceType = ObstacleAvoidanceType.HighQualityObstacleAvoidance;
+        agent.avoidancePriority = Random.Range(20, 80);
         agent.stoppingDistance = stopDistance;
         agent.updateRotation = true;
         agent.updatePosition = true;
+        
         agent.angularSpeed = 360f;
-        agent.acceleration = 20f;
+        agent.acceleration = 6f;
+        agent.autoBraking = true;
+        agent.speed = runSpeed;
+        baseSpeed = runSpeed;
 
         if (hitbox != null)
-            hitbox.gameObject.SetActive(false);
+            hitbox.enabled = false;
     }
 
     void OnEnable() => SceneManager.sceneLoaded += OnSceneLoaded;
-    void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-
-        if (agent != null) agent.enabled = false;
-        if (animator != null) animator.enabled = false;
-    }
+    void OnDisable() => SceneManager.sceneLoaded -= OnSceneLoaded;
 
     void Start()
     {
@@ -59,10 +72,19 @@ public class RatController : MonoBehaviour
 
     void Update()
     {
+        if (isDead) return;
+
+        if (animator != null)
+        {
+            animator.SetFloat(moveSpeedParam, animMoveSpeed, 0.1f, Time.deltaTime);
+            animator.SetFloat(turnParam, animTurn, 0.1f, Time.deltaTime);
+        }
+
         if (player == null)
         {
             FindPlayer();
-            SetWalking(false);
+            animMoveSpeed = 0f;
+            animTurn = 0f;
             return;
         }
 
@@ -72,16 +94,16 @@ public class RatController : MonoBehaviour
 
         if (isAttacking)
         {
+            animMoveSpeed = 0f;
+            animTurn = 0f;
+
             if (!agent.isStopped)
             {
                 agent.isStopped = true;
                 agent.ResetPath();
             }
 
-            SetWalking(false);
-
-            Vector3 lookPos = new Vector3(player.position.x, transform.position.y, player.position.z);
-            transform.LookAt(lookPos);
+            LookAtTarget();
             return;
         }
 
@@ -90,16 +112,16 @@ public class RatController : MonoBehaviour
         // 공격범위 안에 있으면 멈춤
         if (surfaceDistance <= attackDistance)
         {
+            animMoveSpeed = 0f;
+            animTurn = 0f;
+
             if (!agent.isStopped)
             {
                 agent.isStopped = true;
                 agent.ResetPath();
             }
 
-            SetWalking(false);
-
-            Vector3 lookPos = new Vector3(player.position.x, transform.position.y, player.position.z);
-            transform.LookAt(lookPos);
+            LookAtTarget();
 
             if (!isAttacking && attackCooldownTimer <= 0f)
             {
@@ -119,8 +141,76 @@ public class RatController : MonoBehaviour
                 MoveToPlayerEdge();
             }
 
-            bool walking = agent.velocity.sqrMagnitude > 0.1f && !agent.isStopped && !isAttacking;
-            SetWalking(walking);
+            float currentSpeed = agent.velocity.magnitude;
+
+            Vector3 localVel = transform.InverseTransformDirection(agent.velocity);
+            float forwardSpeed = Mathf.Clamp01(Mathf.Abs(localVel.z) / Mathf.Max(baseSpeed, 0.01f));
+
+            Vector3 toCorner = agent.steeringTarget - transform.position;
+            toCorner.y = 0f;
+
+            float signedTurn = 0f;
+            float turnAngleAbs = 0f;
+
+            float desiredBaseSpeed = surfaceDistance <= walkRange ? walkSpeed : runSpeed;
+
+            if (toCorner.sqrMagnitude > 0.001f)
+            {
+                Vector3 dir = toCorner.normalized;
+
+                signedTurn = Vector3.SignedAngle(transform.forward, dir, Vector3.up) / 90f;
+                signedTurn = Mathf.Clamp(signedTurn, -1f, 1f);
+
+                turnAngleAbs = Mathf.Abs(Vector3.SignedAngle(transform.forward, dir, Vector3.up));
+
+                float cornerFactor = Mathf.InverseLerp(120f, 0f, turnAngleAbs);
+                float targetSpeed = Mathf.Lerp(desiredBaseSpeed * 0.45f, desiredBaseSpeed, cornerFactor);
+
+                agent.speed = Mathf.Lerp(agent.speed, targetSpeed, 6f * Time.deltaTime);
+            }
+            else
+            {
+                agent.speed = Mathf.Lerp(agent.speed, desiredBaseSpeed, 6f * Time.deltaTime);
+            }
+
+            float turnPenalty = Mathf.InverseLerp(100f, 0f, turnAngleAbs);
+            float moveValue = Mathf.Clamp01(forwardSpeed * turnPenalty);
+
+            float turnValue = 0f;
+            if (currentSpeed > 0.05f)
+                turnValue = signedTurn;
+
+            animMoveSpeed = moveValue;
+            animTurn = turnValue;
+        }
+    }
+
+    // 쥐 사망
+    public void TakeDamage()
+    {
+        if (isDead) return;
+
+        isDead = true;
+
+        animMoveSpeed = 0f;
+        animTurn = 0f;
+        isAttacking = false;
+
+        if (agent != null)
+        {
+            agent.isStopped = true;
+            agent.ResetPath();
+            agent.enabled = false;
+        }
+
+        if (animator != null)
+        {
+            animator.SetTrigger(deadTrigger);
+        }
+
+        if (hitbox != null)
+        {
+            hitbox.enabled = false;
         }
     }
 
@@ -164,9 +254,7 @@ public class RatController : MonoBehaviour
         }
 
         float ratRadius = agent.radius;
-        float desiredGap = stopDistance;
-
-        float offset = playerRadius + ratRadius + desiredGap;
+        float offset = playerRadius + ratRadius;
 
         Vector3 targetPos = player.position - dir * offset;
 
@@ -186,32 +274,42 @@ public class RatController : MonoBehaviour
     {
         isAttacking = true;
 
+        animMoveSpeed = 0f;
+        animTurn = 0f;
+
         if (agent != null)
         {
             agent.isStopped = true;
             agent.ResetPath();
         }
 
-        SetWalking(false);
-
         if (animator != null)
             animator.SetTrigger(attackTrigger);
 
         if (hitbox != null)
         {
-            hitbox.gameObject.SetActive(true);
+            yield return new WaitForSeconds(0.3f);
+            hitbox.enabled = true;
             CheckHitboxNow();
         }
 
         yield return new WaitForSeconds(hitboxActiveTime);
 
         if (hitbox != null)
-            hitbox.gameObject.SetActive(false);
+            hitbox.enabled = false;
 
         yield return new WaitForSeconds(attackAnimDuration - hitboxActiveTime);
 
         attackCooldownTimer = attackCooldown;
         isAttacking = false;
+    }
+
+    void LookAtTarget()
+    {
+        if (player == null) return;
+
+        Vector3 lookPos = new Vector3(player.position.x, transform.position.y, player.position.z);
+        transform.LookAt(lookPos);
     }
 
     // 공격 범위에 플레이어가 있는지 없는지 확인
@@ -228,18 +326,16 @@ public class RatController : MonoBehaviour
         foreach (Collider col in hits)
         {
             PlayerGas gas = col.GetComponent<PlayerGas>();
+            PlayerHitAnim hitAnim = col.GetComponentInChildren<PlayerHitAnim>();
+
             if (gas != null)
-            {
                 gas.AddExposure(attackDamage);
+            if (hitAnim != null)
+            {
+                hitAnim.PlayerHit();
                 break;
             }
         }
-    }
-
-    void SetWalking(bool walking)
-    {
-        if (animator != null)
-            animator.SetBool(walkParam, walking);
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -247,6 +343,9 @@ public class RatController : MonoBehaviour
         player = null;
         playerCapsule = null;
         FindPlayer();
+
+        animMoveSpeed = 0f;
+        animTurn = 0f;
     }
 
     void FindPlayer()

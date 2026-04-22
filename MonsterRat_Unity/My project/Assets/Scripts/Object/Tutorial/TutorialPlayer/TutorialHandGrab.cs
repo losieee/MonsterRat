@@ -43,6 +43,11 @@ public class TutorialHandGrab : TutorialInvenBase
         {
             Interaction();
         }
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            Incinerator();
+        }
     }
 
     public override void FixedTick()
@@ -113,6 +118,19 @@ public class TutorialHandGrab : TutorialInvenBase
         targetRb.MovePosition(newPos);
     }
 
+    void Incinerator()
+    {
+        if (!interactor.RaycastWorld(grabHoldDistance, out RaycastHit hit)) return;
+
+        int layer = hit.collider.gameObject.layer;
+
+        if (layer == 10)
+        {
+            DeleteObject btn = hit.collider.GetComponent<DeleteObject>();
+            if (btn != null) btn.CanDelete();
+        }
+    }
+
     void Interaction()
     {
         if (!interactor.RaycastWorld(grabHoldDistance, out RaycastHit hit)) return;
@@ -121,12 +139,6 @@ public class TutorialHandGrab : TutorialInvenBase
 
         switch (layer)
         {
-            case 10:
-                {
-                    DeleteObject btn = hit.collider.GetComponent<DeleteObject>();
-                    if (btn != null) btn.CanDelete();
-                    break;
-                }
             case 17:
                 {
                     SafeZone_Door btn = hit.collider.GetComponentInParent<SafeZone_Door>();

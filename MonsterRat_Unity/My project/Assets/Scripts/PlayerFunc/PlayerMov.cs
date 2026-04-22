@@ -1,10 +1,13 @@
+using SlimUI.ModernMenu;
 using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMov : MonoBehaviour
 {
-    static PlayerMov instance;
+    public static PlayerMov instance;
+
+    public bool canControl = false;
 
     [Header("Move")]
     public float speed = 5f;
@@ -42,7 +45,26 @@ public class PlayerMov : MonoBehaviour
 
     void Update()
     {
-        if (ui != null && ui.IsUIOpen) return;
+        if (!canControl)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            return;
+        }
+
+        bool isStoreOpen = ui != null && ui.IsUIOpen;
+        bool isSettingsOpen = UISettingsManager.Instance != null && UISettingsManager.isMenuOpen;
+
+        if (isStoreOpen || isSettingsOpen)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            return;
+        }
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
         Move();
         Look();
     }

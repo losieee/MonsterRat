@@ -45,6 +45,10 @@ namespace SlimUI.ModernMenu
         public GameObject settingsPanel;
         public static bool isMenuOpen = false;
 
+        [Header("MODE")]
+        public bool useLocalPlayerCheck = false;
+        public bool isLocalPlayer = true;
+
         [Header("UI BEHAVIOR")]
         public bool canUseEscKey = true;
         public enum Platform { Desktop, Mobile };
@@ -140,12 +144,21 @@ namespace SlimUI.ModernMenu
             }
         }
 
+        bool CanUseMenu()
+        {
+            if (!useLocalPlayerCheck)
+                return true;
+
+            return isLocalPlayer;
+        }
+
         // ==========================================
         // UI 토글 및 마우스 커서 관리 (멀티플레이 고려)
         // ==========================================
         public void ToggleSettingsMenu()
         {
             if (settingsPanel == null) return;
+            if (!CanUseMenu()) return;
 
             bool isCurrentlyActive = settingsPanel.activeSelf;
             settingsPanel.SetActive(!isCurrentlyActive);

@@ -844,7 +844,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &559106876997983348
 RectTransform:
   m_ObjectHideFlags: 0
@@ -871,7 +871,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2078165241175167472}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &8687934181361274753
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -886,7 +886,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -3347,6 +3347,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fillImage: {fileID: 5638004506911618031}
+  pollutionEffect: {fileID: 8687934181361274753}
+  alphaSmoothSpeed: 5
 --- !u!1 &6661412152333099350
 GameObject:
   m_ObjectHideFlags: 0
@@ -5033,6 +5035,7 @@ MonoBehaviour:
   maxPollution: 100
   checkInterval: 0.2
   sampleHeightOffset: 0.8
+  useNetworkAuthority: 1
 --- !u!114 &6803444661598496178
 MonoBehaviour:
   m_ObjectHideFlags: 0
