@@ -8,6 +8,13 @@ using System.Security; // Enum 파싱용
 
 public class PhotonInventory : NetworkBehaviour
 {
+    [System.Serializable]
+    public class ToolVisualEntry
+    {
+        public ToolType type;
+        public GameObject obj;
+    }
+
     [Header("UI 설정")]
     public GameObject inventoryPanel;
     public List<Slot> inventorySlots;
@@ -27,6 +34,9 @@ public class PhotonInventory : NetworkBehaviour
     [Networked]
     public ToolType NetActiveTool { get; set; }
     private ToolType _localActiveTool = (ToolType)(-1);
+
+    // ToolType에 따라 보여지는 오브젝트 관리
+    [SerializeField] private List<ToolVisualEntry> toolObjects = new List<ToolVisualEntry>();
 
     public override void Spawned()
     {
@@ -96,6 +106,26 @@ public class PhotonInventory : NetworkBehaviour
         if (HasInputAuthority && currentTool != null)
         {
             currentTool.FixedTick();
+        }
+    }
+
+    // 도구 오브젝트 활성화 / 비활성화
+    private void UpdateToolObjects(ToolType activeType)
+    {
+        for (int i = 0; i < toolObjects.Count; i++)
+        {
+            if (toolObjects[i] == null || toolObjects[i].obj == null)
+                continue;
+
+            // Hand면 전부 false
+            if (activeType == ToolType.Hand)
+            {
+                toolObjects[i].obj.SetActive(false);
+            }
+            else
+            {
+                toolObjects[i].obj.SetActive(toolObjects[i].type == activeType);
+            }
         }
     }
 
@@ -190,6 +220,8 @@ public class PhotonInventory : NetworkBehaviour
         if (currentTool != null) currentTool.OnDeselect();
 
         currentTool = tools.FirstOrDefault(t => t.Type == type);
+
+        UpdateToolObjects(type);
 
         if (currentTool != null)
         {
