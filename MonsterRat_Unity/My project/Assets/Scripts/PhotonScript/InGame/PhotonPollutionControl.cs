@@ -29,6 +29,10 @@ public class PhotonPollutionControl : NetworkBehaviour, IClearTarget
     public override void Spawned()
     {
         UpdateMaterial();
+
+        if (PollutionSpawner.Instance != null && Object != null)
+            PollutionSpawner.Instance.RegisterSpawnedPollution(Object);
+
         StartCoroutine(RegisterWhenManagerReady());
         StartCoroutine(RefreshCollider());
     }
@@ -109,6 +113,9 @@ public class PhotonPollutionControl : NetworkBehaviour, IClearTarget
 
     public override void Despawned(NetworkRunner runner, bool hasState)
     {
+        if (PollutionSpawner.Instance != null && Object != null)
+            PollutionSpawner.Instance.UnregisterSpawnedPollution(Object);
+
         if (OnlyPresentation.Instance != null)
             OnlyPresentation.Instance.Unregister(this);
     }

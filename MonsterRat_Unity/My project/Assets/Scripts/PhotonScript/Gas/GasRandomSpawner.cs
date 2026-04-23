@@ -1,5 +1,6 @@
 using UnityEngine;
 using Fusion;
+using System.Collections.Generic;
 
 public class GasRandomSpawner : NetworkBehaviour
 {
@@ -11,6 +12,8 @@ public class GasRandomSpawner : NetworkBehaviour
 
     private BoxCollider spawnArea;
 
+    private readonly List<NetworkObject> spawnedSmallGases = new List<NetworkObject>();
+
     private void Awake()
     {
         spawnArea = GetComponent<BoxCollider>();
@@ -18,9 +21,9 @@ public class GasRandomSpawner : NetworkBehaviour
 
     public override void Spawned()
     {
-       
         if (HasStateAuthority)
         {
+            Physics.SyncTransforms();
             SpawnGasesRandomly();
         }
     }
@@ -49,10 +52,30 @@ public class GasRandomSpawner : NetworkBehaviour
             // 빈공간에 생성
             if (overlaps.Length == 0)
             {
-               
-                Runner.Spawn(smallGasPrefab, randomPos, Quaternion.identity);
-                spawned++;
+
+                NetworkObject obj = Runner.Spawn(smallGasPrefab, randomPos, Quaternion.identity);
+
+                if (obj != null)
+                {
+                    spawnedSmallGases.Add(obj);
+                    spawned++;
+                }
             }
         }
+    }
+
+    public void DespawnAllSmallGases()
+    {
+        if (!HasStateAuthority) return;
+
+        for (int i = spawnedSmallGases.Count - 1; i >= 0; i--)
+        {
+            NetworkObject obj = spawnedSmallGases[i];
+
+            if (obj != null)
+                Runner.Despawn(obj);
+        }
+
+        spawnedSmallGases.Clear();
     }
 }

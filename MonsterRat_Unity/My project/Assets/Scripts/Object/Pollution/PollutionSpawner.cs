@@ -9,12 +9,13 @@ public class PollutionSpawner : NetworkBehaviour
 
     [Header("얼룩")]
     [SerializeField] private NetworkPrefabRef pollutionPrefab;
-    [SerializeField] private float pollutionThickness = 0.1f;         // 얼룩 두께
+    [SerializeField] private float pollutionThickness = 0.1f;       // 얼룩 두께
     [SerializeField] private float surfaceGap = 0.0025f;
-    [SerializeField] private Vector3 pollutionHalfExtents = new Vector3(0.75f, 0.05f, 0.75f);     // 얼룩 크기 검사
-    [SerializeField] private Vector2 randomScaleRange = new Vector2(0.8f, 2f);        // 얼룩 랜덤 크기 범위
-    [SerializeField] private Vector3 basePollutionScale = new Vector3(1.5f, 0.1f, 1.5f);        // 기본 얼룩 크기
+    [SerializeField] private Vector3 pollutionHalfExtents = new Vector3(0.75f, 0.05f, 0.75f);       // 얼룩 크기 검사
+    [SerializeField] private Vector2 randomScaleRange = new Vector2(0.8f, 2f);          // 얼룩 랜덤 크기 범위
+    [SerializeField] private Vector3 basePollutionScale = new Vector3(1.5f, 0.1f, 1.5f);            // 기본 얼룩 크기
     [SerializeField] private int spawnPollutionCount = 15;
+    [SerializeField] private float minPollutionSpacing = 1.2f;      // 얼룩끼리의 간격
     [Header("Layer Mask")]
     [SerializeField] private LayerMask pollutionMask;
     [SerializeField] private LayerMask blockHitMask;
@@ -29,8 +30,9 @@ public class PollutionSpawner : NetworkBehaviour
 
     [Header("가스")]
     [SerializeField] private NetworkPrefabRef rangeGas;
-    
+
     [Header("소환 범위")]
+    [SerializeField] private GameObject cleaningTargets;
     [SerializeField] private BoxCollider[] spawnArea;
 
     [SerializeField] private float rayDistance = 20f;
@@ -42,7 +44,10 @@ public class PollutionSpawner : NetworkBehaviour
 
     private bool pollutionSpawnedOnce = false;
 
+    // 100% 되면 삭제시킬것들
     private readonly List<NetworkObject> spawnedGases = new List<NetworkObject>();
+    private readonly List<NetworkObject> spawnedPlants = new List<NetworkObject>();
+    private readonly List<NetworkObject> spawnedPollutions = new List<NetworkObject>();
     private bool gasCleared = false;
 
     public override void Spawned()
@@ -59,6 +64,45 @@ public class PollutionSpawner : NetworkBehaviour
     {
         if (Instance == this)
             Instance = null;
+    }
+
+    public void DespawnAllCleaningObjects()
+    {
+        if (!HasStateAuthority) return;
+
+        // 모든 나무 삭제
+        for (int i = spawnedPlants.Count - 1; i >= 0; i--)
+        {
+            if (spawnedPlants[i] != null)
+                Runner.Despawn(spawnedPlants[i]);
+        }
+        spawnedPlants.Clear();
+
+        // 모든 얼룩 삭제
+        for (int i = spawnedPollutions.Count - 1; i >= 0; i--)
+        {
+            if (spawnedPollutions[i] != null)
+                Runner.Despawn(spawnedPollutions[i]);
+        }
+        spawnedPollutions.Clear();
+
+        // 모든 가스 삭제
+        for (int i = spawnedGases.Count - 1; i >= 0; i--)
+        {
+            NetworkObject gas = spawnedGases[i];
+
+            if (gas != null)
+            {
+                GasRandomSpawner gasSpawner = gas.GetComponent<GasRandomSpawner>();
+                if (gasSpawner != null)
+                    gasSpawner.DespawnAllSmallGases();
+
+                Runner.Despawn(gas);
+            }
+        }
+        spawnedGases.Clear();
+
+        gasCleared = false;
     }
 
     public void PollutionSpawnOnce()
@@ -102,6 +146,8 @@ public class PollutionSpawner : NetworkBehaviour
         int spawned = 0;
         int tryCount = 0;
         int maxTry = count * 30;
+
+        List<Vector3> placedPollutionPositions = new List<Vector3>();
 
         while (spawned < count && tryCount < maxTry)
         {
@@ -159,11 +205,20 @@ public class PollutionSpawner : NetworkBehaviour
                         continue;
                     }
 
+                    // 다른 얼룩과의 거리 검사
+                    float spacing = minPollutionSpacing + (Mathf.Max(spawnScale.x, spawnScale.z) * 0.25f);
+                    if (!IsFarEnoughFromOtherPollution(pos, placedPollutionPositions, spacing))
+                    {
+                        scaleMul *= 0.85f;
+                        continue;
+                    }
+
                     NetworkObject obj = Runner.Spawn(pollutionPrefab, pos, rot);
 
                     if (obj != null)
                     {
                         obj.transform.localScale = spawnScale;
+                        spawnedPollutions.Add(obj);
                         placed = true;
                     }
 
@@ -174,6 +229,22 @@ public class PollutionSpawner : NetworkBehaviour
                     spawned++;
             }
         }
+    }
+
+    // 얼룩이 새로 생성되면 리스트에 등록
+    public void RegisterSpawnedPollution(NetworkObject obj)
+    {
+        if (obj == null) return;
+
+        if (!spawnedPollutions.Contains(obj))
+            spawnedPollutions.Add(obj);
+    }
+    // 등록 해제
+    public void UnregisterSpawnedPollution(NetworkObject obj)
+    {
+        if (obj == null) return;
+
+        spawnedPollutions.Remove(obj);
     }
 
     // 길막용 나무
@@ -209,7 +280,10 @@ public class PollutionSpawner : NetworkBehaviour
             if (Physics.CheckSphere(spawnPos, 0.2f, spawnBlockMask, QueryTriggerInteraction.Ignore))
                 continue;
 
-            Runner.Spawn(plantPrefab, spawnPos, Quaternion.identity);
+            NetworkObject obj = Runner.Spawn(plantPrefab, spawnPos, Quaternion.identity);
+
+            if (obj != null)
+                spawnedPlants.Add(obj);
             return;
         }
     }
@@ -351,7 +425,11 @@ public class PollutionSpawner : NetworkBehaviour
             if (Physics.CheckSphere(spawnPos, 0.2f, spawnBlockMask, QueryTriggerInteraction.Ignore))
                 continue;
 
-            Runner.Spawn(selectedTrashPrefab, spawnPos, Quaternion.identity);
+            NetworkObject obj = Runner.Spawn(selectedTrashPrefab, spawnPos, Quaternion.identity);
+            if (obj != null)
+            {
+                obj.transform.SetParent(cleaningTargets.transform, true);
+            }
             spawned++;
         }
     }
@@ -412,6 +490,20 @@ public class PollutionSpawner : NetworkBehaviour
 
             // 노멀 방향이 너무 다르면 모서리/다른 면이므로 실패
             if (Vector3.Dot(centerHit.normal, sideHit.normal) < 0.95f)
+                return false;
+        }
+
+        return true;
+    }
+
+    // 스폰 될 얼룩 근처에 이미 얼룩이 있는지 검사
+    bool IsFarEnoughFromOtherPollution(Vector3 candidatePos, List<Vector3> placedPositions, float minDistance)
+    {
+        float minDistanceSqr = minDistance * minDistance;
+
+        for (int i = 0; i < placedPositions.Count; i++)
+        {
+            if ((placedPositions[i] - candidatePos).sqrMagnitude < minDistanceSqr)
                 return false;
         }
 

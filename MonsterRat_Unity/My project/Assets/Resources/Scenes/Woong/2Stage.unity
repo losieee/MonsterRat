@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 3536021411
+  SortKey: 1429627667
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
@@ -1389,7 +1389,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -6225736977602612103, guid: f97b84ba6a4c17f418ea2bbc4c722bc8, type: 3}
       propertyPath: SortKey
-      value: 4284752205
+      value: 2178358461
       objectReference: {fileID: 0}
     - target: {fileID: 2933296426535713518, guid: f97b84ba6a4c17f418ea2bbc4c722bc8, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2129,7 +2129,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 2498266516
+  SortKey: 391872772
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
@@ -2206,6 +2206,7 @@ MonoBehaviour:
   randomScaleRange: {x: 0.8, y: 2}
   basePollutionScale: {x: 1.5, y: 0.005, z: 1.5}
   spawnPollutionCount: 45
+  minPollutionSpacing: 1.2
   pollutionMask:
     serializedVersion: 2
     m_Bits: 32896
@@ -2232,6 +2233,7 @@ MonoBehaviour:
   trashSpawnHeightOffset: 1
   rangeGas:
     RawGuidValue: 52c659c48c4739040b12c2bfe19d7a85
+  cleaningTargets: {fileID: 0}
   spawnArea:
   - {fileID: 129977967}
   - {fileID: 1978361779}
@@ -2327,6 +2329,7 @@ MonoBehaviour:
     weight: 1
     dangerType: 0
   clearDoorAnim: {fileID: 1198942561}
+  cleaningTargets: {fileID: 0}
   roach:
     RawGuidValue: 973b9c908ae320b4d9cb1ac9b6b7f82f
   boxHead:
@@ -7638,7 +7641,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 1825349326
+  SortKey: 4013922878
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
@@ -9517,7 +9520,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 3967443826
+  SortKey: 1861050082
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
@@ -9540,11 +9543,11 @@ MonoBehaviour:
   fillImage: {fileID: 210819256}
   infoText: {fileID: 210819255}
   holdDuration: 10
-  anim: {fileID: 1977197046}
-  safeZoneArea: {fileID: 1190378176}
+  doorOpenTime: 5
+  doorVisual: {fileID: 0}
+  openOffset: {x: 0, y: 0, z: -5}
+  moveSpeed: 5
   _IsDoorOpen:
-    _value: 0
-  _IsDoorPermanentlyClosed:
     _value: 0
 --- !u!1001 &484732666
 PrefabInstance:
@@ -12167,7 +12170,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 3042756745
+  SortKey: 936363001
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
@@ -12318,7 +12321,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 574550328
+  SortKey: 2763123880
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
@@ -13381,7 +13384,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 3029370834
+  SortKey: 922977090
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
@@ -14155,7 +14158,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 1200378865
+  SortKey: 3388952417
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
@@ -19996,7 +19999,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 3542587397
+  SortKey: 1436193653
   ObjectInterest: 1
   Flags: 262145
   NestedObjects:
@@ -20054,6 +20057,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkDoor
   anim: {fileID: 1198942557}
+  safeZone: {fileID: 0}
 --- !u!1001 &1202146854
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -21383,6 +21387,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 286626876662755819, guid: bf926fc706056f347933a16249cd701a, type: 3}
+      propertyPath: bgmSource
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1248222410186568123, guid: bf926fc706056f347933a16249cd701a, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 147.8601
@@ -21415,7 +21423,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7365455183522613230, guid: bf926fc706056f347933a16249cd701a, type: 3}
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 6895060647378129687, guid: bf926fc706056f347933a16249cd701a, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bf926fc706056f347933a16249cd701a, type: 3}
@@ -24804,7 +24813,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 1941283405
+  SortKey: 4129856957
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
@@ -28139,7 +28148,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 2844704352
+  SortKey: 738310608
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
@@ -32174,7 +32183,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5256251017438185046, guid: bac7d79594879ab45ad303fc84d83048, type: 3}
       propertyPath: SortKey
-      value: 2098178167
+      value: 4286751719
       objectReference: {fileID: 0}
     - target: {fileID: 8361282262261387869, guid: bac7d79594879ab45ad303fc84d83048, type: 3}
       propertyPath: m_Name
@@ -33937,7 +33946,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 2405503454
+  SortKey: 299109710
   ObjectInterest: 1
   Flags: 262145
   NestedObjects:
@@ -34333,7 +34342,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 2141492271
+  SortKey: 35098527
   ObjectInterest: 1
   Flags: 262145
   NestedObjects:
@@ -34359,11 +34368,11 @@ MonoBehaviour:
   fillImage: {fileID: 210819256}
   infoText: {fileID: 210819255}
   holdDuration: 10
-  anim: {fileID: 1977197046}
-  safeZoneArea: {fileID: 1190378176}
+  doorOpenTime: 5
+  doorVisual: {fileID: 0}
+  openOffset: {x: 0, y: 0, z: -5}
+  moveSpeed: 5
   _IsDoorOpen:
-    _value: 0
-  _IsDoorPermanentlyClosed:
     _value: 0
 --- !u!114 &1977197049
 MonoBehaviour:
@@ -36813,7 +36822,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 2624750971
+  SortKey: 518357227
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
@@ -36886,7 +36895,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 1847604581
+  SortKey: 4036178133
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
@@ -65194,7 +65203,7 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 275783746
+  SortKey: 2464357298
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []

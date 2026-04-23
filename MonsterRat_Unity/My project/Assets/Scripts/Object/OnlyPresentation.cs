@@ -48,6 +48,7 @@ public class OnlyPresentation : NetworkBehaviour
     public List<PhaseRandom> phases = new List<PhaseRandom>();
     [SerializeField] private List<RandomAction> ratSpawnActions = new List<RandomAction>();
     [SerializeField] private NetworkDoor clearDoorAnim;
+    [SerializeField] private NetworkObject cleaningTargets;
 
     [Header("플레이어 근처 생성")]
     [SerializeField] private NetworkPrefabRef roach;
@@ -63,6 +64,8 @@ public class OnlyPresentation : NetworkBehaviour
 
     // 로컬 참조용 리스트(디버그/확장용)
     private readonly List<IClearTarget> targets = new List<IClearTarget>();
+    // 클리어 시 스폰 된 것들 전부 삭제 리스트
+    private readonly List<NetworkObject> spawnedEnemies = new List<NetworkObject>();
 
     // 네트워크 동기화되는 값들
     [Networked] public float BaselineTotal { get; set; }
@@ -180,16 +183,6 @@ public class OnlyPresentation : NetworkBehaviour
 
 
         //CheckStep(ClearRatio01);
-
-        if (!clearedAllGas && ClearPercent >= 100)
-        {
-            clearedAllGas = true;
-
-            if (PollutionSpawner.Instance != null)
-                PollutionSpawner.Instance.DespawnAllGas();
-
-            clearDoorAnim.TryOpenDoor();
-        }
     }
 
     void SetClearPercent(int percent)
@@ -257,6 +250,17 @@ public class OnlyPresentation : NetworkBehaviour
     void Persent100()
     {
         SetClearPercent(100);
+
+        DespawnAllSpawnedEnemies();
+        polSpawn.DespawnAllCleaningObjects();
+
+        if (!clearedAllGas && ClearPercent >= 100)
+        {
+            clearedAllGas = true;
+            clearDoorAnim.TryOpenDoor();
+        }
+
+        Runner.Despawn(cleaningTargets);
     }
 
     // 10% 단위로 step으로 변환
@@ -327,7 +331,10 @@ public class OnlyPresentation : NetworkBehaviour
         Transform point = action.spawnPoint != null ? action.spawnPoint : spawnRoot;
         if (point == null) point = transform;
 
-        Runner.Spawn(action.prefab, point.position, point.rotation);
+        NetworkObject obj = Runner.Spawn(action.prefab, point.position, point.rotation);
+
+        if (obj != null)
+            RegisterSpawnedEnemy(obj);
     }
 
     // 플레이어 근처 소환
@@ -341,8 +348,35 @@ public class OnlyPresentation : NetworkBehaviour
 
         if (TryGetSpawnPositionNearTarget(player, out Vector3 spawnPos))
         {
-            Runner.Spawn(prefab, spawnPos, Quaternion.identity);
+            NetworkObject obj = Runner.Spawn(prefab, spawnPos, Quaternion.identity);
+
+            if (obj != null)
+                RegisterSpawnedEnemy(obj);
         }
+    }
+
+    // 괴물 스폰 등록
+    void RegisterSpawnedEnemy(NetworkObject obj)
+    {
+        if (obj == null) return;
+
+        spawnedEnemies.Add(obj);
+    }
+
+    // 괴물 삭제 
+    void DespawnAllSpawnedEnemies()
+    {
+        if (!HasStateAuthority) return;
+
+        for (int i = spawnedEnemies.Count - 1; i >= 0; i--)
+        {
+            NetworkObject obj = spawnedEnemies[i];
+
+            if (obj != null)
+                Runner.Despawn(obj);
+        }
+
+        spawnedEnemies.Clear();
     }
 
     // 플레이어 검색
@@ -362,7 +396,7 @@ public class OnlyPresentation : NetworkBehaviour
     {
         spawnPos = Vector3.zero;
 
-        const int maxTry = 12;
+        const int maxTry = 30;
 
         for (int i = 0; i < maxTry; i++)
         {
@@ -539,7 +573,10 @@ public class OnlyPresentation : NetworkBehaviour
 
         if (TryGetSpawnPositionNearTarget(targetPlayer, out Vector3 spawnPos))
         {
-            Runner.Spawn(prefab, spawnPos, Quaternion.identity);
+            NetworkObject obj = Runner.Spawn(prefab, spawnPos, Quaternion.identity);
+
+            if (obj != null)
+                RegisterSpawnedEnemy(obj);
         }
     }
 
