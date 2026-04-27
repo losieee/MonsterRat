@@ -83,12 +83,6 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
         {
             myCamObj.transform.localRotation = Quaternion.Euler(pitch, 0f, 0f);
         }
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
     }
 
     public void OnInput(NetworkRunner runner, NetworkInput input)

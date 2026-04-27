@@ -2,7 +2,9 @@
 using System.Collections;
 using UnityEngine.UI;
 using TMPro;
-using System.IO; 
+using System.IO;
+using Fusion;
+using UnityEngine.SceneManagement;
 
 namespace SlimUI.ModernMenu
 {
@@ -48,6 +50,7 @@ namespace SlimUI.ModernMenu
         [Header("MODE")]
         public bool useLocalPlayerCheck = false;
         public bool isLocalPlayer = true;
+        public NetworkRunner runner;
 
         [Header("UI BEHAVIOR")]
         public bool canUseEscKey = true;
@@ -86,6 +89,7 @@ namespace SlimUI.ModernMenu
         public GameObject difficultynormaltextLINE;
         public GameObject difficultyhardcoretext;
         public GameObject difficultyhardcoretextLINE;
+        public GameObject exitPanel;
 
         [Header("CONTROLS SETTINGS")]
         public GameObject invertmousetext;
@@ -178,6 +182,7 @@ namespace SlimUI.ModernMenu
 
                 // 메뉴를 닫을 때 현재 슬라이더 값들을 한 번 더 확실하게 저장
                 SaveSettings();
+                exitPanel.SetActive(false);
             }
         }
 
@@ -197,6 +202,21 @@ namespace SlimUI.ModernMenu
                 SaveSettings();
                // Debug.Log("새 설정 파일 생성됨: " + saveFilePath);
             }
+        }
+
+        public async void LeaveRoom()
+        {
+            if (runner == null)
+                runner = FindObjectOfType<NetworkRunner>();
+
+            if (runner != null)
+            {
+                await runner.Shutdown();
+            }
+
+            if (settingsPanel != null) settingsPanel.SetActive(false);
+            isMenuOpen = false;
+            SceneManager.LoadScene("ZZin_Main_Lobby");
         }
 
         public void SaveSettings()
