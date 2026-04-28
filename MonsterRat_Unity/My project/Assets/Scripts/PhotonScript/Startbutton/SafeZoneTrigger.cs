@@ -19,7 +19,11 @@ public class SafeZoneTrigger : NetworkBehaviour
 
     [Networked] public int PlayersInZoneCount { get; set; }
     [Networked] public NetworkBool IsDoorOpened { get; set; }
+
     [Networked] public NetworkBool IsEvacuating { get; set; }
+
+
+
 
     private const int RequiredPlayerCount = 2;
 
@@ -88,6 +92,11 @@ public class SafeZoneTrigger : NetworkBehaviour
     void EvacuateToLobby()
     {
         if (IsEvacuating) return;
+
+        // 저장명령 모든 플레이어에게 남기기
+        RPC_CommandSaveInventory();
+
+        // 그다음 씬 전환
         RPC_RequestEvacuation();
     }
 
@@ -193,4 +202,23 @@ public class SafeZoneTrigger : NetworkBehaviour
             }
         }
     }
+
+   
+    [Rpc(RpcSources.All, RpcTargets.All)]
+    public void RPC_CommandSaveInventory()
+    {
+        //호스트랑 클라 양쪽 화면에서 동시에 실행
+        PhotonInventory[] allInventories = FindObjectsOfType<PhotonInventory>();
+
+        foreach (var inv in allInventories)
+        {
+            // 내 캐릭터의 인벤토리만 저장
+            if (inv.HasInputAuthority)
+            {
+                inv.SaveInventoryData();
+            }
+        }
+    }
+
+
 }

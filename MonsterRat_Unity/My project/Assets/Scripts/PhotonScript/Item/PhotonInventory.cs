@@ -24,12 +24,17 @@ public class PhotonInventory : NetworkBehaviour
     public Transform dropPoint;
     public string lobbySceneName = "GameRoomScene";
 
+    [Header("인벤 복구 용")]
     private ItemData[] heldItems;
     private int currentSelectedSlot = -1;  
 
     [Header("도구 관리 InvenBase 연동")]
     private InvenBase[] tools;
     private InvenBase currentTool;
+
+    
+
+
 
     [Networked]
     public ToolType NetActiveTool { get; set; }
@@ -58,6 +63,19 @@ public class PhotonInventory : NetworkBehaviour
         }
 
         if (HasInputAuthority) RPC_ChangeTool(ToolType.Hand);
+
+
+        if (HasInputAuthority && PlayerDataVault.HasData(Runner.LocalPlayer))
+        {
+            List<int> savedIDs = PlayerDataVault.GetInventory(Runner.LocalPlayer);
+            for (int i = 0; i < savedIDs.Count; i++)
+            {
+                if (i < heldItems.Length && savedIDs[i] != -1)
+                {
+                    heldItems[i] = ItemDatabase.Instance.GetItem(savedIDs[i]);
+                }
+            }
+        }
 
         UpdateInventoryUI();
     }
@@ -303,4 +321,20 @@ public class PhotonInventory : NetworkBehaviour
             }
         }
     }
+
+    public void SaveInventoryData()
+    {
+        if (!HasInputAuthority) return;
+
+        List<int> currentIDs = new List<int>();
+        foreach (var item in heldItems)
+        {
+            if (item != null) currentIDs.Add(item.itemID);
+            else currentIDs.Add(-1); // 빈 슬롯 표시
+        }
+
+        // 내 정보를 이용해 정적 클래스에 저장
+        PlayerDataVault.SaveInventory(Runner.LocalPlayer, currentIDs);
+    }
+
 }
