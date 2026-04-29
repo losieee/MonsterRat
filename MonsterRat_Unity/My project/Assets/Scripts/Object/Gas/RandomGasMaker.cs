@@ -7,6 +7,10 @@ public class RandomGasMaker : NetworkBehaviour
     [SerializeField] private GasValveSync[] randomGas;
     [SerializeField] private int spawnGas;
 
+    [Header("Json")]
+    [SerializeField] private TextAsset stageDBJson;
+    [SerializeField] private int currentStageNum = 1;
+
     [Networked, Capacity(6)]       // Capacity 가 크기 - 1스테이지 가스는 6개니까 6
     private NetworkArray<NetworkBool> GasActive => default;
     // Fusion용 bool 배열
@@ -24,6 +28,7 @@ public class RandomGasMaker : NetworkBehaviour
 
         if (Object.HasStateAuthority)
         {
+            ApplyStageData(currentStageNum);
             // 호스트가 먼저 GasActive 결정
             RandomSpawnGas();
         }
@@ -80,5 +85,25 @@ public class RandomGasMaker : NetworkBehaviour
                 randomGas[i].SetVisible(state);
             }
         }
+    }
+
+    void ApplyStageData(int stageNum)
+    {
+        if (stageDBJson == null)
+            return;
+
+        string wrappedJson = "{\"stages\":" + stageDBJson.text + "}";
+
+        StageDataList dataList = JsonUtility.FromJson<StageDataList>(wrappedJson);
+
+        if (dataList == null || dataList.stages == null)
+            return;
+
+        StageJson data = dataList.stages.Find(stage => stage.Stg_Num == stageNum);
+
+        if (data == null)
+            return;
+
+        spawnGas = data.Stg_Pipe;
     }
 }

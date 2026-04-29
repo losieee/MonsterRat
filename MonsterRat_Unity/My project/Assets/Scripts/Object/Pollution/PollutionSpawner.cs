@@ -1,6 +1,5 @@
 using UnityEngine;
 using Fusion;
-using System.Runtime.InteropServices;
 using System.Collections.Generic;
 
 public class PollutionSpawner : NetworkBehaviour
@@ -42,6 +41,12 @@ public class PollutionSpawner : NetworkBehaviour
     [SerializeField] private NetworkPrefabRef plantPrefab;
     [SerializeField] private int spawnPlantCount = 3;
 
+    [Header("Json")]
+    [SerializeField] private TextAsset stageDBJson;
+    [SerializeField] private int currentStageNum = 1;
+
+    private List<StageJson> stageList = new List<StageJson>();
+
     private bool pollutionSpawnedOnce = false;
 
     // 100% 되면 삭제시킬것들
@@ -56,8 +61,42 @@ public class PollutionSpawner : NetworkBehaviour
         
         if (!HasStateAuthority) return;
 
+        LoadStageData();
+        ApplyStageData(currentStageNum);
+
         PollutionSpawnOnce();
         TrashSpawnOnce();
+    }
+
+    // Json 불러오기
+    void LoadStageData()
+    {
+        if (stageDBJson == null)
+            return;
+
+        string wrappedJson = "{\"stages\":" + stageDBJson.text + "}";
+
+        StageDataList dataList = JsonUtility.FromJson<StageDataList>(wrappedJson);
+
+        if (dataList == null || dataList.stages == null)
+            return;
+
+        stageList = dataList.stages;
+    }
+
+    void ApplyStageData(int stageNum)
+    {
+        if (stageList == null || stageList.Count == 0)
+            return;
+
+        StageJson data = stageList.Find(stage => stage.Stg_Num == stageNum);
+
+        if (data == null)
+            return;
+
+        spawnPollutionCount = data.Stg_Stain;
+        spawnTrashCount = data.Stg_Trash;
+        spawnPlantCount = data.Stg_Pipe;
     }
 
     private void OnDestroy()
@@ -425,11 +464,14 @@ public class PollutionSpawner : NetworkBehaviour
             if (Physics.CheckSphere(spawnPos, 0.2f, spawnBlockMask, QueryTriggerInteraction.Ignore))
                 continue;
 
-            NetworkObject obj = Runner.Spawn(selectedTrashPrefab, spawnPos, Quaternion.identity);
-            if (obj != null)
-            {
-                obj.transform.SetParent(cleaningTargets.transform, true);
-            }
+            // 나중에 치트로 다 한번에 다 없애야할 때 밑에꺼 주석 후 주석 해제
+            //NetworkObject obj = Runner.Spawn(selectedTrashPrefab, spawnPos, Quaternion.identity);
+            //if (obj != null)
+            //{
+            //    obj.transform.SetParent(cleaningTargets.transform, true);
+            //}
+
+            Runner.Spawn(selectedTrashPrefab, spawnPos, Quaternion.identity);
             spawned++;
         }
     }

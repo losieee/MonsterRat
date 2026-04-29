@@ -16,8 +16,10 @@ public class PhotonPollutionControl : NetworkBehaviour, IClearTarget
     // 내 화면에서 이전 프레임의 청소 횟수를 기억하는 변수 
     private int _lastCleanCount = -1;
 
+    [SerializeField] private float weight = 1f;
+
     public float Remain01 => 1f;
-    public float Weight => 1f;
+    public float Weight => Mathf.Max(0f, weight);
 
     void Awake()
     {
@@ -28,6 +30,8 @@ public class PhotonPollutionControl : NetworkBehaviour, IClearTarget
     // 대신 퓨전의 Spawned를 사용 (중간에 접속한 사람도 처리하기 위함)
     public override void Spawned()
     {
+        ApplyWeightFromStageProgress();
+
         UpdateMaterial();
 
         if (PollutionSpawner.Instance != null && Object != null)
@@ -35,6 +39,14 @@ public class PhotonPollutionControl : NetworkBehaviour, IClearTarget
 
         StartCoroutine(RegisterWhenManagerReady());
         StartCoroutine(RefreshCollider());
+    }
+
+    void ApplyWeightFromStageProgress()
+    {
+        if (StageProgressManager.Instance == null)
+            return;
+
+        weight = StageProgressManager.Instance.GetWeight(ClearTargetType.Pollution);
     }
 
     IEnumerator RegisterWhenManagerReady()

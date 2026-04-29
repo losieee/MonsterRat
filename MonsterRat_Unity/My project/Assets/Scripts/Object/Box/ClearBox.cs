@@ -1,8 +1,17 @@
 using UnityEngine;
 using System.Collections;
 
+public enum ClearTargetType
+{
+    Pollution = 0,  // 얼룩
+    Trash = 1,      // 쓰레기
+    Gas = 2         // 배관
+}
+
 public class ClearBox : MonoBehaviour, IClearTarget
 {
+    public ClearTargetType clearType;
+
     public float weight = 1f;
     public float Remain01 => 1f;
     public float Weight => Mathf.Max(0f, weight);
@@ -11,23 +20,25 @@ public class ClearBox : MonoBehaviour, IClearTarget
 
     void OnEnable()
     {
-        StartCoroutine(TryRegisterRoutine());
+        StartCoroutine(ApplyWeightAndRegisterRoutine());
     }
 
     // 처음 시작할때만 검사하면 등록이 안될 수 있음
     // 매 프레임 검사 (하다가 등록되면 멈춤)
-    IEnumerator TryRegisterRoutine()
+    IEnumerator ApplyWeightAndRegisterRoutine()
     {
-        while (!_registered)
-        {
-            if (OnlyPresentation.Instance != null)
-            {
-                OnlyPresentation.Instance.Register(this);
-                _registered = true;
-                yield break;
-            }
-
+        while (StageProgressManager.Instance == null)
             yield return null;
+
+        weight = StageProgressManager.Instance.GetWeight(clearType);
+
+        while (OnlyPresentation.Instance == null)
+            yield return null;
+
+        if (!_registered)
+        {
+            OnlyPresentation.Instance.Register(this);
+            _registered = true;
         }
     }
 
