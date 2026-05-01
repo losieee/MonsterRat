@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Fusion;
+using UnityEditor.Rendering.Universal;
 
 public interface IClearTarget
 {
@@ -359,6 +360,8 @@ public class ClearManager : NetworkBehaviour
         if (baseAction == null) return;
 
         int count = PickSpawnCount(baseAction, 1);
+
+        Debug.Log("Roach");
 
         // PollutionSpawner에 있는 바퀴벌레 랜덤 스폰 함수를 불러옴
         // 왜냐 - 랜덤 범위가 저기 있으니까

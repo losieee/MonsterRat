@@ -11,7 +11,7 @@ public class ClearGaugeUI : MonoBehaviour
         if (clearGaugeFill == null)
             return;
 
-        if (OnlyPresentation.Instance == null)
+        if (/*OnlyPresentation.Instance == null*/ ClearManager.Instance == null)
         {
             clearGaugeFill.fillAmount = 0f;
 
@@ -21,7 +21,7 @@ public class ClearGaugeUI : MonoBehaviour
             return;
         }
 
-        float fill = OnlyPresentation.Instance.ClearRatio01;
+        float fill = /*OnlyPresentation.Instance.ClearRatio01;*/ ClearManager.Instance.ClearRatio01;
 
         clearGaugeFill.fillAmount = fill;
 

@@ -75,6 +75,9 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
             return; 
         }
 
+        if (GameInputLock.IsLocked)
+            return;
+
         yaw += Input.GetAxis("Mouse X") * mouseSensitivity;
         pitch -= Input.GetAxis("Mouse Y") * mouseSensitivity;
         pitch = Mathf.Clamp(pitch, -90f, 90f);
@@ -97,6 +100,9 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
 
     public override void FixedUpdateNetwork()
     {
+        if (GameInputLock.IsLocked)
+            return;
+
         if (GetInput(out MyNetworkInput input))
         {
             // ÁÂ¿ì È¸Àü

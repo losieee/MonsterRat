@@ -6,24 +6,18 @@ public class PhotonSpanner : InvenBase
 {
     public override ToolType Type => ToolType.Spanner;
 
+    public SpannerMiniGame spannerMiniGame;
+
     public float distance = 2f;
-    public float fixTime = 5f;
-    public Image fixGauge; // 여기에 민기님이 넣은 흰원 이미지 넣으면 될 듯 합니다.
     public AudioSource source;
     public AudioClip spannerSound;
 
-    private float currentTime;
-    private bool isRepairingSoundPlaying = false;
-
     public override void Tick()
     {
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0))
         {
             if (interactor == null || interactor.cam == null)
-            {
-                ResetGauge();
                 return;
-            }
 
             // 기존 코드는 첫 번째로 맞은 물체만 검사해서 가스에 막히면 취소됨
             // if (!interactor.RaycastWorld(distance, out RaycastHit hit)) { ResetGauge(); return; }
@@ -48,38 +42,14 @@ public class PhotonSpanner : InvenBase
 
             if (valve != null)
             {
-                if (fixGauge != null && !fixGauge.gameObject.activeSelf)
-                    fixGauge.gameObject.SetActive(true);
-
-                currentTime += Time.deltaTime;
-
-                if (!isRepairingSoundPlaying)
+                if (spannerMiniGame != null)
                 {
-                    Rpc_StartSpannerSound();
-                    isRepairingSoundPlaying = true;
-                }
+                    if (spannerMiniGame.IsPlaying)
+                        return;
 
-                if (currentTime <= fixTime)
-                {
-                    if (fixGauge != null)
-                        fixGauge.fillAmount = currentTime / fixTime;
-                }
-                else
-                {
-                    valve.FixValve();
-                    ResetGauge();
+                    spannerMiniGame.StartMiniGame(valve, this);
                 }
             }
-            else
-            {
-                // 광선이 관통한 모든 물체 중에 밸브가 아예 없으면 초기화
-                ResetGauge();
-            }
-        }
-
-        if (Input.GetMouseButtonUp(0))
-        {
-            ResetGauge();
         }
     }
 
@@ -90,8 +60,6 @@ public class PhotonSpanner : InvenBase
             return;
 
         source.clip = spannerSound;
-        source.loop = true;
-
         float effectVolume = 1f;
 
         if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
@@ -100,9 +68,8 @@ public class PhotonSpanner : InvenBase
         float baseVolume = HasInputAuthority ? 0.85f : 1f;
         float finalVolume = baseVolume * effectVolume;
         source.volume = finalVolume;
-
-        if (!source.isPlaying)
-            source.Play();
+        
+        source.Play();
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
@@ -113,21 +80,5 @@ public class PhotonSpanner : InvenBase
 
         if (source.isPlaying)
             source.Stop();
-    }
-
-    private void ResetGauge()
-    {
-        currentTime = 0f;
-        if (fixGauge != null)
-        {
-            fixGauge.fillAmount = 0f;
-            fixGauge.gameObject.SetActive(false); // UI 숨김
-        }
-
-        if (isRepairingSoundPlaying)
-        {
-            Rpc_StopSpannerSound();
-            isRepairingSoundPlaying = false;
-        }
     }
 }

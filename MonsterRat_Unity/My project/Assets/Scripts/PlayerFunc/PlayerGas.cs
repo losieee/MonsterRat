@@ -11,6 +11,9 @@ public class PlayerGas : MonoBehaviour
     [Header("Mode")]
     public bool useNetworkAuthority = true;
 
+    public float refreshZoneInterval = 1f;
+    private float refreshTimer = 0f;
+
     private float timer = 0f;
     private NetworkObject networkObject;
     private GasZone[] gasZones;
@@ -22,13 +25,20 @@ public class PlayerGas : MonoBehaviour
 
     private void Start()
     {
-        gasZones = FindObjectsOfType<GasZone>(true);
+        RefreshGasZones();
     }
 
     private void Update()
     {
         if (!CanProcessGas())
             return;
+
+        refreshTimer -= Time.deltaTime;
+        if (refreshTimer <= 0f)
+        {
+            RefreshGasZones();
+            refreshTimer = refreshZoneInterval;
+        }
 
         if (gasZones == null || gasZones.Length == 0)
             return;
@@ -50,6 +60,12 @@ public class PlayerGas : MonoBehaviour
             AddExposure(zone.exposurePerSec * checkInterval);
             break;
         }
+    }
+
+    // 가스 확인 
+    public void RefreshGasZones()
+    {
+        gasZones = FindObjectsOfType<GasZone>(true);
     }
 
     bool CanProcessGas()

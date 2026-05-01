@@ -32,21 +32,27 @@ public class ClearBox : MonoBehaviour, IClearTarget
 
         weight = StageProgressManager.Instance.GetWeight(clearType);
 
-        while (OnlyPresentation.Instance == null)
+        // 치트 모드일때만 OnlyPresentation
+        //while (OnlyPresentation.Instance == null)
+        //yield return null;
+
+        while (ClearManager.Instance == null)
             yield return null;
 
         if (!_registered)
         {
-            OnlyPresentation.Instance.Register(this);
+            //OnlyPresentation.Instance.Register(this);
+            ClearManager.Instance.Register(this);
             _registered = true;
         }
     }
 
     void OnDestroy()
     {
-        if (_registered && OnlyPresentation.Instance != null)
+        if (_registered && /*OnlyPresentation.Instance != null*/ ClearManager.Instance != null)
         {
-            OnlyPresentation.Instance.Unregister(this);
+            //OnlyPresentation.Instance.Unregister(this);
+            ClearManager.Instance.Unregister(this);
         }
     }
 }

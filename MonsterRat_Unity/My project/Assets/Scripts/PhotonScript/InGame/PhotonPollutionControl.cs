@@ -51,10 +51,11 @@ public class PhotonPollutionControl : NetworkBehaviour, IClearTarget
 
     IEnumerator RegisterWhenManagerReady()
     {
-        while (OnlyPresentation.Instance == null)
+        while (/*OnlyPresentation.Instance == null*/ ClearManager.Instance == null)
             yield return null;
 
-        OnlyPresentation.Instance.Register(this);
+        //OnlyPresentation.Instance.Register(this);
+        ClearManager.Instance.Register(this);
     }
 
     IEnumerator RefreshCollider()
@@ -128,7 +129,10 @@ public class PhotonPollutionControl : NetworkBehaviour, IClearTarget
         if (PollutionSpawner.Instance != null && Object != null)
             PollutionSpawner.Instance.UnregisterSpawnedPollution(Object);
 
-        if (OnlyPresentation.Instance != null)
-            OnlyPresentation.Instance.Unregister(this);
+        /*if (OnlyPresentation.Instance != null)
+            OnlyPresentation.Instance.Unregister(this);*/
+        
+        if (ClearManager.Instance != null)
+            ClearManager.Instance.Unregister(this);
     }
 }
