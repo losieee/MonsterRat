@@ -12,6 +12,7 @@ public enum ToolType
     Cutter,         // 절단기
     Flame,          // 화염방사기
     Flash,          // 손전등
+    GasMask,        // 방독면
 }
 
 public class Inventory : MonoBehaviour

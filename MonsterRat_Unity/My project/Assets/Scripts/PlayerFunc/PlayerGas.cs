@@ -17,10 +17,12 @@ public class PlayerGas : MonoBehaviour
     private float timer = 0f;
     private NetworkObject networkObject;
     private GasZone[] gasZones;
+    private PhotonGasMaskController gasMask;
 
     private void Awake()
     {
         networkObject = GetComponentInParent<NetworkObject>();
+        gasMask = GetComponentInParent<PhotonGasMaskController>();
     }
 
     private void Start()
@@ -56,6 +58,9 @@ public class PlayerGas : MonoBehaviour
 
             if (!zone.Contains(pos)) continue;
             if (!zone.IsDangerousAt(pos)) continue;
+
+            if (gasMask != null && gasMask.UseMask)
+                break;
 
             AddExposure(zone.exposurePerSec * checkInterval);
             break;

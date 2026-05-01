@@ -30,7 +30,7 @@ public class ItemDatabase : MonoBehaviour
 
         // 리스트로 변환하여 저장
         allItems = loadedItems.ToList();
-
+        
         Debug.Log($"[ItemDatabase] 총 {allItems.Count}개의 아이템 데이터를 성공적으로 불러왔습니다.");
     }
 

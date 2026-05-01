@@ -257,8 +257,35 @@ public class PhotonInventory : NetworkBehaviour
 
         string prefabPath = "ItemPrefabs/" + itemToDrop.itemPrefab.name;
 
-        if (Runner.IsServer) SpawnDroppedItem(prefabPath, dropPoint.position, dropPoint.rotation);
-        else RPC_RequestDropItem(prefabPath, dropPoint.position, dropPoint.rotation);
+        float gasMaskCooldown = 0f;
+
+        if (Enum.TryParse(itemToDrop.itemName, true, out ToolType dropType))
+        {
+            if (dropType == ToolType.GasMask)
+            {
+                PhotonGasMaskController gasMask =
+                    tools.FirstOrDefault(t => t.Type == ToolType.GasMask) as PhotonGasMaskController;
+
+                if (gasMask != null)
+                {
+                    gasMaskCooldown = gasMask.GetCooldownRemaining();
+
+                    // 방독면을 버리는 순간 기능 정지
+                    gasMask.StopMaskEffectOnly();
+                    gasMask.HideGasMaskUI();
+                }
+            }
+        }
+
+        if (Runner.IsServer)
+        {
+            NetworkObject dropped = SpawnDroppedItem(prefabPath, dropPoint.position, dropPoint.rotation);
+            ApplyGasMaskCooldownToDroppedItem(dropped, gasMaskCooldown);
+        }
+        else
+        {
+            RPC_RequestDropItem(prefabPath, dropPoint.position, dropPoint.rotation, gasMaskCooldown);
+        }
 
         // 버린 자리는 비워듀기
         heldItems[slotIndex] = null;
@@ -274,19 +301,48 @@ public class PhotonInventory : NetworkBehaviour
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-    public void RPC_RequestDropItem(string prefabPath, Vector3 pos, Quaternion rot)
+    public void RPC_RequestDropItem(string prefabPath, Vector3 pos, Quaternion rot, float gasMaskCooldown)
     {
-        SpawnDroppedItem(prefabPath, pos, rot);
+        NetworkObject dropped = SpawnDroppedItem(prefabPath, pos, rot);
+        ApplyGasMaskCooldownToDroppedItem(dropped, gasMaskCooldown);
     }
 
-    private void SpawnDroppedItem(string prefabPath, Vector3 pos, Quaternion rot)
+    private void ApplyGasMaskCooldownToDroppedItem(NetworkObject dropped, float cooldown)
+    {
+        if (dropped == null) return;
+        if (cooldown <= 0f) return;
+
+        DroppedGasMaskState state = dropped.GetComponent<DroppedGasMaskState>();
+        if (state != null)
+        {
+            state.SetCooldown(cooldown);
+        }
+    }
+
+    public void ApplyGasMaskCooldownFromPickup(float cooldown)
+    {
+        if (cooldown <= 0f) return;
+
+        PhotonGasMaskController gasMask =
+            tools.FirstOrDefault(t => t.Type == ToolType.GasMask) as PhotonGasMaskController;
+
+        if (gasMask != null)
+        {
+            gasMask.ApplyCooldownRemaining(cooldown);
+        }
+    }
+
+    private NetworkObject SpawnDroppedItem(string prefabPath, Vector3 pos, Quaternion rot)
     {
         GameObject prefab = Resources.Load<GameObject>(prefabPath);
         if (prefab != null)
         {
             NetworkObject netObj = prefab.GetComponent<NetworkObject>();
-            if (netObj != null) Runner.Spawn(netObj, pos, rot);
+            if (netObj != null)
+                return Runner.Spawn(netObj, pos, rot);
         }
+
+        return null;
     }
 
     private void UpdateInventoryUI()

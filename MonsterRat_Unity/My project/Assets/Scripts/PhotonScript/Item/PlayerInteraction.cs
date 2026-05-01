@@ -116,8 +116,40 @@ public class PlayerInteraction : NetworkBehaviour
             return;
         }
 
+        float gasMaskCooldown = 0f;
+        bool isGasMask = false;
+
+        if (currentInteractableItem.itemData != null)
+        {
+            isGasMask = currentInteractableItem.itemData.itemName.Equals(
+                ToolType.GasMask.ToString(),
+                System.StringComparison.OrdinalIgnoreCase
+            );
+        }
+
+        if (isGasMask)
+        {
+            DroppedGasMaskState gasMaskState =
+                currentInteractableItem.GetComponent<DroppedGasMaskState>();
+
+            if (gasMaskState != null)
+            {
+                gasMaskCooldown = gasMaskState.CooldownRemaining;
+                Debug.Log($"[GasMask Pickup] 드랍 방독면 쿨타임 읽음: {gasMaskCooldown}");
+            }
+            else
+            {
+                Debug.LogWarning("[GasMask Pickup] DroppedGasMaskState가 드랍 프리팹에 없음");
+            }
+        }
+
         if (inventory.AddItem(currentInteractableItem.itemData))
         {
+            if (isGasMask)
+            {
+                inventory.ApplyGasMaskCooldownFromPickup(gasMaskCooldown);
+            }
+
             if (Runner.IsServer)
             {
                 Runner.Despawn(itemNetObj);
