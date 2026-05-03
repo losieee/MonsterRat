@@ -19,13 +19,9 @@ public class SafeZoneTrigger : NetworkBehaviour
 
     [Networked] public int PlayersInZoneCount { get; set; }
     [Networked] public NetworkBool IsDoorOpened { get; set; }
-
     [Networked] public NetworkBool IsEvacuating { get; set; }
 
-
-
-
-    private const int RequiredPlayerCount = 2;
+    // 기존의 고정된 인원수(const int RequiredPlayerCount = 2;)를 삭제
 
     void Start()
     {
@@ -38,6 +34,21 @@ public class SafeZoneTrigger : NetworkBehaviour
         {
             IsDoorOpened = true;
         }
+    }
+
+    //방안에 있는 플레이어 숫자 실시간으로 확인하는 함수에요
+    private int GetCurrentRoomPlayerCount()
+    {
+        if (Runner == null) return 1;
+
+        int count = 0;
+        // 현재 방에 살아있는 플레이어 확인
+        foreach (var player in Runner.ActivePlayers)
+        {
+            count++;
+        }
+        // 최소 1명으로 고정
+        return Mathf.Max(1, count);
     }
 
     void Update()
@@ -60,9 +71,12 @@ public class SafeZoneTrigger : NetworkBehaviour
             return;
         }
 
-        if (PlayersInZoneCount < RequiredPlayerCount)
+        // ★ 수정됨: 실시간 요구 인원수 가져오기
+        int requiredPlayerCount = GetCurrentRoomPlayerCount();
+
+        if (PlayersInZoneCount < requiredPlayerCount)
         {
-            if (infoText != null) infoText.text = $"다른 플레이어 대기 중... ({PlayersInZoneCount}/{RequiredPlayerCount})";
+            if (infoText != null) infoText.text = $"다른 플레이어 대기 중... ({PlayersInZoneCount}/{requiredPlayerCount})";
             currentTimer = 0f;
             if (progressCircle != null) progressCircle.fillAmount = 0f;
             return;
@@ -105,7 +119,10 @@ public class SafeZoneTrigger : NetworkBehaviour
     {
         if (IsEvacuating) return;
 
-        if (PlayersInZoneCount >= RequiredPlayerCount)
+        // ★ 수정됨: 실시간 요구 인원수 가져오기
+        int requiredPlayerCount = GetCurrentRoomPlayerCount();
+
+        if (PlayersInZoneCount >= requiredPlayerCount)
         {
             IsEvacuating = true;
             StartEvacuation();
@@ -134,7 +151,6 @@ public class SafeZoneTrigger : NetworkBehaviour
         }
     }
 
-    //여기 
     private void OnTriggerEnter(Collider other)
     {
         if (Object == null || !Object.IsValid) return;
@@ -203,7 +219,6 @@ public class SafeZoneTrigger : NetworkBehaviour
         }
     }
 
-   
     [Rpc(RpcSources.All, RpcTargets.All)]
     public void RPC_CommandSaveInventory()
     {
@@ -219,6 +234,4 @@ public class SafeZoneTrigger : NetworkBehaviour
             }
         }
     }
-
-
 }
