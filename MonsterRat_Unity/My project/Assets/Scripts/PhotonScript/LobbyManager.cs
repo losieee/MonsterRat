@@ -136,8 +136,11 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
             GameMode = GameMode.Host, 
             SessionName = roomName,
             PlayerCount = 2, // 팀장님이 2인에서 4인으로 바꾼다고 하면 여기 숫자 를 바꿔주세요
-            SceneManager = gameObject.GetComponent<NetworkSceneManagerDefault>()
+            SceneManager = gameObject.GetComponent<NetworkSceneManagerDefault>(),
+            EnableClientSessionCreation = true
         };
+        if (HostMigrationManager.Instance != null)
+            HostMigrationManager.Instance.RegisterRunner(_runner);
 
         CreateRoomPanel.SetActive(false);
 
@@ -186,8 +189,12 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             GameMode = GameMode.Client,  
             SessionName = roomName,
-            SceneManager = gameObject.GetComponent<NetworkSceneManagerDefault>()
+            SceneManager = gameObject.GetComponent<NetworkSceneManagerDefault>(),
+            EnableClientSessionCreation = true
         };
+
+        if (HostMigrationManager.Instance != null)
+            HostMigrationManager.Instance.RegisterRunner(_runner);
 
         var result = await _runner.StartGame(startGameArgs);
 
@@ -203,7 +210,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
     {
-        Debug.Log("방장이 변경되었습니다! 마이그레이션 처리 필요");
+       // Debug.Log("방장이 변경되었습니다! 마이그레이션 처리 필요");
     }
 
      

@@ -46,6 +46,11 @@ public class GameRoomManager : NetworkBehaviour, IPlayerJoined, IPlayerLeft
 
         NetworkObject spawnedPlayer = Runner.Spawn(playerPrefab, pos, rot, player);
         Runner.SetPlayerObject(player, spawnedPlayer);
+
+
+      //  if (HostMigrationManager.IsMigrating) return; 이거 일단 비활성화
+
+        if (Runner.GetPlayerObject(player) != null) return;
     }
 
     public void PlayerLeft(PlayerRef player)
@@ -56,7 +61,7 @@ public class GameRoomManager : NetworkBehaviour, IPlayerJoined, IPlayerLeft
             if (playerObj != null)
             {
                 Runner.Despawn(playerObj);
-                Debug.Log($"플레이어({player.PlayerId}) 퇴장. 캐릭터를 삭제했습니다.");
+                Debug.Log($"플레이어({player.PlayerId}) 퇴장. 캐릭터를 삭제");
             }
         }
     }
