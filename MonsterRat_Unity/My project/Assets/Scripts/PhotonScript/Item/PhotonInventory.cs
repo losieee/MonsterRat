@@ -275,6 +275,16 @@ public class PhotonInventory : NetworkBehaviour
                     gasMask.HideGasMaskUI();
                 }
             }
+            if(dropType == ToolType.Flash)
+            {
+                FlashController flash =
+                    tools.FirstOrDefault(t => t.Type == ToolType.Flash) as FlashController;
+
+                if(flash)
+                {
+                    flash.RPC_SetFlash(false);
+                }
+            }
         }
 
         if (Runner.IsServer)

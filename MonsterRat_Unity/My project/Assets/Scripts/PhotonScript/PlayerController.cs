@@ -8,6 +8,7 @@ public struct MyNetworkInput : INetworkInput
 {
     public Vector2 moveInput;
     public float yaw;
+    public float pitch;
     public NetworkBool isRunning;
 }
 
@@ -20,6 +21,7 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
 
     [Header("연결 요소")]
     public GameObject myCamObj;
+    public Transform flashPivot;            // 손전등 전용 불빛
 
     [Header("발소리")]
     public AudioClip[] footSteps;
@@ -34,6 +36,8 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
     private Animator animator;
     private float footstepTimer = 0f;
     private PlayerFootStepType footStepType;
+
+    [Networked] public float NetPitch { get; set; }     // 플레이어 위아래 시선 처리
 
     public override void Spawned()
     {
@@ -88,12 +92,21 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
         }
     }
 
+    void LateUpdate()
+    {
+        if (!HasInputAuthority)
+        {
+            flashPivot.localRotation = Quaternion.Euler(NetPitch, 0f, 0f);
+        }
+    }
+
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
         MyNetworkInput myInput = new MyNetworkInput();
         myInput.moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         myInput.isRunning = Input.GetKey(KeyCode.LeftShift);
         myInput.yaw = yaw;
+        myInput.pitch = pitch;
 
         input.Set(myInput);
     }
@@ -107,6 +120,11 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
         {
             // 좌우 회전
             transform.rotation = Quaternion.Euler(0, input.yaw, 0);
+
+            if (HasStateAuthority)
+            {
+                NetPitch = input.pitch;
+            }
 
             // 이동 계산
             float currentSpeed = input.isRunning ? runSpeed : moveSpeed;
@@ -129,6 +147,9 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
                 HandleFootstep(input, moveDir);
             }
         }
+
+        // 상하 회전
+        flashPivot.localRotation = Quaternion.Euler(NetPitch, 0f, 0f);      // 손전등 빛 오브젝트도 같이
     }
 
     void HandleFootstep(MyNetworkInput input, Vector3 moveDir)
@@ -204,6 +225,19 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
         if (clip != null)
         {
             footstepAudioSource.PlayOneShot(clip);
+        }
+    }
+
+    static void OnPitchChanged(PlayerController player)
+    {
+        player.ApplyPitch();
+    }
+
+    void ApplyPitch()
+    {
+        if (flashPivot != null)
+        {
+            flashPivot.localRotation = Quaternion.Euler(NetPitch, 0f, 0f);
         }
     }
 

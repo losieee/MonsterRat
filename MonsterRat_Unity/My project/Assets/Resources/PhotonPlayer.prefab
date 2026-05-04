@@ -79,6 +79,38 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: "\uC2A4\uD328\uB108"
+--- !u!1 &285910180417626565
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1981871538835280113}
+  m_Layer: 11
+  m_Name: FlashPivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1981871538835280113
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 285910180417626565}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.577, z: 0.411}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5445613743755998116}
+  m_Father: {fileID: 4300096115388253541}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &320480333975220677
 GameObject:
   m_ObjectHideFlags: 0
@@ -184,8 +216,7 @@ GameObject:
   - component: {fileID: 5445613743755998116}
   - component: {fileID: 3058085785485985414}
   - component: {fileID: 1655661316118512857}
-  - component: {fileID: 9079510011997074110}
-  - component: {fileID: 2167488531766564893}
+  - component: {fileID: 5478184172720535453}
   m_Layer: 11
   m_Name: Spot Light
   m_TagString: Untagged
@@ -202,12 +233,12 @@ Transform:
   m_GameObject: {fileID: 1064278392415195464}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.278, y: -0.375, z: 1.0325}
+  m_LocalPosition: {x: 0.169, y: -0.47299993, z: -0.028999984}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4984044362552707776}
-  m_Father: {fileID: 8113566506925565300}
+  m_Father: {fileID: 1981871538835280113}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!108 &3058085785485985414
 Light:
@@ -226,7 +257,7 @@ Light:
   m_InnerSpotAngle: 45
   m_CookieSize2D: {x: 0.5, y: 0.5}
   m_Shadows:
-    m_Type: 0
+    m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -303,7 +334,7 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
---- !u!114 &9079510011997074110
+--- !u!114 &5478184172720535453
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -315,31 +346,13 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 3752864769
+  SortKey: 1589955892
   ObjectInterest: 1
   Flags: 262145
   NestedObjects:
   - {fileID: 5332366670559383816}
-  NetworkedBehaviours:
-  - {fileID: 2167488531766564893}
+  NetworkedBehaviours: []
   ForceRemoteRenderTimeframe: 0
---- !u!114 &2167488531766564893
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1064278392415195464}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
-  _stateAuthorityChangeErrorCorrectionDelta: 0
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  DisableSharedModeInterpolation: 0
 --- !u!1 &1398197322840769635
 GameObject:
   m_ObjectHideFlags: 0
@@ -1755,9 +1768,9 @@ Transform:
   m_GameObject: {fileID: 5314782968826244411}
   serializedVersion: 2
   m_LocalRotation: {x: -1, y: -0, z: -0, w: 0}
-  m_LocalPosition: {x: 0, y: -0.0019999444, z: 1.9574001}
-  m_LocalScale: {x: 196.25618, y: 196.2562, z: 195.36446}
-  m_ConstrainProportionsScale: 1
+  m_LocalPosition: {x: 0, y: -0.0019999146, z: 1.9574001}
+  m_LocalScale: {x: 167.87164, y: 167.8716, z: 195.36446}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5445613743755998116}
   m_LocalEulerAnglesHint: {x: -180, y: 0, z: 0}
@@ -1887,8 +1900,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: -0.339}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 5445613743755998116}
+  m_Children: []
   m_Father: {fileID: 599440580541166388}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &6059536017928890074
@@ -3394,6 +3406,7 @@ Transform:
   - {fileID: 2517132596364591612}
   - {fileID: 2614237379994574126}
   - {fileID: 599440580541166388}
+  - {fileID: 1981871538835280113}
   - {fileID: 7515643468641692121}
   - {fileID: 4607878176469403721}
   m_Father: {fileID: 0}
@@ -3676,7 +3689,7 @@ MonoBehaviour:
   ObjectInterest: 1
   Flags: 1
   NestedObjects:
-  - {fileID: 9079510011997074110}
+  - {fileID: 5478184172720535453}
   - {fileID: 5332366670559383816}
   NetworkedBehaviours:
   - {fileID: 1532325441129902764}
@@ -3757,6 +3770,7 @@ MonoBehaviour:
   runSpeed: 6
   mouseSensitivity: 2
   myCamObj: {fileID: 1854414265921017584}
+  flashPivot: {fileID: 1981871538835280113}
   footSteps:
   - {fileID: 8300000, guid: c11e9ef8d1e7d1e4e850bd1e3bdb7af0, type: 3}
   - {fileID: 8300000, guid: 11c32f3d467f07c459e867ea135f241c, type: 3}
@@ -3764,6 +3778,7 @@ MonoBehaviour:
   footstepAudioSource: {fileID: 5053122888985684548}
   walkStepInterval: 0.6
   runStepInterval: 0.3
+  _NetPitch: 0
 --- !u!114 &232426663093574612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4101,6 +4116,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlashController
   flash: {fileID: 1064278392415195464}
+  cone: {fileID: 5314782968826244411}
+  _IsOn: 0
+  _Intensity: 0
+  spotLight: {fileID: 3058085785485985414}
 --- !u!1 &8342933584836251165
 GameObject:
   m_ObjectHideFlags: 0
