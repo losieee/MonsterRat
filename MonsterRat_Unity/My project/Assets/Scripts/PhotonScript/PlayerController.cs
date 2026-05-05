@@ -29,6 +29,10 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
     public float walkStepInterval = 0.5f;
     public float runStepInterval = 0.3f;
 
+    [Header("벽 거리조절")]
+    [SerializeField] private float wallCheckDistance = 0.6f;
+    [SerializeField] private LayerMask wallLayer;
+
     // 다시 익숙한 Rigidbody로 돌아옵니다!
     private Rigidbody rb;
     private float pitch = 0f;
@@ -130,8 +134,30 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
             float currentSpeed = input.isRunning ? runSpeed : moveSpeed;
             Vector3 moveDir = (transform.right * input.moveInput.x + transform.forward * input.moveInput.y).normalized;
 
-            // Rigidbody와 Network Transform을 같이 쓸 때는 position을 직접 밀어주는 방식이 가장 충돌이 적습니다.
-            transform.position += moveDir * currentSpeed * Runner.DeltaTime;
+            if (moveDir != Vector3.zero)
+            {
+                Vector3 origin = transform.position + Vector3.up * 1f;
+
+                // 내가 갈 위치에 벽이 있는지 검사
+                bool isBlocked = Physics.SphereCast(origin, 0.3f, moveDir, out RaycastHit hit, wallCheckDistance, wallLayer);
+
+                if (!isBlocked)
+                {
+                    // Rigidbody와 Network Transform을 같이 쓸 때는 position을 직접 밀어주는 방식이 가장 충돌이 적습니다.
+                    transform.position += moveDir * currentSpeed * Runner.DeltaTime;
+                }
+                else
+                {
+                    // 벽에 딱 달아붙어 있는 경우 자연스럽게 벽을 따라 슬라이딩
+                    Vector3 slideDir = Vector3.ProjectOnPlane(moveDir, hit.normal).normalized;
+
+                    // 앞이 막혀있는 경우
+                    if (slideDir.sqrMagnitude > 0.01f)
+                    {
+                        transform.position += slideDir * currentSpeed * 0.5f * Runner.DeltaTime;
+                    }
+                }
+            }
 
             // 애니메이션
             if (animator != null)
