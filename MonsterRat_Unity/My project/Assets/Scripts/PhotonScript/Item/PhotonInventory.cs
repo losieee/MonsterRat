@@ -283,6 +283,7 @@ public class PhotonInventory : NetworkBehaviour
                 if(flash)
                 {
                     flash.RPC_SetFlash(false);
+                    Debug.Log("꺼짐");
                 }
             }
         }

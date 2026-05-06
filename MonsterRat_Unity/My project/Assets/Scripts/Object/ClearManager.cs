@@ -195,6 +195,8 @@ public class ClearManager : NetworkBehaviour
 
             clearDoorAnim.TryOpenDoor();
         }
+
+        if (Input.GetKeyDown(KeyCode.F1)) SpawnWatcher();
     }
 
     // 10% 단위로 step으로 변환
@@ -401,7 +403,10 @@ public class ClearManager : NetworkBehaviour
     {
         if (!HasStateAuthority) return;
         Debug.Log("Watcher");
-        SpawnOneNearPlayer(watcher);
+        if (PollutionSpawner.Instance != null)
+        {
+            PollutionSpawner.Instance.SpawnRoachesInRandomAreas(watcher, 1);
+        }
     }
 
     public void SpawnLegless()

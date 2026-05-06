@@ -21,4 +21,11 @@ public class HandOverDamage : NetworkBehaviour
         if (hitAnim != null)
             hitAnim.PlayerHit();
     }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+    public void Rpc_TakeWatcherHit(float damage)
+    {
+        if (gas != null)
+            gas.AddExposure(damage);
+    }
 }

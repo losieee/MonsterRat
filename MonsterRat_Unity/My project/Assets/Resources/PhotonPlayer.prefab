@@ -975,7 +975,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4984044362552707776}
+  - {fileID: 5569183302794006414}
   m_Father: {fileID: 1981871538835280113}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!108 &3058085785485985414
@@ -1088,7 +1088,7 @@ MonoBehaviour:
   ObjectInterest: 1
   Flags: 262145
   NestedObjects:
-  - {fileID: 5332366670559383816}
+  - {fileID: 9149134165951278289}
   NetworkedBehaviours: []
   ForceRemoteRenderTimeframe: 0
 --- !u!1 &1198519039048356016
@@ -2963,6 +2963,96 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &4273989101196855355
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5569183302794006414}
+  - component: {fileID: 7724125737138346992}
+  - component: {fileID: 9149134165951278289}
+  - component: {fileID: 4736649641449520319}
+  m_Layer: 11
+  m_Name: ConePivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5569183302794006414
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4273989101196855355}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4984044362552707776}
+  m_Father: {fileID: 5445613743755998116}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7724125737138346992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4273989101196855355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 701c5b359f32dd247a634003b1d9b1d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FlashRange
+  _range: 10
+  _angle: 22.8
+  watcherMask:
+    serializedVersion: 2
+    m_Bits: 33554432
+  flashController: {fileID: 1895867736823702318}
+--- !u!114 &9149134165951278289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4273989101196855355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
+  SortKey: 685895481
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 7724125737138346992}
+  - {fileID: 4736649641449520319}
+  ForceRemoteRenderTimeframe: 0
+--- !u!114 &4736649641449520319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4273989101196855355}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
+  _stateAuthorityChangeErrorCorrectionDelta: 0
+  SyncScale: 0
+  SyncParent: 0
+  _autoAOIOverride: 1
+  DisableSharedModeInterpolation: 0
 --- !u!1 &4410548204893728797
 GameObject:
   m_ObjectHideFlags: 0
@@ -3102,8 +3192,6 @@ GameObject:
   - component: {fileID: 4984044362552707776}
   - component: {fileID: 2922448695510313285}
   - component: {fileID: 4649253660863470920}
-  - component: {fileID: 5332366670559383816}
-  - component: {fileID: 6684822105357410228}
   m_Layer: 23
   m_Name: "\uC6D0\uBFD4"
   m_TagString: Untagged
@@ -3120,11 +3208,11 @@ Transform:
   m_GameObject: {fileID: 5314782968826244411}
   serializedVersion: 2
   m_LocalRotation: {x: -1, y: -0, z: -0, w: 0}
-  m_LocalPosition: {x: 0, y: -0.0019999146, z: 1.9574001}
-  m_LocalScale: {x: 167.87164, y: 167.8716, z: 195.36446}
+  m_LocalPosition: {x: 0, y: -0.001999855, z: 4.8051}
+  m_LocalScale: {x: 388.7441, y: 388.74414, z: 480.11725}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 5445613743755998116}
+  m_Father: {fileID: 5569183302794006414}
   m_LocalEulerAnglesHint: {x: -180, y: 0, z: 0}
 --- !u!33 &2922448695510313285
 MeshFilter:
@@ -3183,42 +3271,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &5332366670559383816
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5314782968826244411}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 4028077007
-  ObjectInterest: 1
-  Flags: 262145
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 6684822105357410228}
-  ForceRemoteRenderTimeframe: 0
---- !u!114 &6684822105357410228
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5314782968826244411}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
-  _stateAuthorityChangeErrorCorrectionDelta: 0
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  DisableSharedModeInterpolation: 0
 --- !u!1 &5455834990664709862
 GameObject:
   m_ObjectHideFlags: 0
@@ -5265,7 +5317,7 @@ MonoBehaviour:
   - {fileID: 8894622374888819384}
   - {fileID: 4101136986277238267}
   - {fileID: 5478184172720535453}
-  - {fileID: 5332366670559383816}
+  - {fileID: 9149134165951278289}
   NetworkedBehaviours:
   - {fileID: 1532325441129902764}
   - {fileID: 3781888732311085437}

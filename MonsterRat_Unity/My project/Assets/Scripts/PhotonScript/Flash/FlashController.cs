@@ -21,10 +21,8 @@ public class FlashController : InvenBase
 
     private void OnDisable()
     {
-        if (Object.HasInputAuthority)
-        {
-            RPC_SetFlash(false);
-        }
+        if (flash != null)
+            flash.SetActive(IsOn);
     }
 
     public override void Tick()

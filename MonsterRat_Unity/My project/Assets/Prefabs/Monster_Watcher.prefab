@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2970126926353858522}
   - component: {fileID: 5228552678927106429}
   - component: {fileID: 8438239163212914329}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: Eyes2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,8 +124,7 @@ GameObject:
   - component: {fileID: 4629644655518043599}
   - component: {fileID: 2077204978852109635}
   - component: {fileID: 309845450005471672}
-  - component: {fileID: 1134135633559854056}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140,14 +139,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2462503883062898590}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0.7071068, z: -0.7071068, w: 0}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0.923, z: 0}
   m_LocalScale: {x: 100.00005, y: 100.00004, z: 100.00004}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4743248066131298008}
   m_Father: {fileID: 7067553300088346089}
-  m_LocalEulerAnglesHint: {x: -90, y: 0, z: -180}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!33 &4629644655518043599
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -222,29 +221,6 @@ MonoBehaviour:
   invisibleDuration: 0.15
   floatAmplitude: 0.1
   floatSpeed: 0.1
---- !u!136 &1134135633559854056
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2462503883062898590}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.00949507
-  m_Height: 0.017186519
-  m_Direction: 1
-  m_Center: {x: 0.000019405279, y: 0.000023615554, z: -0.000009244781}
 --- !u!1 &2796130435308551036
 GameObject:
   m_ObjectHideFlags: 0
@@ -255,10 +231,12 @@ GameObject:
   m_Component:
   - component: {fileID: 7067553300088346089}
   - component: {fileID: 3599724677802947}
-  - component: {fileID: 2727024129534111826}
-  m_Layer: 0
+  - component: {fileID: 8410314475456906937}
+  - component: {fileID: 2065331105566023068}
+  - component: {fileID: 8818205393575005159}
+  m_Layer: 25
   m_Name: Monster_Watcher
-  m_TagString: Untagged
+  m_TagString: Watcher
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -296,9 +274,47 @@ MonoBehaviour:
   Flags: 262145
   NestedObjects: []
   NetworkedBehaviours:
-  - {fileID: 2727024129534111826}
+  - {fileID: 2065331105566023068}
+  - {fileID: 8818205393575005159}
   ForceRemoteRenderTimeframe: 0
---- !u!114 &2727024129534111826
+--- !u!136 &8410314475456906937
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2796130435308551036}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.6
+  m_Height: 1.903821
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.9519105, z: 0.12}
+--- !u!114 &2065331105566023068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2796130435308551036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11535f9289fa94341b60fc31e2d7944d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterWatcher
+  watcherDamage: 8
+  _watcherCount: 0
+--- !u!114 &8818205393575005159
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -326,7 +342,7 @@ GameObject:
   - component: {fileID: 5931823018572753127}
   - component: {fileID: 5367308979537637725}
   - component: {fileID: 2848221840125180459}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: WatcherSmoke (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5162,7 +5178,7 @@ GameObject:
   - component: {fileID: 5345196626244853209}
   - component: {fileID: 9092003583491154557}
   - component: {fileID: 6285272222593500386}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: WatcherSmoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9999,7 +10015,7 @@ GameObject:
   - component: {fileID: 2061863263771194169}
   - component: {fileID: 8769297663374441895}
   - component: {fileID: 3340830861888169662}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: Eyes1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10108,7 +10124,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4743248066131298008}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: Smoke
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10142,7 +10158,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4791886077833589350}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: Eyes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
