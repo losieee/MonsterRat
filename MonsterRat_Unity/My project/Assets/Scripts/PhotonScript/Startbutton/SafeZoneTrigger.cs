@@ -14,6 +14,10 @@ public class SafeZoneTrigger : NetworkBehaviour
     public Image progressCircle;
     public TextMeshProUGUI infoText;
 
+    [Header("오염물질 스테이지에 남았나 확인")]
+    public LayerMask checkLayers;
+
+
     private bool isPlayerInZone = false;
     private float currentTimer = 0f;
 
@@ -22,6 +26,8 @@ public class SafeZoneTrigger : NetworkBehaviour
     [Networked] public NetworkBool IsEvacuating { get; set; }
 
     // 기존의 고정된 인원수(const int RequiredPlayerCount = 2;)를 삭제
+
+
 
     void Start()
     {
@@ -71,7 +77,7 @@ public class SafeZoneTrigger : NetworkBehaviour
             return;
         }
 
-        // ★ 수정됨: 실시간 요구 인원수 가져오기
+        // 인원수 가져오기
         int requiredPlayerCount = GetCurrentRoomPlayerCount();
 
         if (PlayersInZoneCount < requiredPlayerCount)
@@ -119,7 +125,7 @@ public class SafeZoneTrigger : NetworkBehaviour
     {
         if (IsEvacuating) return;
 
-        // ★ 수정됨: 실시간 요구 인원수 가져오기
+        //실시간 요구 인원수 가져오기
         int requiredPlayerCount = GetCurrentRoomPlayerCount();
 
         if (PlayersInZoneCount >= requiredPlayerCount)
@@ -132,6 +138,20 @@ public class SafeZoneTrigger : NetworkBehaviour
     void StartEvacuation()
     {
         if (!HasStateAuthority) return;
+
+        bool hasLeftOver = false;
+
+        GameObject[] allObjects = FindObjectsOfType<GameObject>();
+        foreach(var obj in allObjects)
+        {
+            if (obj.activeInHierarchy && ((1 << obj.layer)& checkLayers) !=0)
+            {
+                hasLeftOver = true;
+                Debug.Log($"오염잔향 이름: {obj.name}, 레이어: {LayerMask.LayerToName(obj.layer)}");
+                break;
+            }
+        }
+        TransStageDoor.isPollutionLeft = hasLeftOver;
 
         if (Runner.SessionInfo != null)
         {
@@ -155,7 +175,7 @@ public class SafeZoneTrigger : NetworkBehaviour
     {
         if (Object == null || !Object.IsValid) return;
 
-        // 서버(호스트)가 아니면 여기서 무조건 컷! (중복 실행 방지)
+        // 호스트가 아니면 여기서 무조건 컷!
         if (!HasStateAuthority) return;
 
         if (other.CompareTag("Player"))
