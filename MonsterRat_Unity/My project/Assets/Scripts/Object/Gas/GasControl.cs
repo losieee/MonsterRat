@@ -7,7 +7,7 @@ public class GasControl : MonoBehaviour, IClearTarget
     public float pullStr = 6f;              // 빨려오는 힘
     public float destroyDis = 0.2f;         // 삭제될 거리
     public float maxMovePerFrame = 0.05f;   // 최대
-    public float weight = 1f;
+    public float weight = 0f;
 
     ParticleSystem ps;
     ParticleSystem.Particle[] buffer;

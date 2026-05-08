@@ -212,10 +212,20 @@ namespace SlimUI.ModernMenu
             if (runner != null)
             {
                 await runner.Shutdown();
+
+                Destroy(runner.gameObject);
+
+                runner = null;
             }
 
-            if (settingsPanel != null) settingsPanel.SetActive(false);
+            if (settingsPanel != null)
+                settingsPanel.SetActive(false);
+
             isMenuOpen = false;
+            
+            // Shutdown 후 Runner 제거까지 대기
+            await System.Threading.Tasks.Task.Delay(200);
+
             SceneManager.LoadScene("ZZin_Main_Lobby");
         }
 

@@ -31,7 +31,7 @@ public class PollutionSpawner : NetworkBehaviour
     [SerializeField] private NetworkPrefabRef rangeGas;
 
     [Header("소환 범위")]
-    [SerializeField] private GameObject cleaningTargets;
+    public GameObject cleaningTargets;
     [SerializeField] private BoxCollider[] spawnArea;
 
     [SerializeField] private float rayDistance = 20f;
@@ -43,7 +43,7 @@ public class PollutionSpawner : NetworkBehaviour
 
     [Header("Json")]
     [SerializeField] private TextAsset stageDBJson;
-    [SerializeField] private int currentStageNum = 1;
+    [Networked] public int CurrentStageNum { get; set; }
 
     private List<StageJson> stageList = new List<StageJson>();
 
@@ -53,6 +53,7 @@ public class PollutionSpawner : NetworkBehaviour
     private readonly List<NetworkObject> spawnedGases = new List<NetworkObject>();
     private readonly List<NetworkObject> spawnedPlants = new List<NetworkObject>();
     private readonly List<NetworkObject> spawnedPollutions = new List<NetworkObject>();
+    private readonly List<NetworkObject> spawnedTrashes = new List<NetworkObject>();
     private bool gasCleared = false;
 
     public override void Spawned()
@@ -61,11 +62,22 @@ public class PollutionSpawner : NetworkBehaviour
         
         if (!HasStateAuthority) return;
 
+        ClearManager.Instance.ResetProgress();
+
         LoadStageData();
-        ApplyStageData(currentStageNum);
+        ApplyStageData(CurrentStageNum);
 
         PollutionSpawnOnce();
         TrashSpawnOnce();
+
+        StartCoroutine(CoFinishStageSetup());
+    }
+
+    System.Collections.IEnumerator CoFinishStageSetup()
+    {
+        yield return new WaitForSeconds(1f);
+
+        ClearManager.Instance.FinishStageSetup();
     }
 
     // Json 불러오기
@@ -124,6 +136,14 @@ public class PollutionSpawner : NetworkBehaviour
                 Runner.Despawn(spawnedPollutions[i]);
         }
         spawnedPollutions.Clear();
+
+        // 모든 쓰레기 삭제
+        for (int i = spawnedTrashes.Count - 1; i >= 0; i--)
+        {
+            if (spawnedTrashes[i] != null)
+                Runner.Despawn(spawnedTrashes[i]);
+        }
+        spawnedTrashes.Clear();
 
         // 모든 가스 삭제
         for (int i = spawnedGases.Count - 1; i >= 0; i--)
@@ -258,6 +278,7 @@ public class PollutionSpawner : NetworkBehaviour
                     {
                         obj.transform.localScale = spawnScale;
                         spawnedPollutions.Add(obj);
+                        placedPollutionPositions.Add(pos);
                         placed = true;
                     }
 
@@ -471,8 +492,13 @@ public class PollutionSpawner : NetworkBehaviour
             //    obj.transform.SetParent(cleaningTargets.transform, true);
             //}
 
-            Runner.Spawn(selectedTrashPrefab, spawnPos, Quaternion.identity);
-            spawned++;
+            NetworkObject obj = Runner.Spawn(selectedTrashPrefab, spawnPos, Quaternion.identity);
+
+            if (obj != null)
+            {
+                spawnedTrashes.Add(obj);
+                spawned++;
+            }
         }
     }
 

@@ -81,6 +81,10 @@ public class ClearManager : NetworkBehaviour
     // 로컬 참조용 리스트(디버그/확장용)
     private readonly List<IClearTarget> targets = new List<IClearTarget>();
 
+    // 스테이지 시작 전 준비가 되었는가 (스테이지 초기화가 완료 되었는가)
+    private bool isStageReady = false;
+    private bool isInitializingTargets = false;
+
     // 네트워크 동기화되는 값들
     [Networked] public float BaselineTotal { get; set; }
     [Networked] public float RemainingTotal { get; set; }
@@ -109,6 +113,8 @@ public class ClearManager : NetworkBehaviour
         
         if (spawnRoot == null)
             spawnRoot = transform;
+
+        ResetProgress();
     }
 
     private void OnDestroy()
@@ -131,8 +137,7 @@ public class ClearManager : NetworkBehaviour
         float w = Mathf.Max(0f, target.Weight);
 
         BaselineTotal += w;
-        RemainingTotal += Mathf.Clamp01(target.Remain01) * w;
-        HasInitializedTargets = true;
+        RemainingTotal += w;
     }
 
     // 해당 물체를 처리 했을 때 (등록 해제)
@@ -145,10 +150,13 @@ public class ClearManager : NetworkBehaviour
 
         if (!HasStateAuthority) return;
 
+        if (isInitializingTargets)
+            return;
+
         float w = Mathf.Max(0f, target.Weight);
 
         // 현재 구조에선 "사라지는 것 = 청소 완료" 타입으로 보고 남은 양에서 차감
-        RemainingTotal = Mathf.Max(0f, RemainingTotal - (Mathf.Clamp01(target.Remain01) * w));
+        RemainingTotal = Mathf.Max(0f, RemainingTotal - w);
     }
 
     // 부분 청소형 대상이 있을 때 수동 호출용
@@ -171,12 +179,19 @@ public class ClearManager : NetworkBehaviour
     {
         if (!HasStateAuthority) return;
 
+        isInitializingTargets = true;
+
+        targets.Clear();
+
         BaselineTotal = 0f;
         RemainingTotal = 0f;
+
         weakMonsterSpawnCount = 0;
         LastStep = 0;
+
         HasInitializedTargets = false;
         clearedAllGas = false;
+        isStageReady = false;
     }
 
     private void Update()
@@ -184,16 +199,22 @@ public class ClearManager : NetworkBehaviour
         // 단계 이벤트는 권한 쪽에서만 처리
         if (!HasStateAuthority) return;
 
-        CheckStep(ClearRatio01);
-
-        if (!clearedAllGas && ClearPercent >= 100)
+        if (isStageReady && !isInitializingTargets)
         {
-            clearedAllGas = true;
+            CheckStep(ClearRatio01);
 
-            if (PollutionSpawner.Instance != null)
-                PollutionSpawner.Instance.DespawnAllGas();
+            if (!clearedAllGas && ClearPercent >= 100)
+            {
+                clearedAllGas = true;
 
-            clearDoorAnim.TryOpenDoor();
+                if (PollutionSpawner.Instance != null)
+                    PollutionSpawner.Instance.DespawnAllGas();
+
+                PollutionSpawner.Instance.DespawnAllCleaningObjects();
+                Destroy(PollutionSpawner.Instance.cleaningTargets);
+
+                clearDoorAnim.TryOpenDoor();
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.F1)) SpawnWatcher();
@@ -214,6 +235,8 @@ public class ClearManager : NetworkBehaviour
         }
 
         LastStep = step;
+
+        Debug.Log($"STEP CHECK : {ClearPercent}");
     }
 
     // 현재 step에 맞는 PhaseRandom를 찾아 그 중 하나 랜덤 실행
@@ -283,6 +306,20 @@ public class ClearManager : NetworkBehaviour
         {
             Runner.Spawn(prefab, spawnPos, Quaternion.identity);
         }
+    }
+
+    // 스테이지 시작 전 초기화
+    public void FinishStageSetup()
+    {
+        if (!HasStateAuthority) return;
+
+        RemainingTotal = Mathf.Clamp(RemainingTotal, 0f, BaselineTotal);
+
+        isInitializingTargets = false;
+        isStageReady = true;
+        HasInitializedTargets = true;
+
+        LastStep = 0;
     }
 
     // 플레이어 검색
