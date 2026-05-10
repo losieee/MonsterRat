@@ -21,6 +21,8 @@ public class FlashController : InvenBase
 
     private void OnDisable()
     {
+
+        if (Object == null || !Object.IsValid) return;
         if (flash != null)
             flash.SetActive(IsOn);
     }
