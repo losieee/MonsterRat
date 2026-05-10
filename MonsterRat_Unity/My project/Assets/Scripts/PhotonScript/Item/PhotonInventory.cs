@@ -4,7 +4,14 @@ using System.Collections.Generic;
 using Fusion;
 using System.Linq;
 using System;
-using System.Security; // Enum 파싱용
+using System.Security;
+
+//인벤토리의 아이템 ID들을 Json으로 변환시킬 클래스 
+[System.Serializable]
+public class InventorySaveData
+{
+    public List<int> itemIDs = new List<int>();
+}
 
 public class PhotonInventory : NetworkBehaviour
 {
@@ -26,21 +33,16 @@ public class PhotonInventory : NetworkBehaviour
 
     [Header("인벤 복구 용")]
     private ItemData[] heldItems;
-    private int currentSelectedSlot = -1;  
+    private int currentSelectedSlot = -1;
 
     [Header("도구 관리 InvenBase 연동")]
     private InvenBase[] tools;
     private InvenBase currentTool;
 
-    
-
-
-
     [Networked]
     public ToolType NetActiveTool { get; set; }
     private ToolType _localActiveTool = (ToolType)(-1);
 
-    // ToolType에 따라 보여지는 오브젝트 관리
     [SerializeField] private List<ToolVisualEntry> toolObjects = new List<ToolVisualEntry>();
 
     public override void Spawned()
@@ -55,7 +57,6 @@ public class PhotonInventory : NetworkBehaviour
 
         PlayerRaycast interactor = GetComponentInChildren<PlayerRaycast>(true);
 
-
         foreach (var t in tools)
         {
             t.Init(ui, interactor);
@@ -64,16 +65,28 @@ public class PhotonInventory : NetworkBehaviour
 
         if (HasInputAuthority) RPC_ChangeTool(ToolType.Hand);
 
-
-        if (HasInputAuthority && PlayerDataVault.HasData(Runner.LocalPlayer))
+        // 스폰될 때 내 고유 번호표가 붙은 열쇠로 하드디스크를 열기
+        if (HasInputAuthority)
         {
-            List<int> savedIDs = PlayerDataVault.GetInventory(Runner.LocalPlayer);
-            for (int i = 0; i < savedIDs.Count; i++)
+            // Runner.LocalPlayer.ToString()을 붙여서 나만의 고유 키를 만들기
+            string myUniqueKey = "MySavedInventory_" + Runner.LocalPlayer.ToString();
+            string jsonString = PlayerPrefs.GetString(myUniqueKey, "");
+
+            if (!string.IsNullOrEmpty(jsonString))
             {
-                if (i < heldItems.Length && savedIDs[i] != -1)
+                InventorySaveData loadedData = JsonUtility.FromJson<InventorySaveData>(jsonString);
+
+                for (int i = 0; i < loadedData.itemIDs.Count; i++)
                 {
-                    heldItems[i] = ItemDatabase.Instance.GetItem(savedIDs[i]);
+                    if (i < heldItems.Length && loadedData.itemIDs[i] != -1)
+                    {
+                        heldItems[i] = ItemDatabase.Instance.GetItem(loadedData.itemIDs[i]);
+                    }
                 }
+
+                Debug.Log($"[Inventory] JSON 복구 완료: {jsonString}");
+                PlayerPrefs.DeleteKey(myUniqueKey);
+                PlayerPrefs.Save();
             }
         }
 
@@ -127,7 +140,6 @@ public class PhotonInventory : NetworkBehaviour
         }
     }
 
-    // 도구 오브젝트 활성화 / 비활성화
     private void UpdateToolObjects(ToolType activeType)
     {
         for (int i = 0; i < toolObjects.Count; i++)
@@ -135,7 +147,6 @@ public class PhotonInventory : NetworkBehaviour
             if (toolObjects[i] == null || toolObjects[i].obj == null)
                 continue;
 
-            // Hand면 전부 false
             if (activeType == ToolType.Hand)
             {
                 toolObjects[i].obj.SetActive(false);
@@ -155,48 +166,20 @@ public class PhotonInventory : NetworkBehaviour
             {
                 heldItems[i] = itemData;
                 UpdateInventoryUI();
-                return true;  
+                return true;
             }
         }
-        return false;  
+        return false;
     }
-
-    // 토글 슬롯 방식
-    // private void ToggleSlot(int slotIndex)
-    // {
-    //     if (slotIndex < 0 || slotIndex >= heldItems.Length) return;
-    //
-    //     if (heldItems[slotIndex] == null) return;
-    //
-    //     if (currentSelectedSlot == slotIndex)
-    //     {
-    //         currentSelectedSlot = -1;
-    //         RPC_ChangeTool(ToolType.Hand);
-    //     }
-    //     else
-    //     {
-    //         currentSelectedSlot = slotIndex;
-    //         ItemData data = heldItems[slotIndex];
-    //         if (Enum.TryParse(data.itemName, true, out ToolType type))
-    //         {
-    //             RPC_ChangeTool(type);
-    //         }
-    //         else
-    //         {
-    //             RPC_ChangeTool(ToolType.Hand);
-    //         }
-    //     }
-    // }
 
     private void SelectSlot(int slotIndex)
     {
         if (slotIndex < 0 || slotIndex >= heldItems.Length) return;
-        if (heldItems[slotIndex] == null) return; // 빈 슬롯이면 무시
+        if (heldItems[slotIndex] == null) return;
 
         currentSelectedSlot = slotIndex;
         ItemData data = heldItems[slotIndex];
 
-        // 인벤토리 몇번을 사용하고 있는지 표시
         for (int i = 0; i < selectSlots.Length; i++)
         {
             selectSlots[i].SetActive(false);
@@ -232,7 +215,6 @@ public class PhotonInventory : NetworkBehaviour
         }
     }
 
-    // 실제 도구 스크립트를 켜고 끄는 로직
     private void SwitchToolLogic(ToolType type)
     {
         if (currentTool != null) currentTool.OnDeselect();
@@ -244,7 +226,6 @@ public class PhotonInventory : NetworkBehaviour
         if (currentTool != null)
         {
             currentTool.OnSelect();
-            // Debug.Log($"무기 변경됨: {type}");
         }
     }
 
@@ -269,21 +250,18 @@ public class PhotonInventory : NetworkBehaviour
                 if (gasMask != null)
                 {
                     gasMaskCooldown = gasMask.GetCooldownRemaining();
-
-                    // 방독면을 버리는 순간 기능 정지
                     gasMask.StopMaskEffectOnly();
                     gasMask.HideGasMaskUI();
                 }
             }
-            if(dropType == ToolType.Flash)
+            if (dropType == ToolType.Flash)
             {
                 FlashController flash =
                     tools.FirstOrDefault(t => t.Type == ToolType.Flash) as FlashController;
 
-                if(flash)
+                if (flash)
                 {
                     flash.RPC_SetFlash(false);
-                    Debug.Log("꺼짐");
                 }
             }
         }
@@ -298,10 +276,8 @@ public class PhotonInventory : NetworkBehaviour
             RPC_RequestDropItem(prefabPath, dropPoint.position, dropPoint.rotation, gasMaskCooldown);
         }
 
-        // 버린 자리는 비워듀기
         heldItems[slotIndex] = null;
 
-        // 버린 후에 맨손 유지
         if (currentSelectedSlot == slotIndex)
         {
             currentSelectedSlot = -1;
@@ -393,15 +369,22 @@ public class PhotonInventory : NetworkBehaviour
     {
         if (!HasInputAuthority) return;
 
-        List<int> currentIDs = new List<int>();
+        InventorySaveData saveData = new InventorySaveData();
+
         foreach (var item in heldItems)
         {
-            if (item != null) currentIDs.Add(item.itemID);
-            else currentIDs.Add(-1); // 빈 슬롯 표시
+            if (item != null)
+                saveData.itemIDs.Add(item.itemID);
+            else
+                saveData.itemIDs.Add(-1);
         }
 
-        // 내 정보를 이용해 정적 클래스에 저장
-        PlayerDataVault.SaveInventory(Runner.LocalPlayer, currentIDs);
-    }
+        string jsonString = JsonUtility.ToJson(saveData);
 
+        // 내 고유 번호표를 붙여서 저장(예시로: MySavedInventory_[Player:1])
+        string myUniqueKey = "MySavedInventory_" + Runner.LocalPlayer.ToString();
+
+        PlayerPrefs.SetString(myUniqueKey, jsonString);
+        PlayerPrefs.Save();
+    }
 }
