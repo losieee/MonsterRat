@@ -33,10 +33,23 @@ public class MopController : InvenBase
 
         if (Physics.Raycast(ray, out RaycastHit hit, cleanDistance, pollutionMask, QueryTriggerInteraction.Ignore))
         {
+            // 일반 얼룩
             PhotonPollutionControl multiPol = hit.collider.GetComponentInParent<PhotonPollutionControl>();
             if (multiPol != null)
             {
                 multiPol.CleanOnce();
+                // 임시 사운드
+                Rpc_PlayMopSound();
+
+                StartCoroutine(Cooldown());
+                return;
+            }
+
+            // 오염 잔향 얼룩
+            PhotonRePollutionControl multiRePol = hit.collider.GetComponentInParent<PhotonRePollutionControl>();
+            if (multiRePol != null)
+            {
+                multiRePol.CleanOnce();
                 // 임시 사운드
                 Rpc_PlayMopSound();
 

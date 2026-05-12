@@ -94,6 +94,8 @@ public class SafeZoneTrigger : NetworkBehaviour
         //호스트한테만 실행됨
         if (IsEvacuating) return;
 
+        ClearManager.Instance.ResetProgress();
+
         int requiredPlayerCount = GetCurrentRoomPlayerCount();
         if (PlayersInZoneCount >= requiredPlayerCount)
         {
