@@ -81,6 +81,7 @@ public class PhotonRePollutionControl : NetworkBehaviour
 
         if (cleanCount >= 3)
         {
+            RePollutionSpawner.Instance.UnregisterPollution(Object);
             Runner.Despawn(Object);
         }
     }

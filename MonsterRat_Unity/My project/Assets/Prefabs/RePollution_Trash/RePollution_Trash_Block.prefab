@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 2905986435130146113}
   - component: {fileID: 766089731230192298}
   - component: {fileID: 552541862951433567}
+  - component: {fileID: 8199799002323647313}
   m_Layer: 3
   m_Name: RePollution_Trash_Block
   m_TagString: Box
@@ -129,6 +130,7 @@ MonoBehaviour:
   - {fileID: 3428193181314105776}
   - {fileID: 766089731230192298}
   - {fileID: 552541862951433567}
+  - {fileID: 8199799002323647313}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &766089731230192298
 MonoBehaviour:
@@ -158,6 +160,18 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   notifyCooldown: 0.5
+--- !u!114 &8199799002323647313
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 292833786999896985}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 387bf518d5b786c418b4aad015a6bbff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ReClearBox
 --- !u!1 &2726416840550586939
 GameObject:
   m_ObjectHideFlags: 0

@@ -28,7 +28,8 @@ public class RePollutionSpawner : NetworkBehaviour
     [SerializeField] private float trashSpawnHeightOffset = 1f;
 
     [Header("가스")]
-    [SerializeField] private NetworkPrefabRef rangeGas;
+    [SerializeField] private RandomGasMaker randomGas;
+    [SerializeField] private int gasSpawn;
 
     [Header("소환 범위")]
     public GameObject cleaningTargets;
@@ -51,20 +52,23 @@ public class RePollutionSpawner : NetworkBehaviour
 
         if (!HasStateAuthority) return;
 
-        int random = Random.Range(0, 1);
+        int random = Random.Range(0, 3);
 
         switch (random)
         {
             case 0:
+                Debug.Log("얼룩");
                 PollutionSpawnOnce();
                 break;
 
             case 1:
+                Debug.Log("쓰레기");
                 TrashSpawnOnce();
                 break;
 
             case 2:
-                Debug.Log("대충 배관");
+                Debug.Log("배관");
+                SpawnGas();
                 break;
         }
     }
@@ -204,18 +208,15 @@ public class RePollutionSpawner : NetworkBehaviour
     public void SpawnGas()
     {
         if (!HasStateAuthority) return;
-        if (!rangeGas.IsValid) return;
 
-        BoxCollider selectedArea = GetRandomSpawnArea();
-        if (selectedArea == null) return;
+        spawnedGases.Clear();
 
-        Vector3 center = selectedArea.transform.TransformPoint(selectedArea.center);
+        List<NetworkObject> activeGas =
+            randomGas.RandomSpawnRePollutionGas(gasSpawn);
 
-        Debug.Log("Gas");
-        NetworkObject gasObj = Runner.Spawn(rangeGas, center, Quaternion.identity);
+        spawnedGases.AddRange(activeGas);
 
-        if (gasObj != null)
-            spawnedGases.Add(gasObj);
+        randomGas.ApplyGasState(true);
     }
 
     // 쓰레기 생성
@@ -274,12 +275,7 @@ public class RePollutionSpawner : NetworkBehaviour
     }
 
     // 얼룩 생성하기 전 벽의 위,아래,양옆 공간 넉넉한지 소환해도 되는지 확인
-    bool CanPlacePollutionOnSurface(
-    RaycastHit centerHit,
-    float halfWidth,
-    float halfHeight,
-    float probeOffset,
-    LayerMask surfaceMask)
+    bool CanPlacePollutionOnSurface(RaycastHit centerHit, float halfWidth, float halfHeight, float probeOffset, LayerMask surfaceMask)
     {
         Vector3 normal = centerHit.normal;
 
@@ -294,11 +290,11 @@ public class RePollutionSpawner : NetworkBehaviour
 
         Vector3[] testOffsets =
         {
-        right * halfWidth,
-        -right * halfWidth,
-        up * halfHeight,
-        -up * halfHeight
-    };
+            right * halfWidth,
+            -right * halfWidth,
+            up * halfHeight,
+            -up * halfHeight
+        };
 
         foreach (Vector3 offset in testOffsets)
         {
@@ -329,6 +325,56 @@ public class RePollutionSpawner : NetworkBehaviour
         }
 
         return true;
+    }
+
+    // 쓰레기 잔향을 없앨때마다 리스트에서 삭제된 만큼 없애서 다 사라지면 잔향 디버프 끝
+    public void UnregisterTrash(NetworkObject obj)
+    {
+        if (obj == null) return;
+
+        spawnedTrashes.Remove(obj);
+
+        if (spawnedTrashes.Count == 0)
+        {
+            Debug.Log("쓰레기 잔향 제거");
+        }
+    }
+    // 쓰레기와 동일 (얼룩 잔향 제거)
+    public void UnregisterPollution(NetworkObject obj)
+    {
+        if (obj == null) return;
+
+        spawnedPollutions.Remove(obj);
+
+        if (spawnedPollutions.Count == 0)
+        {
+            Debug.Log("얼룩 잔향 제거");
+        }
+    }
+
+    public void UnregisterGas(NetworkObject obj)
+    {
+        if (obj == null) return;
+
+        spawnedGases.Remove(obj);
+
+        if (spawnedGases.Count == 0)
+        {
+            Debug.Log("배관 잔향 제거");
+        }
+    }
+
+    // 잔향이 아직 남아있음
+    public bool HasRemainingRePollution
+    {
+        get
+        {
+            spawnedPollutions.RemoveAll(x => x == null);
+            spawnedTrashes.RemoveAll(x => x == null);
+            spawnedGases.RemoveAll(x => x == null);
+
+            return spawnedPollutions.Count > 0 || spawnedTrashes.Count > 0 || spawnedGases.Count > 0;
+        }
     }
 
     bool HasValidSpawnAreas()

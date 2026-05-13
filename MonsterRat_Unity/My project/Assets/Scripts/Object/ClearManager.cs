@@ -10,6 +10,14 @@ public interface IClearTarget
     float Weight { get; }
 }
 
+public enum RePollutionDebuffType       // 잔향 디버프
+{
+    None,
+    FastStep,           // 위험요소 등장 간격 축소
+    DoubleEvent,        // 위험요소 중첩
+    ChaosPhase          // 위험요소 등장 순서 교란
+}
+
 public class ClearManager : NetworkBehaviour
 {
     public enum SpawnDangerType
@@ -78,8 +86,15 @@ public class ClearManager : NetworkBehaviour
     [SerializeField] private float overlapCheckRadius = 0.35f;
     [SerializeField] private LayerMask spawnBlockMask;
 
+    [Header("현재 스테이지")]
+    public int stageNum = 1;
+
     // 로컬 참조용 리스트(디버그/확장용)
     private readonly List<IClearTarget> targets = new List<IClearTarget>();
+    // 현재 적용중인 디버프 저장용
+    private RePollutionDebuffType currentDebuff = RePollutionDebuffType.None;
+
+    private bool debuffInitialized = false;
 
     // 스테이지 시작 전 준비가 되었는가 (스테이지 초기화가 완료 되었는가)
     private bool isStageReady = false;
@@ -110,9 +125,14 @@ public class ClearManager : NetworkBehaviour
     public override void Spawned()
     {
         Instance = this;
-        
+
         if (spawnRoot == null)
             spawnRoot = transform;
+
+        if (HasStateAuthority)
+        {
+            SetupRePollutionDebuff();
+        }
 
         ResetProgress();
     }
@@ -121,6 +141,38 @@ public class ClearManager : NetworkBehaviour
     {
         if (Instance == this)
             Instance = null;
+    }
+
+    // 디버프 랜덤 결정
+    void SetupRePollutionDebuff()
+    {
+        currentDebuff = RePollutionDebuffType.None;
+
+        if (stageNum < 2)
+            return;
+
+        if (RePollutionSpawner.Instance == null)
+            return;
+
+        if (!RePollutionSpawner.Instance.HasRemainingRePollution)
+            return;
+
+        int random = Random.Range(0, 3);
+
+        switch (random)
+        {
+            case 0:
+                currentDebuff = RePollutionDebuffType.FastStep;
+                break;
+
+            case 1:
+                currentDebuff = RePollutionDebuffType.DoubleEvent;
+                break;
+
+            case 2:
+                currentDebuff = RePollutionDebuffType.ChaosPhase;
+                break;
+        }
     }
 
     // 청소해야 할것들 등록
@@ -220,23 +272,94 @@ public class ClearManager : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.F1)) SpawnWatcher();
     }
 
+    public override void FixedUpdateNetwork()
+    {
+        if (!HasStateAuthority)
+            return;
+
+        if (!debuffInitialized)
+        {
+            debuffInitialized = true;
+
+            SetupRePollutionDebuff();
+        }
+    }
+
+    // 스테이지 / 잔향에 따라 step 퍼센트 변경
+    int GetStepInterval()
+    {
+        // 기본 퍼센트
+        int defaultInterval = 10;
+
+        // FastStep 아니면 기본 유지
+        if (currentDebuff != RePollutionDebuffType.FastStep)
+            return defaultInterval;
+
+        // 스테이지별 간격 축소
+        if (stageNum < 4)
+            return 8;
+
+        if (stageNum < 7)
+            return 7;
+
+        if (stageNum < 10)
+            return 6;
+
+        return 10;
+    }
+
+    // 중첩 될 확률
+    float GetDoubleEventChance()
+    {
+        if (stageNum < 4)
+            return 0.15f;
+
+        if (stageNum < 7)
+            return 0.30f;
+
+        if (stageNum < 10)
+            return 0.45f;
+
+        return 0f;
+    }
+
     // 10% 단위로 step으로 변환
     void CheckStep(float clearRatio01)
     {
-        int step = Mathf.FloorToInt(clearRatio01 * 10f) * 10;
+        int interval = GetStepInterval();
+
+        int step = Mathf.FloorToInt(ClearPercent / (float)interval) * interval;
+
         step = Mathf.Clamp(step, 0, 100);
 
         if (step <= LastStep) return;
 
-        for (int s = LastStep + 10; s <= step; s += 10)
+        for (int s = LastStep + interval; s <= step; s += interval)
         {
-            if (s >= 10 && s <= 90)
+            if (s < interval || s > 90)
+                continue;
+
+            bool triggeredDouble = false;
+
+            // 중첩 디버프 확률 체크
+            if (currentDebuff == RePollutionDebuffType.DoubleEvent)
+            {
+                float chance = GetDoubleEventChance();
+
+                if (Random.value <= chance)
+                {
+                    triggeredDouble = true;
+                }
+            }
+
+            // 중첩 실행
+            if (triggeredDouble)
+                RunDoubleRandomFromPhase(s);
+            else
                 RunRandomFromPhase(s);
         }
 
         LastStep = step;
-
-        Debug.Log($"STEP CHECK : {ClearPercent}");
     }
 
     // 현재 step에 맞는 PhaseRandom를 찾아 그 중 하나 랜덤 실행
@@ -251,25 +374,76 @@ public class ClearManager : NetworkBehaviour
         }
 
         PhaseRandom phase = FindPhase(step);
+
         if (phase == null) return; 
         if (phase.actions == null || phase.actions.Count == 0) return;
 
         RandomAction pick = PickWeightedRandom(phase.actions);
-        if (pick == null) return;
+        ExecuteAction(pick);
+    }
 
-        bool hasInvoke = pick.onInvoke != null && pick.onInvoke.GetPersistentEventCount() > 0;
+    // 중첩 전용 랜덤 실행 (같은 이벤트 중복X)
+    void RunDoubleRandomFromPhase(int step)
+    {
+        int phaseTier = GetPhaseTier(step);
 
-        if (hasInvoke)
+        if ((phaseTier == 2 || phaseTier == 3) &&
+            weakMonsterSpawnCount >= 2)
         {
-            pick.onInvoke.Invoke();
-            ClassifyAndRecordAction(pick);
+            ForceSpawnStrongByPhase(phaseTier);
             return;
         }
 
-        if (pick.prefab.IsValid)
+        PhaseRandom phase = FindPhase(step);
+
+        if (phase == null) return;
+        if (phase.actions == null) return;
+        if (phase.actions.Count <= 1)
         {
-            SpawnFromActionPoint(pick);
-            ClassifyAndRecordAction(pick);
+            RunRandomFromPhase(step);
+            return;
+        }
+
+        // 이벤트 복사용 (이벤트를 복사 해 두고 그안에서 랜덤으로 나오는데 그 중에서 첫번째로 나오는건 리스트에서 제거)
+        List<RandomAction> available = new List<RandomAction>(phase.actions);
+
+        // 첫 번째 선택
+        RandomAction first = PickWeightedRandom(available);
+
+        if (first == null)
+            return;
+
+        ExecuteAction(first);
+
+        // 첫 번째로 뽑힌 이벤트 다음 후보에서 제거
+        available.Remove(first);
+
+        // 남은것들 중 두 번째 선택
+        RandomAction second = PickWeightedRandom(available);
+
+        if (second == null)
+            return;
+
+        ExecuteAction(second);
+    }
+
+    void ExecuteAction(RandomAction action)
+    {
+        if (action == null) return;
+
+        bool hasInvoke = action.onInvoke != null && action.onInvoke.GetPersistentEventCount() > 0;
+
+        if (hasInvoke)
+        {
+            action.onInvoke.Invoke();
+            ClassifyAndRecordAction(action);
+            return;
+        }
+
+        if (action.prefab.IsValid)
+        {
+            SpawnFromActionPoint(action);
+            ClassifyAndRecordAction(action);
         }
     }
 
@@ -460,6 +634,9 @@ public class ClearManager : NetworkBehaviour
     // 현재 진행도가 무슨 step인지
     int GetPhaseTier(int step)
     {
+        if (currentDebuff == RePollutionDebuffType.ChaosPhase)
+            return 3;
+
         if (step >= 10 && step < 30) return 1;  // 10~30%
         if (step >= 30 && step < 60) return 2;  // 30~60%
         if (step >= 60 && step < 90) return 3;  // 60~90%
@@ -582,11 +759,21 @@ public class ClearManager : NetworkBehaviour
     // PhaseRadom에서 랜덤으로 정한 값을 반환 - 뭐가 나올지 계산
     PhaseRandom FindPhase(int step)
     {
+        if (currentDebuff == RePollutionDebuffType.ChaosPhase)
+        {
+            step = 70;
+        }
+
         for (int i = 0; i < phases.Count; i++)
         {
             var p = phases[i];
-            if (p == null) continue;
-            if (step < p.minStep || step > p.maxStep) continue;
+
+            if (p == null)
+                continue;
+
+            if (step < p.minStep || step > p.maxStep)
+                continue;
+
             return p;
         }
 
