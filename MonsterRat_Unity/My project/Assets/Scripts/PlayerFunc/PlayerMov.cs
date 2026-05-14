@@ -18,11 +18,20 @@ public class PlayerMov : MonoBehaviour
     public float sensitiv = 2f;
     public float maxAngle = 85f;
 
+    [Header("¹ß¼Ò¸®")]
+    public AudioClip[] footSteps;
+    public AudioSource footstepAudioSource;
+    public float walkStepInterval = 0.5f;
+    public float runStepInterval = 0.3f;
+
     CharacterController control;
     Vector3 vel;
     float pitch;
+    float footstepTimer;
 
     PlayerUIState ui;
+    PlayerFootStepType footStepType;
+
 
     void Awake()
     {
@@ -30,6 +39,7 @@ public class PlayerMov : MonoBehaviour
 
         control = GetComponent<CharacterController>();
         ui = GetComponent<PlayerUIState>();
+        footStepType = GetComponent<PlayerFootStepType>();
 
         if (cam == null)
         {
@@ -82,6 +92,8 @@ public class PlayerMov : MonoBehaviour
 
         vel.y += gravity * Time.deltaTime;
         control.Move(vel * Time.deltaTime);
+
+        HandleFootstep(x, z);
     }
 
     void Look()
@@ -96,5 +108,72 @@ public class PlayerMov : MonoBehaviour
         pitch -= mouseY;
         pitch = Mathf.Clamp(pitch, -maxAngle, maxAngle);
         cam.localRotation = Quaternion.Euler(pitch, 0f, 0f);
+    }
+
+    void HandleFootstep(float x, float z)
+    {
+        if (footstepAudioSource == null)
+            return;
+
+        bool isMoving = Mathf.Abs(x) > 0.01f || Mathf.Abs(z) > 0.01f;
+
+        float interval = walkStepInterval;
+
+        if (!isMoving || !control.isGrounded)
+        {
+            footstepTimer = interval;
+            return;
+        }
+
+        footstepTimer -= Time.deltaTime;
+
+        if (footstepTimer > 0f)
+            return;
+
+        FootStepRangeType currentType = footStepType != null
+            ? footStepType.CurrentRangeType
+            : FootStepRangeType.Stone;
+
+        PlayFootstep(currentType);
+
+        footstepTimer = interval;
+    }
+
+    void PlayFootstep(FootStepRangeType stepType)
+    {
+        if (footstepAudioSource == null || footSteps == null || footSteps.Length == 0)
+            return;
+
+        float sfxVolume = 1f;
+
+        if (UISettingsManager.Instance != null)
+        {
+            sfxVolume = UISettingsManager.Instance.EffectVolume;
+        }
+
+        footstepAudioSource.volume = sfxVolume;
+
+        AudioClip clip = null;
+
+        switch (stepType)
+        {
+            case FootStepRangeType.Metal:
+                if (footSteps.Length > 1) clip = footSteps[1];
+                break;
+
+            case FootStepRangeType.Water:
+                if (footSteps.Length > 2) clip = footSteps[2];
+                break;
+
+            case FootStepRangeType.Stone:
+            default:
+                if (footSteps.Length > 0) clip = footSteps[0];
+                break;
+        }
+
+        if (clip != null)
+        {
+            footstepAudioSource.PlayOneShot(clip);
+        }
     }
 }

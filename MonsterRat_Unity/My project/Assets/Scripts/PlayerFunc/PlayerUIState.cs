@@ -1,8 +1,14 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 public class PlayerUIState : MonoBehaviour
 {
     public GameObject storePanel;
+    public Text coinText;
+    public GameObject clearGauge;
+    public GameObject pollutionGauge;
+
+    private int currentCoin = 300;
 
     bool inStoreZone;
     bool uiOpen;
@@ -36,6 +42,12 @@ public class PlayerUIState : MonoBehaviour
         if (storePanel != null)
             storePanel.SetActive(true);
 
+        if (clearGauge != null)
+            clearGauge.SetActive(false);
+
+        if (pollutionGauge != null)
+            pollutionGauge.SetActive(false);
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
@@ -49,10 +61,23 @@ public class PlayerUIState : MonoBehaviour
         if (storePanel != null)
             storePanel.SetActive(false);
 
+        if(clearGauge != null)
+            clearGauge.SetActive(true);
+
+        if (pollutionGauge != null)
+            pollutionGauge.SetActive(true);
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
         OnStoreClosed?.Invoke();
+    }
+
+    public void UseCoin(int val)
+    {
+        currentCoin -= val;
+
+        coinText.text = $"{currentCoin.ToString()}G";
     }
 
     void OnTriggerEnter(Collider other)

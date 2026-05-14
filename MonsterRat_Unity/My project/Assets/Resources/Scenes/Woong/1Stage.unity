@@ -1894,6 +1894,7 @@ MonoBehaviour:
   spawnBlockMask:
     serializedVersion: 2
     m_Bits: 25688397
+  stageNum: 1
   _BaselineTotal: 0
   _RemainingTotal: 0
   _LastStep: 0
@@ -20916,6 +20917,10 @@ PrefabInstance:
       propertyPath: m_AnchorMin.x
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3268273155791939093, guid: bf926fc706056f347933a16249cd701a, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5388457750074457934, guid: bf926fc706056f347933a16249cd701a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -30912,6 +30917,7 @@ MonoBehaviour:
   inventory: {fileID: 0}
   spawnner: {fileID: 0}
   toolSpawn: {fileID: 0}
+  uiState: {fileID: 0}
 --- !u!114 &1820912653
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33468,6 +33474,7 @@ MonoBehaviour:
   spawnGas: 5
   stageDBJson: {fileID: 4900000, guid: e8efc2d5f588f484583839a79e7aa201, type: 3}
   currentStageNum: 1
+  isRePollution: 0
 --- !u!1001 &1975003621
 PrefabInstance:
   m_ObjectHideFlags: 0

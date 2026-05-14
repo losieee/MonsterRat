@@ -229,6 +229,11 @@ namespace SlimUI.ModernMenu
             SceneManager.LoadScene("ZZin_Main_Lobby");
         }
 
+        public void LeaveTutorial()
+        {
+            SceneManager.LoadScene("ZZin_Main_Lobby");
+        }
+
         public void SaveSettings()
         {
             if (isInitializing) return;
