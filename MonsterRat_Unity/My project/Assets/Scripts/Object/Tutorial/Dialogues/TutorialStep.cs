@@ -57,7 +57,7 @@ public class TutorialStep : MonoBehaviour
                 storeRange.enabled = true;
             }
         }
-        else if(idx == 9)
+        else if(idx == 10)
         {
             if(mopBtn != null && gunBtn != null && spannerBtn != null)
             {
@@ -66,7 +66,7 @@ public class TutorialStep : MonoBehaviour
                 spannerBtn.enabled = true;
             }
         }
-        else if(idx == 12)
+        else if(idx == 13)
         {
             if(btnOutLine != null)
                 btnOutLine.SetActive(true);
@@ -75,7 +75,7 @@ public class TutorialStep : MonoBehaviour
 
     void HandleLineShown(int idx)
     {
-        if (idx == 23)
+        if (idx == 24)
         {
             if (exitRange != null) 
                 exitRange.SetActive(true);
@@ -96,7 +96,7 @@ public class TutorialStep : MonoBehaviour
 
     void HandleStoreClosed()
     {
-        if (_pausedIndex != 9) return;
+        if (_pausedIndex != 10) return;
 
         _pausedIndex = -999;
         dialogue.ResumeAuto();
@@ -104,7 +104,7 @@ public class TutorialStep : MonoBehaviour
 
     void HandleToolAdded(TutorialToolType tool)
     {
-        if (_pausedIndex != 10) return;
+        if (_pausedIndex != 11) return;
 
         if (inventory != null && inventory.HasAllTutorialTools())
         {

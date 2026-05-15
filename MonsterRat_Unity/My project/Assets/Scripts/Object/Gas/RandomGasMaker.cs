@@ -10,6 +10,7 @@ public class RandomGasMaker : NetworkBehaviour
     [Header("Json")]
     [SerializeField] private TextAsset stageDBJson;
     [SerializeField] private int currentStageNum = 1;
+    [SerializeField] private bool isRePollution;
 
     [Networked, Capacity(6)]       // Capacity 가 크기 - 1스테이지 가스는 6개니까 6
     private NetworkArray<NetworkBool> GasActive => default;
@@ -28,9 +29,12 @@ public class RandomGasMaker : NetworkBehaviour
 
         if (Object.HasStateAuthority)
         {
-            ApplyStageData(currentStageNum);
-            // 호스트가 먼저 GasActive 결정
-            RandomSpawnGas();
+            if (!isRePollution)
+            {
+                ApplyStageData(currentStageNum);
+                // 호스트가 먼저 GasActive 결정
+                RandomSpawnGas(spawnGas);
+            }
         }
 
         // 동기화 된 GasActive 받아서 본인 로컬 유니티에 적용
@@ -43,8 +47,10 @@ public class RandomGasMaker : NetworkBehaviour
         ApplyGasState(false);
     }
 
-    void RandomSpawnGas()
+    public void RandomSpawnGas(int gasSpawnCount)
     {
+        if (!Object.HasStateAuthority) return;
+
         int count = randomGas.Length;
 
         // 먼저 전부 false
@@ -60,7 +66,7 @@ public class RandomGasMaker : NetworkBehaviour
             indices.Add(i);
         }
 
-        for (int i = 0; i < spawnGas; i++)
+        for (int i = 0; i < gasSpawnCount; i++)
         {
             int randIndex = Random.Range(0, indices.Count);
             int selected = indices[randIndex];
@@ -71,7 +77,7 @@ public class RandomGasMaker : NetworkBehaviour
     }
 
     // 네트워크에서 GasActive값 추출을 했으니 유니티로 옮겨서 실제로 적용 시켜야함
-    void ApplyGasState(bool force)
+    public void ApplyGasState(bool force)
     {
         for (int i = 0; i < randomGas.Length; i++)
         {
@@ -85,6 +91,48 @@ public class RandomGasMaker : NetworkBehaviour
                 randomGas[i].SetVisible(state);
             }
         }
+    }
+
+    // 잔향 배관 가스 전용
+    public List<NetworkObject> RandomSpawnRePollutionGas(int gasSpawnCount)
+    {
+        List<NetworkObject> activatedGas = new List<NetworkObject>();
+
+        if (!Object.HasStateAuthority)
+            return activatedGas;
+
+        int count = randomGas.Length;
+
+        for (int i = 0; i < count; i++)
+        {
+            GasActive.Set(i, false);
+        }
+
+        List<int> indices = new List<int>();
+
+        for (int i = 0; i < count; i++)
+        {
+            indices.Add(i);
+        }
+
+        for (int i = 0; i < gasSpawnCount; i++)
+        {
+            int randIndex = Random.Range(0, indices.Count);
+            int selected = indices[randIndex];
+
+            GasActive.Set(selected, true);
+
+            NetworkObject netObj = randomGas[selected].GetComponent<NetworkObject>();
+
+            if (netObj != null)
+            {
+                activatedGas.Add(netObj);
+            }
+
+            indices.RemoveAt(randIndex);
+        }
+
+        return activatedGas;
     }
 
     void ApplyStageData(int stageNum)
