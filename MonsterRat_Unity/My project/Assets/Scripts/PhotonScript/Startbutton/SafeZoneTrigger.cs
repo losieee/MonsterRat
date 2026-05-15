@@ -7,15 +7,22 @@ using System.Linq;
 
 public class SafeZoneTrigger : NetworkBehaviour
 {
-    public string lobbySceneName = "2Stage";
+    [Header("스테이지 및 세이브 설정")]
+    public string currentStageName = "1Stage"; // 현재 씬 이름
+    public string lobbySceneName = "2Stage";   // 넘어갈 씬 이름
+    public bool canCreateSaveFile = true;      // true면 이 씬을 클리어했을 때 세이브 파일 생성
+
+    [Header("함선(스폰) 보관 구역 설정")]
+    public Transform shipCenter;       // 콜라이더 정중앙 기준점 
+    public Collider shipStorageArea;   // 아이템을 스캔할 트리거 콜라이더
+    public LayerMask itemLayer;        // 아이템 레이어
+
     public float timeToEvacuate = 3.0f;
 
-    [Header("UI")]
+    [Header("UI 및 클리어 조건")]
     public GameObject interactionUI;
     public Image progressCircle;
     public TextMeshProUGUI infoText;
-
-    [Header("오염물질 레이어 설정")]
     public LayerMask checkLayers;
 
     private bool isPlayerInZone = false;
@@ -26,6 +33,14 @@ public class SafeZoneTrigger : NetworkBehaviour
     [Networked] public NetworkBool IsDoorOpened { get; set; }
     [Networked] public NetworkBool IsEvacuating { get; set; }
 
+    public void OpenSafeZone()
+    {
+        if (HasStateAuthority)
+        {
+            IsDoorOpened = true;
+        }
+    }
+
     void Start()
     {
         if (interactionUI != null) interactionUI.SetActive(false);
@@ -35,7 +50,6 @@ public class SafeZoneTrigger : NetworkBehaviour
     {
         if (Object == null || !Object.IsValid) return;
 
-        //모든 플레이어가 각자 저장
         if (IsEvacuating)
         {
             if (!hasSaved)
@@ -65,7 +79,6 @@ public class SafeZoneTrigger : NetworkBehaviour
 
             if (currentTimer >= timeToEvacuate)
             {
-                //게이지를 다 채우면 즉시 실행
                 EvacuateToLobby();
             }
         }
@@ -79,54 +92,98 @@ public class SafeZoneTrigger : NetworkBehaviour
     void EvacuateToLobby()
     {
         if (IsEvacuating) return;
-
-        //버튼을 누른 당사자는  그 즉시 자기 데이터를 저장
         SaveMyInventoryLocally();
         hasSaved = true;
-
-        // 호스트에게 모든 플레이어를 다음 스테이지로 넘겨달라고 요청
         RPC_RequestEvacuation();
     }
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_RequestEvacuation(RpcInfo info = default)
     {
-        //호스트한테만 실행됨
         if (IsEvacuating) return;
 
+        ClearManager.Instance.ResetProgress();
         int requiredPlayerCount = GetCurrentRoomPlayerCount();
         if (PlayersInZoneCount >= requiredPlayerCount)
         {
-            // 방장이 네트워크 변수를 켜서 모든 클라이언트에게 "저장 시작해!"라고 신호를 보냅니다.
             IsEvacuating = true;
             StartEvacuation();
         }
     }
-    public void OpenSafeZone()
-    {
-        if (HasStateAuthority)
-        {
-            IsDoorOpened = true;
-        }
-    }
+
     async void StartEvacuation()
     {
         if (!HasStateAuthority) return;
 
-        // 1스테이지 잔여물 체크 (JSON 활용을 위해 PlayerPrefs 저장)
         bool hasLeftover = CheckForPollution();
-        PlayerPrefs.SetInt("IsPollutionLeft", hasLeftover ? 1 : 0);
-        PlayerPrefs.Save();
 
-       
-       
-        //await System.Threading.Tasks.Task.Delay(1500); // 딜레이 굳이 필요한지 모르겠음
+        //방장이 월드 상태와 함선 내 아이템을 스캔하여 저장
+        SaveWorldState(hasLeftover);
 
-        // 씬 전환
+        await System.Threading.Tasks.Task.Delay(1500);
+
         int sceneIndex = SceneUtility.GetBuildIndexByScenePath($"Assets/Resources/Scenes/Woong/{lobbySceneName}.unity");
         if (sceneIndex >= 0)
         {
             Runner.LoadScene(SceneRef.FromIndex(sceneIndex));
+        }
+    }
+
+    private void SaveWorldState(bool hasLeftover)
+    {
+        // 1. 공통 작업: 씬 이름, 문 상태, 함선 보관 구역 내 아이템 스캔을 무조건 실행합니다!
+        WorldSaveData worldData = new WorldSaveData();
+        worldData.savedStageName = lobbySceneName;
+        worldData.isDoorActive = hasLeftover;
+
+        // 아이템 스캔 로직 (여기까지 무사히 도달함)
+        if (shipStorageArea != null && shipCenter != null)
+        {
+            Collider[] itemsInShip = Physics.OverlapBox(shipStorageArea.bounds.center, shipStorageArea.bounds.extents, shipStorageArea.transform.rotation, itemLayer);
+
+            foreach (var hit in itemsInShip)
+            {
+                ItemObject itemObj = hit.GetComponent<ItemObject>();
+                if (itemObj != null)
+                {
+                    ShipItemData sItem = new ShipItemData();
+                    sItem.itemID = itemObj.itemData.itemID;
+
+                    // 상대 좌표 계산
+                    sItem.localPosition = shipCenter.InverseTransformPoint(itemObj.transform.position);
+                    sItem.localRotation = Quaternion.Inverse(shipCenter.rotation) * itemObj.transform.rotation;
+
+                    worldData.shipItems.Add(sItem);
+                    Debug.Log($"[WorldSave] 스폰 구역 아이템 스캔됨: {itemObj.itemData.itemName}");
+                }
+            }
+        }
+
+        string json = JsonUtility.ToJson(worldData);
+
+        // 2. 저장 방식 분기: 1스테이지(임시 전달) vs 2스테이지 이상(정식 세이브 슬롯)
+        if (currentStageName == "1Stage" && !canCreateSaveFile)
+        {
+            // 1스테이지는 로비에서 이어하기 버튼이 생기지 않도록, 다음 씬에 넘겨주기 위한 용도로만 저장합니다.
+            PlayerPrefs.SetInt("IsPollutionLeft", hasLeftover ? 1 : 0);
+            PlayerPrefs.SetString("MasterWorldSave", json); // 2스테이지가 읽을 수 있도록 임시 박스에 넣음
+            PlayerPrefs.Save();
+
+            Debug.Log("[WorldSave] 1Stage -> 2Stage 아이템 데이터 전달 완료!");
+        }
+        else
+        {
+            // 2스테이지부터는 로비에서 [이어하기]가 가능하도록 선택한 슬롯 번호에 정식으로 저장합니다!
+            int activeSlot = PlayerPrefs.GetInt("CurrentActiveSaveSlot", 0);
+            string saveKey = "SaveSlot_" + activeSlot;
+
+            PlayerPrefs.SetString(saveKey, json);
+
+            // 씬을 넘어갈 때 WorldLoadManager가 바로 읽을 수 있도록 MasterWorldSave에도 똑같이 덮어씌워 줍니다.
+            PlayerPrefs.SetString("MasterWorldSave", json);
+
+            PlayerPrefs.Save();
+            Debug.Log($"[WorldSave] {saveKey} 슬롯에 월드 정식 세이브 완료! 다음 스테이지: {worldData.savedStageName}");
         }
     }
 
@@ -145,11 +202,7 @@ public class SafeZoneTrigger : NetworkBehaviour
         PhotonInventory inv = GetComponent<PhotonInventory>();
         if (inv == null) inv = FindObjectsOfType<PhotonInventory>().FirstOrDefault(x => x.HasInputAuthority);
 
-        if (inv != null)
-        {
-            inv.SaveInventoryData();
-            Debug.Log("[SafeZone] 내 캐릭터 인벤토리 로컬 저장 완료");
-        }
+        if (inv != null) inv.SaveInventoryData();
     }
 
     private int GetCurrentRoomPlayerCount()
@@ -160,7 +213,6 @@ public class SafeZoneTrigger : NetworkBehaviour
         return Mathf.Max(1, count);
     }
 
-    
     private void OnTriggerEnter(Collider other)
     {
         if (Object == null || !Object.IsValid || !HasStateAuthority) return;
