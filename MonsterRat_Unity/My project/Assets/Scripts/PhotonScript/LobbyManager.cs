@@ -8,6 +8,13 @@ using UnityEngine.SceneManagement;
 using System;
 using System.Threading.Tasks;
 
+
+[System.Serializable]
+public class SaveSlotData
+{
+    public string savedStageName;
+    public string roomName;
+}
 public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 {
     [Header("UI 패널입니다")]
@@ -22,6 +29,14 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     public TMP_InputField roomnameInput;
     public Transform roomlistContent;
     public GameObject roomItemPrefab;
+
+    [Header("세이브 슬롯 패널")]
+    public GameObject SaveSlotPanel;
+    public Button[] slotButtons;       // 3개의 슬롯 버튼
+    public TMP_Text[] slotTexts;       // 슬롯 버튼 안의 텍스트
+    public Button[] deleteButtons;     // 3개의 삭제 버튼
+
+    private int currentSelectedSlot = -1;
 
     private NetworkRunner _runner;
     private bool hasJoinedLobby = false;
@@ -109,57 +124,57 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         roomnameInput.text = "";
     }
 
-    public void OnClick_CancelCreateRoom()
-    {
-        CreateRoomPanel.SetActive(false);
-    }
+   // public void OnClick_CancelCreateRoom()
+   // {
+   //     CreateRoomPanel.SetActive(false);
+   // }
 
     public void OnClick_CancelLogin()
     {
         LoginPanel.SetActive(false);
     }
 
-    public async void OnClick_ConfirmCreateRoom()
-    {
-        if (_runner == null || !_runner.IsCloudReady)
-        {
-            Debug.LogWarning("서버 접속중 디버그 로그에요 놀라지마십쇼");
-            return;
-        }
-
-        string roomName = string.IsNullOrEmpty(roomnameInput.text)
-            ? $"{PlayerPrefs.GetString("PlayerName", "Player")}'s Room"
-            : roomnameInput.text;
-
-        var startGameArgs = new StartGameArgs()
-        {
-            GameMode = GameMode.Host, 
-            SessionName = roomName,
-            PlayerCount = 2, // 팀장님이 2인에서 4인으로 바꾼다고 하면 여기 숫자 를 바꿔주세요
-            SceneManager = gameObject.GetComponent<NetworkSceneManagerDefault>(),
-            EnableClientSessionCreation = true
-        };
-        if (HostMigrationManager.Instance != null)
-            HostMigrationManager.Instance.RegisterRunner(_runner);
-
-        CreateRoomPanel.SetActive(false);
-
-        // 방 생성 시도
-        var result = await _runner.StartGame(startGameArgs);
-
-        if (result.Ok)
-        {
-            Debug.Log("이 로그가 떴다면 방 입장(생성) 성공했다는 뜻입니다.");
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-            // 방장만 게임 씬을 로드 
-            _runner.LoadScene(SceneRef.FromIndex(SceneUtility.GetBuildIndexByScenePath("Assets/Resources/Scenes/Woong/1Stage.unity")));
-        }
-        else
-        {
-            Debug.LogError($"방 생성 실패: {result.ShutdownReason}");
-        }
-    }
+  // public async void OnClick_ConfirmCreateRoom()
+  // {
+  //     if (_runner == null || !_runner.IsCloudReady)
+  //     {
+  //         Debug.LogWarning("서버 접속중 디버그 로그에요 놀라지마십쇼");
+  //         return;
+  //     }
+  //
+  //     string roomName = string.IsNullOrEmpty(roomnameInput.text)
+  //         ? $"{PlayerPrefs.GetString("PlayerName", "Player")}'s Room"
+  //         : roomnameInput.text;
+  //
+  //     var startGameArgs = new StartGameArgs()
+  //     {
+  //         GameMode = GameMode.Host, 
+  //         SessionName = roomName,
+  //         PlayerCount = 2, // 팀장님이 2인에서 4인으로 바꾼다고 하면 여기 숫자 를 바꿔주세요
+  //         SceneManager = gameObject.GetComponent<NetworkSceneManagerDefault>(),
+  //         EnableClientSessionCreation = true
+  //     };
+  //     if (HostMigrationManager.Instance != null)
+  //         HostMigrationManager.Instance.RegisterRunner(_runner);
+  //
+  //     CreateRoomPanel.SetActive(false);
+  //
+  //     // 방 생성 시도
+  //     var result = await _runner.StartGame(startGameArgs);
+  //
+  //     if (result.Ok)
+  //     {
+  //         Debug.Log("이 로그가 떴다면 방 입장(생성) 성공했다는 뜻입니다.");
+  //         Cursor.lockState = CursorLockMode.Locked;
+  //         Cursor.visible = false;
+  //         // 방장만 게임 씬을 로드 
+  //         _runner.LoadScene(SceneRef.FromIndex(SceneUtility.GetBuildIndexByScenePath("Assets/Resources/Scenes/Woong/1Stage.unity")));
+  //     }
+  //     else
+  //     {
+  //         Debug.LogError($"방 생성 실패: {result.ShutdownReason}");
+  //     }
+  // }
 
     public void OnClick_Quit() => Application.Quit();
 
@@ -212,8 +227,147 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     {
        // Debug.Log("방장이 변경되었습니다! 마이그레이션 처리 필요");
     }
+    #region ★ 세이브 슬롯 로직 (리썰 컴퍼니 방식) ★
 
-     
+    // 1. 방 만들기 버튼을 누르면 가장 먼저 세이브 슬롯 화면을 엽니다.
+    public void OnClick_OpenSaveSlotPanel()
+    {
+        SaveSlotPanel.SetActive(true);
+        RoomListPanel.SetActive(false);
+        CreateRoomPanel.SetActive(false);
+        RefreshSaveSlots(); // 화면 열 때 슬롯 정보 업데이트
+    }
+
+    // 2. 3개의 슬롯 데이터를 읽어서 UI 텍스트와 삭제 버튼을 세팅합니다.
+    private void RefreshSaveSlots()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            string saveKey = "SaveSlot_" + i;
+            if (PlayerPrefs.HasKey(saveKey))
+            {
+                // 세이브 파일이 [있을] 때
+                string json = PlayerPrefs.GetString(saveKey);
+                SaveSlotData data = JsonUtility.FromJson<SaveSlotData>(json);
+
+                slotTexts[i].text = $"[슬롯 {i + 1}] {data.roomName}\n<size=80%>{data.savedStageName}</size>";
+                deleteButtons[i].gameObject.SetActive(true);
+            }
+            else
+            {
+                // 세이브 파일이 [없을] 때 (비어있음)
+                slotTexts[i].text = $"[슬롯 {i + 1}]\n비어 있음";
+                deleteButtons[i].gameObject.SetActive(false);
+            }
+        }
+    }
+
+    // 3. 유저가 특정 슬롯(0, 1, 2)을 클릭했을 때 발동 (인스펙터에서 OnClick에 연결 시 번호 부여)
+    public void OnClick_SelectSlot(int slotIndex)
+    {
+        currentSelectedSlot = slotIndex;
+
+        // 인게임 스테이지들이 "내가 지금 몇 번 슬롯으로 겜중인지" 알 수 있도록 저장
+        PlayerPrefs.SetInt("CurrentActiveSaveSlot", currentSelectedSlot);
+        PlayerPrefs.Save();
+
+        string saveKey = "SaveSlot_" + slotIndex;
+
+        if (PlayerPrefs.HasKey(saveKey))
+        {
+            // 차있는 슬롯을 누름 -> 이름 입력 스킵하고 바로 방 생성 후 이어서 시작!
+            StartHostGameFromSave(saveKey);
+        }
+        else
+        {
+            // 빈 슬롯을 누름 -> 방 이름 입력 패널 열기
+            SaveSlotPanel.SetActive(false);
+            CreateRoomPanel.SetActive(true);
+            roomnameInput.text = "";
+        }
+    }
+
+    // 4. 슬롯 삭제 버튼 클릭 시
+    public void OnClick_DeleteSlot(int slotIndex)
+    {
+        PlayerPrefs.DeleteKey("SaveSlot_" + slotIndex);
+        PlayerPrefs.Save();
+        RefreshSaveSlots(); // 지우고 UI 새로고침
+    }
+
+    public void OnClick_CancelCreateRoom()
+    {
+        CreateRoomPanel.SetActive(false);
+        SaveSlotPanel.SetActive(true); // 뒤로가기 누르면 슬롯 화면으로
+    }
+    #endregion
+
+    #region 방 생성 및 게임 시작 (호스트)
+
+    // 빈 슬롯 클릭 후 이름 짓고 [방 생성] 누를 때 (새 게임)
+    public async void OnClick_ConfirmCreateRoom()
+    {
+        if (_runner == null || !_runner.IsCloudReady) return;
+
+        string roomName = string.IsNullOrEmpty(roomnameInput.text) ? $"{PlayerPrefs.GetString("PlayerName", "Player")}'s Room" : roomnameInput.text;
+
+        var startGameArgs = new StartGameArgs()
+        {
+            GameMode = GameMode.Host,
+            SessionName = roomName,
+            PlayerCount = 2,
+            SceneManager = gameObject.GetComponent<NetworkSceneManagerDefault>()
+        };
+
+        CreateRoomPanel.SetActive(false);
+        var result = await _runner.StartGame(startGameArgs);
+
+        if (result.Ok)
+        {
+            // ★ 빈 슬롯이었으므로 뼈대 데이터(1Stage)를 미리 만들어줍니다.
+            SaveSlotData initData = new SaveSlotData { roomName = roomName, savedStageName = "1Stage" };
+            PlayerPrefs.SetString("SaveSlot_" + currentSelectedSlot, JsonUtility.ToJson(initData));
+            PlayerPrefs.Save();
+
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
+            // 새 게임이므로 무조건 1Stage 로드
+            _runner.LoadScene(SceneRef.FromIndex(SceneUtility.GetBuildIndexByScenePath("Assets/Resources/Scenes/Woong/1Stage.unity")));
+        }
+    }
+
+    // 차있는 슬롯 클릭 시 즉시 방 생성 (이어서 하기)
+    private async void StartHostGameFromSave(string saveKey)
+    {
+        if (_runner == null || !_runner.IsCloudReady) return;
+
+        string json = PlayerPrefs.GetString(saveKey);
+        SaveSlotData data = JsonUtility.FromJson<SaveSlotData>(json);
+
+        var startGameArgs = new StartGameArgs()
+        {
+            GameMode = GameMode.Host,
+            SessionName = data.roomName, // 저장됐던 방 이름 그대로 사용
+            PlayerCount = 2,
+            SceneManager = gameObject.GetComponent<NetworkSceneManagerDefault>()
+        };
+
+        SaveSlotPanel.SetActive(false);
+        var result = await _runner.StartGame(startGameArgs);
+
+        if (result.Ok)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
+            // 저장되어 있던 스테이지(예: 2Stage)로 씬을 로드합니다.
+            string targetScene = data.savedStageName;
+            _runner.LoadScene(SceneRef.FromIndex(SceneUtility.GetBuildIndexByScenePath($"Assets/Resources/Scenes/Woong/{targetScene}.unity")));
+        }
+    }
+    #endregion
+
 
     #endregion
 

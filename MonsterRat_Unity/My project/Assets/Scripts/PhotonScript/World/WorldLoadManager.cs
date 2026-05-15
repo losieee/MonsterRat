@@ -27,7 +27,7 @@ public class WorldLoadManager : NetworkBehaviour
                 {
                     ItemData itemData = ItemDatabase.Instance.GetItem(sItem.itemID);
                     if (itemData != null && itemData.itemPrefab != null)
-                    {
+                    { 
                         NetworkObject prefabNetObj = itemData.itemPrefab.GetComponent<NetworkObject>();
 
                         // 아까 저장한 '상대 좌표'를 현재 스테이지 함선 기준의 '절대 좌표'로 다시 풉니다!
