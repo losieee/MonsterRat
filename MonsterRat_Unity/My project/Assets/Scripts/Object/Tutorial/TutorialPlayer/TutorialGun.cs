@@ -19,48 +19,17 @@ public class TutorialGun : TutorialInvenBase
     [Header("Animation")]
     public Animator anim;
 
+    [Header("Sound")]
+    public AudioSource source;
+    public AudioClip gunSound;
+
     public override void Tick()
     {
         if (!Input.GetMouseButtonDown(0)) return;
 
         if (TryShootRat()) return;
-        if (TryShootRoach()) return;
         //if (TryShootTarget()) return;
         //TrySpawnPollutionAtHit();
-    }
-
-    // 바퀴 잡기
-    bool TryShootRoach()
-    {
-        if (interactor == null) return false;
-
-        if (interactor.SphereCast(ratAimRadius, ratDistance, roachMask, out RaycastHit hit))
-        {
-            GameObject hitObj = hit.collider.gameObject;
-            RoachController coach = hitObj.GetComponentInParent<RoachController>();
-            GameObject CoachObj = coach != null ? coach.gameObject : hitObj.transform.root.gameObject;
-
-            RoachController rc = CoachObj.GetComponent<RoachController>();
-            if (rc != null) rc.enabled = false;
-
-            if (bloodPreb != null)
-            {
-                Vector3 pos = CoachObj.transform.position;
-                Quaternion rot = Quaternion.FromToRotation(Vector3.up, hit.normal);
-                Instantiate(bloodPreb, pos, rot);
-            }
-
-            Rigidbody rb = CoachObj.GetComponentInChildren<Rigidbody>();
-            rb.useGravity = true;
-            rb.isKinematic = false;
-            rb.freezeRotation = false;
-            SetLayerRecursively(CoachObj, 3);
-
-            interactor.ForceSetLookTarget(CoachObj);
-            return true;
-        }
-
-        return false;
     }
 
     // 쥐 잡기
@@ -71,6 +40,7 @@ public class TutorialGun : TutorialInvenBase
         if (interactor.SphereCast(ratAimRadius, ratDistance, ratMask, out RaycastHit hit))
         {
             anim.SetTrigger("Shoot");
+            PlayGunSound();
 
             GameObject hitObj = hit.collider.gameObject;
             RatController rat = hitObj.GetComponentInParent<RatController>();
@@ -118,6 +88,19 @@ public class TutorialGun : TutorialInvenBase
         return false;
     }
 
+    public void PlayGunSound()
+    {
+        if (source == null || gunSound == null)
+            return;
+
+        float effectVolume = 1f;
+
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+            effectVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+
+        source.PlayOneShot(gunSound, effectVolume);
+    }
+
     // 꽃, 좀비, 몬스터 등등
     /*bool TryShootTarget()
     {
@@ -137,7 +120,7 @@ public class TutorialGun : TutorialInvenBase
     }*/
 
     // 쥐 말고 다른곳 맞았을 때 프리팹 소환
-    bool TrySpawnPollutionAtHit()
+    /*bool TrySpawnPollutionAtHit()
     {
         if (interactor == null) return false;
         if (pollutionPreb == null) return false;
@@ -155,7 +138,7 @@ public class TutorialGun : TutorialInvenBase
         }
 
         return false;
-    }
+    }*/
 
     void SetLayerRecursively(GameObject obj, int layer)
     {

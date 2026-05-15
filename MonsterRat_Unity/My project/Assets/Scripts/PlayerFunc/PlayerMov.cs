@@ -55,6 +55,9 @@ public class PlayerMov : MonoBehaviour
 
     void Update()
     {
+        if (TutorialGameInputLock.IsLocked)
+            return;
+
         if (!canControl)
         {
             Cursor.lockState = CursorLockMode.None;
