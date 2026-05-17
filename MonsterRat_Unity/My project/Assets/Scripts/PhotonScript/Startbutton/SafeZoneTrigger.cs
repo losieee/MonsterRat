@@ -16,6 +16,8 @@ public class SafeZoneTrigger : NetworkBehaviour
     public Transform shipCenter;       // 콜라이더 정중앙 기준점 
     public Collider shipStorageArea;   // 아이템을 스캔할 트리거 콜라이더
     public LayerMask itemLayer;        // 아이템 레이어
+    private float scanTimer = 0f;
+    private int lastItemCount = -1;
 
     public float timeToEvacuate = 3.0f;
 
@@ -59,6 +61,15 @@ public class SafeZoneTrigger : NetworkBehaviour
             }
             if (infoText != null) infoText.text = "이동 중...";
             return;
+        }
+        if (HasStateAuthority)
+        {
+            scanTimer += Time.deltaTime;
+            if (scanTimer >= 0.5f)
+            {
+                scanTimer = 0f;
+                CheckRealTimeItems(); // 감시 함수 실행
+            }
         }
 
         if (!isPlayerInZone || !IsDoorOpened) return;
@@ -131,20 +142,25 @@ public class SafeZoneTrigger : NetworkBehaviour
 
     private void SaveWorldState(bool hasLeftover)
     {
-        // 1. 공통 작업: 씬 이름, 문 상태, 함선 보관 구역 내 아이템 스캔을 무조건 실행합니다!
         WorldSaveData worldData = new WorldSaveData();
         worldData.savedStageName = lobbySceneName;
         worldData.isDoorActive = hasLeftover;
 
-        // 아이템 스캔 로직 (여기까지 무사히 도달함)
-        if (shipStorageArea != null && shipCenter != null)
+        //처음에 bounds 쓰려다가 AI가 추천안해서 바꿨습니다.
+        BoxCollider boxCol = shipStorageArea as BoxCollider;
+        if (boxCol != null && shipCenter != null)
         {
-            Collider[] itemsInShip = Physics.OverlapBox(shipStorageArea.bounds.center, shipStorageArea.bounds.extents, shipStorageArea.transform.rotation, itemLayer);
+            // 콜라이더의 실제 중심점과 정확한 절반 크기
+            Vector3 exactCenter = boxCol.transform.TransformPoint(boxCol.center);
+            Vector3 halfExtents = Vector3.Scale(boxCol.size, boxCol.transform.lossyScale) * 0.5f;
+
+            // 아이템 스캔하고
+            Collider[] itemsInShip = Physics.OverlapBox(exactCenter, halfExtents, boxCol.transform.rotation, itemLayer);
 
             foreach (var hit in itemsInShip)
             {
                 ItemObject itemObj = hit.GetComponent<ItemObject>();
-                if (itemObj != null)
+                if (itemObj != null && itemObj.itemData != null) // 안전장치 추가
                 {
                     ShipItemData sItem = new ShipItemData();
                     sItem.itemID = itemObj.itemData.itemID;
@@ -154,36 +170,65 @@ public class SafeZoneTrigger : NetworkBehaviour
                     sItem.localRotation = Quaternion.Inverse(shipCenter.rotation) * itemObj.transform.rotation;
 
                     worldData.shipItems.Add(sItem);
-                    Debug.Log($"[WorldSave] 스폰 구역 아이템 스캔됨: {itemObj.itemData.itemName}");
+                    Debug.Log($"safezonetirgger 아이템 스캔 성공: {itemObj.itemData.itemName}");
                 }
             }
         }
 
         string json = JsonUtility.ToJson(worldData);
 
-        // 2. 저장 방식 분기: 1스테이지(임시 전달) vs 2스테이지 이상(정식 세이브 슬롯)
         if (currentStageName == "1Stage" && !canCreateSaveFile)
         {
-            // 1스테이지는 로비에서 이어하기 버튼이 생기지 않도록, 다음 씬에 넘겨주기 위한 용도로만 저장합니다.
             PlayerPrefs.SetInt("IsPollutionLeft", hasLeftover ? 1 : 0);
-            PlayerPrefs.SetString("MasterWorldSave", json); // 2스테이지가 읽을 수 있도록 임시 박스에 넣음
+            PlayerPrefs.SetString("MasterWorldSave", json);
             PlayerPrefs.Save();
-
-            Debug.Log("[WorldSave] 1Stage -> 2Stage 아이템 데이터 전달 완료!");
+           // Debug.Log("[WorldSave] 1Stage -> 2Stage 아이템 데이터 전달 완료!");
         }
         else
         {
-            // 2스테이지부터는 로비에서 [이어하기]가 가능하도록 선택한 슬롯 번호에 정식으로 저장합니다!
             int activeSlot = PlayerPrefs.GetInt("CurrentActiveSaveSlot", 0);
             string saveKey = "SaveSlot_" + activeSlot;
 
             PlayerPrefs.SetString(saveKey, json);
-
-            // 씬을 넘어갈 때 WorldLoadManager가 바로 읽을 수 있도록 MasterWorldSave에도 똑같이 덮어씌워 줍니다.
             PlayerPrefs.SetString("MasterWorldSave", json);
-
             PlayerPrefs.Save();
-            Debug.Log($"[WorldSave] {saveKey} 슬롯에 월드 정식 세이브 완료! 다음 스테이지: {worldData.savedStageName}");
+            //Debug.Log($"[WorldSave] {saveKey} 슬롯에 월드 정식 세이브 완료! 다음 스테이지: {worldData.savedStageName}");
+        }
+    }
+
+
+    private void CheckRealTimeItems()
+    {
+        BoxCollider boxCol = shipStorageArea as BoxCollider;
+        if (boxCol == null || shipCenter == null) return;
+
+        // 세이브할 때와 동일한 크기로 스캔
+        Vector3 exactCenter = boxCol.transform.TransformPoint(boxCol.center);
+        Vector3 halfExtents = Vector3.Scale(boxCol.size, boxCol.transform.lossyScale) * 0.5f;
+
+        Collider[] itemsInShip = Physics.OverlapBox(exactCenter, halfExtents, boxCol.transform.rotation, itemLayer);
+
+        int currentItemCount = 0;
+        foreach (var hit in itemsInShip)
+        {
+            if (hit.GetComponent<ItemObject>() != null)
+            {
+                currentItemCount++;
+            }
+        }
+
+        // 아이템 개수가 이전과 달라졌을 때만 로그띄움
+        if (lastItemCount != currentItemCount)
+        {
+           
+            if (lastItemCount != -1)
+            {
+                if (currentItemCount > lastItemCount)
+                    Debug.Log($"Safezone에 아이템 들어옴 (현재: {currentItemCount}개 보존 예정)");
+                else
+                    Debug.Log($"Safezone에 아이템 없어짐 (현재: {currentItemCount}개 보존 예정)");
+            }
+            lastItemCount = currentItemCount;
         }
     }
 

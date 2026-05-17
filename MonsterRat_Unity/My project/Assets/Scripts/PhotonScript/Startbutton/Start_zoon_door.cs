@@ -24,7 +24,6 @@ public class Start_zoon_door : NetworkBehaviour
 
     [Networked] public NetworkBool IsDoorOpen { get; set; }
 
-    // Fusion의 네트워크 타이머를 사용하여 닫히게 함
     [Networked] public TickTimer DoorTimer { get; set; }
 
     private bool isPlayerInZone = false;

@@ -16,7 +16,6 @@ GameObject:
   - component: {fileID: 7588675534060305512}
   - component: {fileID: 7658885869467518946}
   - component: {fileID: 1728494756714249393}
-  - component: {fileID: 7180288271565956969}
   - component: {fileID: 2306502795376195331}
   m_Layer: 19
   m_Name: GasMask
@@ -194,27 +193,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DroppedGasMaskState
   _CooldownRemaining: 0
---- !u!135 &7180288271565956969
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5578566528742077123}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 0.16
-  m_Center: {x: 0, y: -0.21, z: 0.32}
 --- !u!136 &2306502795376195331
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -249,6 +227,7 @@ GameObject:
   - component: {fileID: 7353785232325878873}
   - component: {fileID: 5882333477105511420}
   - component: {fileID: 8522719694976966454}
+  - component: {fileID: 3889415469095315206}
   m_Layer: 0
   m_Name: Meshy_AI_Scrubber_of_the_Waste_0427004549_texture
   m_TagString: Untagged
@@ -328,3 +307,24 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!135 &3889415469095315206
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7874038278167232227}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.0027011482
+  m_Center: {x: 0.00017230987, y: -0.007393076, z: -0.0044968193}
