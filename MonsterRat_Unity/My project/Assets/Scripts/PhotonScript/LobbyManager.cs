@@ -229,7 +229,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     }
     #region ★ 세이브 슬롯 로직 (리썰 컴퍼니 방식) ★
 
-    // 1. 방 만들기 버튼을 누르면 가장 먼저 세이브 슬롯 화면을 엽니다.
+    
     public void OnClick_OpenSaveSlotPanel()
     {
         SaveSlotPanel.SetActive(true);
@@ -238,7 +238,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         RefreshSaveSlots(); // 화면 열 때 슬롯 정보 업데이트
     }
 
-    // 2. 3개의 슬롯 데이터를 읽어서 UI 텍스트와 삭제 버튼을 세팅합니다.
+    // 세이브 슬롯 3개 열기
     private void RefreshSaveSlots()
     {
         for (int i = 0; i < 3; i++)
@@ -246,36 +246,32 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
             string saveKey = "SaveSlot_" + i;
             if (PlayerPrefs.HasKey(saveKey))
             {
-                // 세이브 파일이 [있을] 때
+                // 세이브 파일이 있는가?
                 string json = PlayerPrefs.GetString(saveKey);
                 SaveSlotData data = JsonUtility.FromJson<SaveSlotData>(json);
 
-                slotTexts[i].text = $"[슬롯 {i + 1}] {data.roomName}\n<size=80%>{data.savedStageName}</size>";
+                slotTexts[i].text = $"[Slot {i + 1}] {data.roomName}\n<size=80%>{data.savedStageName}</size>";
                 deleteButtons[i].gameObject.SetActive(true);
             }
             else
             {
-                // 세이브 파일이 [없을] 때 (비어있음)
-                slotTexts[i].text = $"[슬롯 {i + 1}]\n비어 있음";
+                // 세이브 파일이 없는가?
+                slotTexts[i].text = $"[Slot {i + 1}]\nEmpty";
                 deleteButtons[i].gameObject.SetActive(false);
             }
         }
     }
 
-    // 3. 유저가 특정 슬롯(0, 1, 2)을 클릭했을 때 발동 (인스펙터에서 OnClick에 연결 시 번호 부여)
+    //버튼에 각 slot int 부여해서 0 1 2 눌렀을 시 LobbyManager을 이용해서 그 번호에 맞는 슬롯정보 불러옴
     public void OnClick_SelectSlot(int slotIndex)
     {
         currentSelectedSlot = slotIndex;
-
-        // 인게임 스테이지들이 "내가 지금 몇 번 슬롯으로 겜중인지" 알 수 있도록 저장
         PlayerPrefs.SetInt("CurrentActiveSaveSlot", currentSelectedSlot);
         PlayerPrefs.Save();
-
         string saveKey = "SaveSlot_" + slotIndex;
 
         if (PlayerPrefs.HasKey(saveKey))
         {
-            // 차있는 슬롯을 누름 -> 이름 입력 스킵하고 바로 방 생성 후 이어서 시작!
             StartHostGameFromSave(saveKey);
         }
         else
@@ -287,7 +283,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         }
     }
 
-    // 4. 슬롯 삭제 버튼 클릭 시
+    //슬롯 삭제 버튼
     public void OnClick_DeleteSlot(int slotIndex)
     {
         PlayerPrefs.DeleteKey("SaveSlot_" + slotIndex);
@@ -298,13 +294,13 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnClick_CancelCreateRoom()
     {
         CreateRoomPanel.SetActive(false);
-        SaveSlotPanel.SetActive(true); // 뒤로가기 누르면 슬롯 화면으로
+        SaveSlotPanel.SetActive(true); // 굳이? 뒤로가기 버튼? 
     }
     #endregion
 
     #region 방 생성 및 게임 시작 (호스트)
 
-    // 빈 슬롯 클릭 후 이름 짓고 [방 생성] 누를 때 (새 게임)
+    // 빈 슬롯 클릭 후 이름 짓고 [방 생성] 누를 때 
     public async void OnClick_ConfirmCreateRoom()
     {
         if (_runner == null || !_runner.IsCloudReady) return;
@@ -324,7 +320,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 
         if (result.Ok)
         {
-            // ★ 빈 슬롯이었으므로 뼈대 데이터(1Stage)를 미리 만들어줍니다.
+            //빈 슬롯이면 새스테이지로 그냥 만듦
             SaveSlotData initData = new SaveSlotData { roomName = roomName, savedStageName = "1Stage" };
             PlayerPrefs.SetString("SaveSlot_" + currentSelectedSlot, JsonUtility.ToJson(initData));
             PlayerPrefs.Save();
@@ -361,7 +357,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
-            // 저장되어 있던 스테이지(예: 2Stage)로 씬을 로드합니다.
+            // 저장되어 있던 스테이지 씬을 로드합니다.
             string targetScene = data.savedStageName;
             _runner.LoadScene(SceneRef.FromIndex(SceneUtility.GetBuildIndexByScenePath($"Assets/Resources/Scenes/Woong/{targetScene}.unity")));
         }

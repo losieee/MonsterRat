@@ -39,15 +39,11 @@ public class WorldLoadManager : NetworkBehaviour
 
                         Runner.Spawn(prefabNetObj, spawnPos, spawnRot);
 
-                        spawnIndex++; // 다음 아이템은 다음 자리(Empty Object)로!
+                        spawnIndex++; 
                     }
                 }
-              //  Debug.Log($"[WorldLoad] 가져온 아이템 {data.shipItems.Count}개를 지정된 스폰 위치에 배치했습니다!");
             }
-            else
-            {
-                //Debug.LogWarning("[WorldLoad] 에러! 인스펙터에 itemSpawnPoints(스폰 자리)가 한 개도 설정되지 않았습니다.");
-            }
+            
         }
     }
 }

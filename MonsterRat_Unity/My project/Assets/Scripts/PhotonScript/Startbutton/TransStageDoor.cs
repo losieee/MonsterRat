@@ -24,8 +24,18 @@ public class TransStageDoor : NetworkBehaviour
     {
         if (HasStateAuthority)
         {
-            IsDoorActive = isPollutionLeft;
-            Debug.Log($" 문 활성 여부: {IsDoorActive}");
+            // ★ 수정: 매니저를 기다리지 않고 내가 직접 세이브 파일을 읽어서 적용!
+            string json = PlayerPrefs.GetString("MasterWorldSave", "");
+            if (!string.IsNullOrEmpty(json))
+            {
+                WorldSaveData data = JsonUtility.FromJson<WorldSaveData>(json);
+                IsDoorActive = data.isDoorActive;
+            }
+            else
+            {
+                IsDoorActive = isPollutionLeft;
+            }
+            Debug.Log($"[Door] 문 활성 여부: {IsDoorActive}");
         }
 
         if (interactionUI != null) interactionUI.SetActive(false);

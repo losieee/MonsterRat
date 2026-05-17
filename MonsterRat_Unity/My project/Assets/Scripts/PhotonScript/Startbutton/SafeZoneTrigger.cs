@@ -146,26 +146,33 @@ public class SafeZoneTrigger : NetworkBehaviour
         worldData.savedStageName = lobbySceneName;
         worldData.isDoorActive = hasLeftover;
 
-        //처음에 bounds 쓰려다가 AI가 추천안해서 바꿨습니다.
+        // [핵심 추가] 기존 세이브 슬롯에 있던 방 이름(roomName)을 읽어와서 유지시킵니다.
+        int activeSlot = PlayerPrefs.GetInt("CurrentActiveSaveSlot", 0);
+        string saveKey = "SaveSlot_" + activeSlot;
+        string existingJson = PlayerPrefs.GetString(saveKey, "");
+        if (!string.IsNullOrEmpty(existingJson))
+        {
+            WorldSaveData existingData = JsonUtility.FromJson<WorldSaveData>(existingJson);
+            worldData.roomName = existingData.roomName;
+        }
+
+        // 아이템 스캔 정밀 계산 로직 (유저님 코드 그대로 유지)
         BoxCollider boxCol = shipStorageArea as BoxCollider;
         if (boxCol != null && shipCenter != null)
         {
-            // 콜라이더의 실제 중심점과 정확한 절반 크기
             Vector3 exactCenter = boxCol.transform.TransformPoint(boxCol.center);
             Vector3 halfExtents = Vector3.Scale(boxCol.size, boxCol.transform.lossyScale) * 0.5f;
 
-            // 아이템 스캔하고
             Collider[] itemsInShip = Physics.OverlapBox(exactCenter, halfExtents, boxCol.transform.rotation, itemLayer);
 
             foreach (var hit in itemsInShip)
             {
                 ItemObject itemObj = hit.GetComponent<ItemObject>();
-                if (itemObj != null && itemObj.itemData != null) // 안전장치 추가
+                if (itemObj != null && itemObj.itemData != null)
                 {
                     ShipItemData sItem = new ShipItemData();
                     sItem.itemID = itemObj.itemData.itemID;
 
-                    // 상대 좌표 계산
                     sItem.localPosition = shipCenter.InverseTransformPoint(itemObj.transform.position);
                     sItem.localRotation = Quaternion.Inverse(shipCenter.rotation) * itemObj.transform.rotation;
 
@@ -177,25 +184,14 @@ public class SafeZoneTrigger : NetworkBehaviour
 
         string json = JsonUtility.ToJson(worldData);
 
-        if (currentStageName == "1Stage" && !canCreateSaveFile)
-        {
-            PlayerPrefs.SetInt("IsPollutionLeft", hasLeftover ? 1 : 0);
-            PlayerPrefs.SetString("MasterWorldSave", json);
-            PlayerPrefs.Save();
-           // Debug.Log("[WorldSave] 1Stage -> 2Stage 아이템 데이터 전달 완료!");
-        }
-        else
-        {
-            int activeSlot = PlayerPrefs.GetInt("CurrentActiveSaveSlot", 0);
-            string saveKey = "SaveSlot_" + activeSlot;
+        // [핵심 수정] 1스테이지든 2스테이지든 정식 세이브 슬롯에 덮어씌워야 로비에서 2Stage 이어하기가 가능해집니다.
+        PlayerPrefs.SetInt("IsPollutionLeft", hasLeftover ? 1 : 0);
+        PlayerPrefs.SetString(saveKey, json);
+        PlayerPrefs.SetString("MasterWorldSave", json);
+        PlayerPrefs.Save();
 
-            PlayerPrefs.SetString(saveKey, json);
-            PlayerPrefs.SetString("MasterWorldSave", json);
-            PlayerPrefs.Save();
-            //Debug.Log($"[WorldSave] {saveKey} 슬롯에 월드 정식 세이브 완료! 다음 스테이지: {worldData.savedStageName}");
-        }
+        Debug.Log($"[WorldSave] {saveKey} 슬롯에 저장 완료! 다음 스테이지: {worldData.savedStageName}");
     }
-
 
     private void CheckRealTimeItems()
     {
