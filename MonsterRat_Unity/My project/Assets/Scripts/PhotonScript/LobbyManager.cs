@@ -56,6 +56,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         MainPanel.SetActive(false);
         RoomListPanel.SetActive(false);
         CreateRoomPanel.SetActive(false);
+        SaveSlotPanel.SetActive(false);
     }
 
     private void InitializeRunner()
@@ -114,6 +115,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 
         RoomListPanel.SetActive(true);
         CreateRoomPanel.SetActive(false);
+        SaveSlotPanel.SetActive(false);
         Debug.Log("로비 접속 시도 완료했습니다. 방 목록이 업데이트 될 겁니다.");
     }
 

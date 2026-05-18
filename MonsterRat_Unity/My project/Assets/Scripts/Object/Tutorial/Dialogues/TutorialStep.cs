@@ -13,6 +13,9 @@ public class TutorialStep : MonoBehaviour
     public Button mopBtn;
     public Button gunBtn;
     public Button spannerBtn;
+    public GameObject mopOutLine;
+    public GameObject gunOutLine;
+    public GameObject spannerOutLine;
     public GameObject exitRange;
 
     private int _pausedIndex = -999;
@@ -64,6 +67,9 @@ public class TutorialStep : MonoBehaviour
                 mopBtn.enabled = true;
                 gunBtn.enabled = true;
                 spannerBtn.enabled = true;
+                mopOutLine.SetActive(true);
+                gunOutLine.SetActive(true);
+                spannerOutLine.SetActive(true);
             }
         }
         else if(idx == 13)

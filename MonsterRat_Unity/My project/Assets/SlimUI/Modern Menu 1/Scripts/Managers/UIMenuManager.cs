@@ -22,6 +22,7 @@ namespace SlimUI.ModernMenu{
         [Tooltip("Optional 4th Menu")]
         public GameObject loginpanel;
         public GameObject CreateRoomPanel;
+		public GameObject saveSlotPanel;
 
         public enum Theme {custom1, custom2, custom3};
         [Header("THEME SETTINGS")]
@@ -89,6 +90,7 @@ namespace SlimUI.ModernMenu{
 			exitMenu.SetActive(false);
 			firstMenu.SetActive(true);
 			mainMenu.SetActive(true);
+			saveSlotPanel.SetActive(false);
 
 			SetThemeColors();
 		}
@@ -121,9 +123,10 @@ namespace SlimUI.ModernMenu{
 		public void PlayCampaign(){
 			exitMenu.SetActive(false);
 			playMenu.SetActive(true);
-		}
-		
-		public void PlayCampaignMobile(){
+            saveSlotPanel.SetActive(false);
+        }
+
+        public void PlayCampaignMobile(){
 			exitMenu.SetActive(false);
 			playMenu.SetActive(true);
 			mainMenu.SetActive(false);
@@ -133,9 +136,10 @@ namespace SlimUI.ModernMenu{
 			playMenu.SetActive(false);
 			exitMenu.SetActive(false);
 			mainMenu.SetActive(true);
-		}
+            saveSlotPanel.SetActive(false);
+        }
 
-		public void LoadScene(string scene){
+        public void LoadScene(string scene){
 			if(scene != ""){
 				StartCoroutine(LoadAsynchronously(scene));
 			}
@@ -239,7 +243,8 @@ namespace SlimUI.ModernMenu{
 			exitMenu.SetActive(true);
 			if(loginpanel) loginpanel.SetActive(false);
 			CreateRoomPanel.SetActive(false);
-			DisablePlayCampaign();
+            saveSlotPanel.SetActive(false);
+            DisablePlayCampaign();
 		}
 
 		public void AreYouSureMobile(){

@@ -173,6 +173,8 @@ public class ClearManager : NetworkBehaviour
                 currentDebuff = RePollutionDebuffType.ChaosPhase;
                 break;
         }
+
+        Debug.Log(currentDebuff);
     }
 
     // 청소해야 할것들 등록

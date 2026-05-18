@@ -256,6 +256,7 @@ GameObject:
   - component: {fileID: 7067553300088346089}
   - component: {fileID: 3599724677802947}
   - component: {fileID: 2727024129534111826}
+  - component: {fileID: 4937797389494609388}
   m_Layer: 0
   m_Name: Monster_Watcher
   m_TagString: Untagged
@@ -297,6 +298,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 2727024129534111826}
+  - {fileID: 4937797389494609388}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &2727024129534111826
 MonoBehaviour:
@@ -315,6 +317,21 @@ MonoBehaviour:
   SyncParent: 0
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 0
+--- !u!114 &4937797389494609388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2796130435308551036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11535f9289fa94341b60fc31e2d7944d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterWatcher
+  watcherDamage: 8
+  _canAttack: 0
+  _watcherCount: 0
 --- !u!1 &3792413547629937316
 GameObject:
   m_ObjectHideFlags: 0

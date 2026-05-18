@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
 public class PlayerUIState : MonoBehaviour
@@ -77,7 +77,7 @@ public class PlayerUIState : MonoBehaviour
     {
         currentCoin -= val;
 
-        coinText.text = $"{currentCoin.ToString()}G";
+        coinText.text = $"₩ {currentCoin.ToString()}";
     }
 
     void OnTriggerEnter(Collider other)
