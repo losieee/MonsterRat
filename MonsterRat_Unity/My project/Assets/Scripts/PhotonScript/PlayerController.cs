@@ -33,6 +33,15 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
     [SerializeField] private float wallCheckDistance = 0.6f;
     [SerializeField] private LayerMask wallLayer;
 
+    [Header("카메라 설정(멀미 전용)")]
+    public Vector3 cameraEffectEuler;
+    public Vector3 cameraEffectPosition;
+    public float cameraEffectFovOffset;
+
+    private Vector3 originalCameraLocalPosition;
+    private float originalFov;
+    private Camera playerCamera;
+
     // 다시 익숙한 Rigidbody로 돌아옵니다!
     private Rigidbody rb;
     private float pitch = 0f;
@@ -57,6 +66,14 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
             Cursor.visible = false;
             Runner.AddCallbacks(this);
             yaw = transform.eulerAngles.y;
+
+            originalCameraLocalPosition = myCamObj.transform.localPosition;
+
+            playerCamera = myCamObj.GetComponentInChildren<Camera>();
+            if (playerCamera != null)
+            {
+                originalFov = playerCamera.fieldOfView;
+            }
         }
         else
         {
@@ -92,7 +109,14 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
 
         if (myCamObj != null)
         {
-            myCamObj.transform.localRotation = Quaternion.Euler(pitch, 0f, 0f);
+            myCamObj.transform.localRotation = Quaternion.Euler(pitch, 0f, 0f) * Quaternion.Euler(cameraEffectEuler);
+
+            myCamObj.transform.localPosition = originalCameraLocalPosition + cameraEffectPosition;
+
+            if (playerCamera != null)
+            {
+                playerCamera.fieldOfView = originalFov + cameraEffectFovOffset;
+            }
         }
     }
 
@@ -122,6 +146,8 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
 
         if (GetInput(out MyNetworkInput input))
         {
+            Vector3 beforePos = transform.position;
+
             // 좌우 회전
             transform.rotation = Quaternion.Euler(0, input.yaw, 0);
 
@@ -159,6 +185,13 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
                 }
             }
 
+            Vector3 afterPos = transform.position;
+
+            Vector3 actualDelta = afterPos - beforePos;
+            actualDelta.y = 0f;
+
+            float actualMoveDistance = actualDelta.magnitude;
+
             // 애니메이션
             if (animator != null)
             {
@@ -169,24 +202,31 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
 
             // 발소리
             if (HasInputAuthority && Runner.IsForward)
-            {   
-                HandleFootstep(input, moveDir);
+            {
+                HandleFootstep(input, actualMoveDistance);
             }
         }
 
         // 상하 회전
-        flashPivot.localRotation = Quaternion.Euler(NetPitch, 0f, 0f);      // 손전등 빛 오브젝트도 같이
+        if (flashPivot != null)
+        {
+            flashPivot.localRotation = Quaternion.Euler(NetPitch, 0f, 0f);          // 손전등 빛 오브젝트도 같이
+        }
     }
 
-    void HandleFootstep(MyNetworkInput input, Vector3 moveDir)
+    void HandleFootstep(MyNetworkInput input, float actualMoveDistance)
     {
         if (footstepAudioSource == null)
             return;
 
-        bool isMoving = input.moveInput.sqrMagnitude > 0.01f && moveDir.sqrMagnitude > 0.001f;
+        bool hasInput = input.moveInput.sqrMagnitude > 0.01f;
+
+        // 실제 이동 거리가 거의 없으면 발소리 X
+        bool actuallyMoving = actualMoveDistance > 0.001f;
+
         float interval = input.isRunning ? runStepInterval : walkStepInterval;
 
-        if (!isMoving)
+        if (!hasInput || !actuallyMoving)
         {
             footstepTimer = interval;
             return;
@@ -202,6 +242,7 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
             : FootStepRangeType.Stone;
 
         Rpc_PlayFootstep(currentType);
+
         footstepTimer = interval;
     }
 

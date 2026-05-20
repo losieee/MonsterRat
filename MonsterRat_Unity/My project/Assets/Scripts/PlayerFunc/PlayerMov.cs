@@ -84,6 +84,8 @@ public class PlayerMov : MonoBehaviour
 
     void Move()
     {
+        Vector3 beforePos = transform.position;
+
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
@@ -96,7 +98,12 @@ public class PlayerMov : MonoBehaviour
         vel.y += gravity * Time.deltaTime;
         control.Move(vel * Time.deltaTime);
 
-        HandleFootstep(x, z);
+        Vector3 afterPos = transform.position;
+
+        Vector3 horizontalDelta = afterPos - beforePos;
+        horizontalDelta.y = 0f;
+
+        HandleFootstep(x, z, horizontalDelta.magnitude);
     }
 
     void Look()
@@ -113,16 +120,19 @@ public class PlayerMov : MonoBehaviour
         cam.localRotation = Quaternion.Euler(pitch, 0f, 0f);
     }
 
-    void HandleFootstep(float x, float z)
+    void HandleFootstep(float x, float z, float actualMoveDistance)
     {
         if (footstepAudioSource == null)
             return;
 
-        bool isMoving = Mathf.Abs(x) > 0.01f || Mathf.Abs(z) > 0.01f;
+        bool hasInput = Mathf.Abs(x) > 0.01f || Mathf.Abs(z) > 0.01f;
+
+        // 이동하는 거리 생각해서 이동 안하면 소리X
+        bool actuallyMoving = actualMoveDistance > 0.001f;
 
         float interval = walkStepInterval;
 
-        if (!isMoving || !control.isGrounded)
+        if (!hasInput || !actuallyMoving || !control.isGrounded)
         {
             footstepTimer = interval;
             return;

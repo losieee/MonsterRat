@@ -19,10 +19,19 @@ public class PlayerGas : MonoBehaviour
     private GasZone[] gasZones;
     private PhotonGasMaskController gasMask;
 
+    private FullGaugeBlind fullGaugeBlind;
+    private FullGaugeSlow fullGaugeSlow;
+    private FullGaugeHeadShake fullHeadShake;
+
+    private bool isEffectRunning = false;
+
     private void Awake()
     {
         networkObject = GetComponentInParent<NetworkObject>();
         gasMask = GetComponentInParent<PhotonGasMaskController>();
+        fullGaugeBlind = GetComponentInParent<FullGaugeBlind>();
+        fullGaugeSlow = GetComponentInParent<FullGaugeSlow>();
+        fullHeadShake = GetComponentInParent<FullGaugeHeadShake>();
     }
 
     private void Start()
@@ -65,6 +74,53 @@ public class PlayerGas : MonoBehaviour
             AddExposure(zone.exposurePerSec * checkInterval);
             break;
         }
+
+        CheckFullPollution();
+    }
+
+    // 게이지 다 찾는지 확인
+    void CheckFullPollution()
+    {
+        if (isEffectRunning)
+            return;
+
+        if (pollution < maxPollution)
+            return;
+
+        isEffectRunning = true;
+
+        int randomEffect = Random.Range(0, 3);
+        // 0 = 실명
+        // 1 = 둔화
+        // 2 = 멀미
+
+        if (randomEffect == 0)
+        {
+            if (fullGaugeBlind != null)
+                fullGaugeBlind.StartBlind(OnEffectFinished);
+            else
+                OnEffectFinished();
+        }
+        else if (randomEffect == 1)
+        {
+            if (fullGaugeSlow != null)
+                fullGaugeSlow.StartSlow(OnEffectFinished);
+            else
+                OnEffectFinished();
+        }
+        else
+        {
+            if (fullHeadShake != null)
+                fullHeadShake.StartShake(OnEffectFinished);
+            else
+                OnEffectFinished();
+        }
+    }
+
+    void OnEffectFinished()
+    {
+        pollution = 0f;
+        isEffectRunning = false;
     }
 
     // 가스 확인 
