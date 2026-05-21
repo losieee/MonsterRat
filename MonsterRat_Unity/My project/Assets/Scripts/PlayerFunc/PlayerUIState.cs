@@ -1,4 +1,5 @@
 ﻿using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 public class PlayerUIState : MonoBehaviour
@@ -7,6 +8,12 @@ public class PlayerUIState : MonoBehaviour
     public Text coinText;
     public GameObject clearGauge;
     public GameObject pollutionGauge;
+
+    [Header("상점")]
+    public Sprite selectNormal;
+    public Image selectIMG;
+    public TMP_Text selectName;
+    public TMP_Text selectInfo;
 
     private int currentCoin = 300;
 
@@ -66,6 +73,10 @@ public class PlayerUIState : MonoBehaviour
 
         if (pollutionGauge != null)
             pollutionGauge.SetActive(true);
+
+        selectIMG.sprite = selectNormal;
+        selectName.text = " ";
+        selectInfo.text = "아이템을 선택하세요.";
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

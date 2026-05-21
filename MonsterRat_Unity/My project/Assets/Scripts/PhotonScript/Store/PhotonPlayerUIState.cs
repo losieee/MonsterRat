@@ -1,6 +1,8 @@
 using UnityEngine;
 using Fusion;
 using System;
+using TMPro;
+using UnityEngine.UI;
 
 public class PhotonPlayerUIState : NetworkBehaviour
 {
@@ -10,6 +12,12 @@ public class PhotonPlayerUIState : NetworkBehaviour
     public GameObject aimDot;
     public GameObject clearGauge;
     public GameObject pollutionGauge;
+
+    [Header("상점 Select")]
+    public Sprite selectNormal;
+    public Image selectIMG;
+    public TMP_Text selectName;
+    public TMP_Text selectInfo;
 
     bool inStoreZone;
     bool uiOpen;
@@ -21,6 +29,8 @@ public class PhotonPlayerUIState : NetworkBehaviour
     public event Action OnStoreClosed;
 
     private PhotonToolSpawner currentStore;
+
+    private int selectedItemIndex = -1;
 
     void Update()
     {
@@ -69,20 +79,47 @@ public class PhotonPlayerUIState : NetworkBehaviour
         {
             inStoreZone = false;
             currentStore = null;
+            selectedItemIndex = -1;
             if (uiOpen) CloseStore();
         }
     }
 
     public void OnClickBuyItem(int itemIndex)
     {
-        if (currentStore != null)
+        selectedItemIndex = itemIndex;
+
+        ItemData itemData = ItemDatabase.Instance.GetItemByIndex(itemIndex);
+
+        if (itemData == null)
+            return;
+
+        if (selectIMG != null)
         {
-            NetworkObject storeNetObj = currentStore.GetComponent<NetworkObject>();
-            if (storeNetObj != null)
-            {
-                RPC_RequestSpawnToHost(storeNetObj, itemIndex);
-            }
+            selectIMG.sprite = itemData.itemIcon;
+            selectIMG.enabled = itemData.itemIcon != null;
         }
+
+        if(selectName != null)
+            selectName.text = itemData.storeName;
+
+        if (selectInfo != null)
+            selectInfo.text = itemData.itenInfo;
+    }
+
+    public void OnClickSpawnSelectedItem()
+    {
+        if (selectedItemIndex < 0)
+            return;
+
+        if (currentStore == null)
+            return;
+
+        NetworkObject storeNetObj = currentStore.GetComponent<NetworkObject>();
+
+        if (storeNetObj == null)
+            return;
+
+        RPC_RequestSpawnToHost(storeNetObj, selectedItemIndex);
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
@@ -93,7 +130,11 @@ public class PhotonPlayerUIState : NetworkBehaviour
             PhotonToolSpawner spawner = storeObj.GetComponent<PhotonToolSpawner>();
             if (spawner != null && spawner.itemSpawnPoint != null)
             {
-                Runner.Spawn(spawner.tools[itemIndex], spawner.itemSpawnPoint.position, spawner.itemSpawnPoint.rotation, null);
+                ItemData itemData = ItemDatabase.Instance.GetItemByIndex(itemIndex);
+                if (itemData != null && itemData.itemPrefab != null)
+                {
+                    Runner.Spawn(itemData.itemPrefab, spawner.itemSpawnPoint.position, spawner.itemSpawnPoint.rotation, null);
+                }
             }
         }
     }
@@ -115,7 +156,12 @@ public class PhotonPlayerUIState : NetworkBehaviour
     void CloseStore()
     {
         uiOpen = false;
-        isGlobalStoreOpen = false;  
+        isGlobalStoreOpen = false;
+
+        selectIMG.sprite = selectNormal;
+        selectInfo.text = "아이템을 선택하세요.";
+        selectName.text = " ";
+        selectedItemIndex = -1;
 
         if (storePanel != null) storePanel.SetActive(false);
         if (aimDot != null) aimDot.SetActive(true);

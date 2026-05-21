@@ -7,6 +7,8 @@ public class ItemData : ScriptableObject
     [Header("아이템 정보")]
     public int itemID;
     public string itemName;
+    public string storeName;
+    public string itenInfo;
 
     [Header("인벤 정보")]
     public Sprite itemIcon;
