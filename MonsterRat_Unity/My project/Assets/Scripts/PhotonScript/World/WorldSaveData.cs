@@ -12,7 +12,7 @@ public class ShipItemData
 public class WorldSaveData
 {
     public string savedStageName;
-    public string roomName;        // ★ 추가: 방 이름을 잃어버리지 않기 위함
+    public string roomName;        
     public bool isDoorActive;
     public List<ShipItemData> shipItems = new List<ShipItemData>();
 }
