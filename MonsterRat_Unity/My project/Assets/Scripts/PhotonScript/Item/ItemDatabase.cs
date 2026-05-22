@@ -16,7 +16,7 @@ public class ItemDatabase : MonoBehaviour
             DontDestroyOnLoad(gameObject);
 
             // 게임 시작 시  ItemData를 불러오기
-            LoadAllItems();
+            //LoadAllItems();
         }
         else
         {
@@ -45,5 +45,14 @@ public class ItemDatabase : MonoBehaviour
         }
 
         return foundItem;
+    }
+
+    // 리스트에 있는 아이템을 인덱스로 가져오는 용도
+    public ItemData GetItemByIndex(int index)
+    {
+        if (index < 0 || index >= allItems.Count)
+            return null;
+
+        return allItems[index];
     }
 }
