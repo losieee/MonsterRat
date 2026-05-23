@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 using TMPro;
 using System.IO;
@@ -50,7 +49,9 @@ namespace SlimUI.ModernMenu
         [Header("MODE")]
         public bool useLocalPlayerCheck = false;
         public bool isLocalPlayer = true;
+        public bool isTutorialPlayer = false;
         public NetworkRunner runner;
+        public PlayerUIState state;
 
         [Header("UI BEHAVIOR")]
         public bool canUseEscKey = true;
@@ -144,6 +145,10 @@ namespace SlimUI.ModernMenu
             // [수정됨] canUseEscKey가 true일 때만 ESC 키를 인식합니다.
             if (canUseEscKey && Input.GetKeyDown(KeyCode.Escape))
             {
+                if (isTutorialPlayer && state.storeOpen) return;
+
+                if (PhotonPlayerUIState.isGlobalStoreOpen) return;
+
                 ToggleSettingsMenu();
             }
         }

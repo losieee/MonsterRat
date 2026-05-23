@@ -10,6 +10,9 @@ public class GasCamFollow : MonoBehaviour
     public GameObject gasAction2;
     public GameObject spannerPos;
     public GameObject playerHand;
+    public GameObject clearGauge;
+    public GameObject pollutionGauge;
+    public GameObject inven;
 
     public MonoBehaviour[] cameraControlScripts;
 
@@ -35,6 +38,10 @@ public class GasCamFollow : MonoBehaviour
         if (tutorialManager != null)
             tutorialManager.NotifyGasCamEntered();
         playerHand.SetActive(false);
+
+        clearGauge.SetActive(false);
+        pollutionGauge.SetActive(false);
+        inven.SetActive(false);
 
         StartCoroutine(Co_FadeSnapLock());
     }
@@ -83,6 +90,8 @@ public class GasCamFollow : MonoBehaviour
         dialogue.ResumeAuto();
         playerHand.SetActive(true);
         gameObject.SetActive(false);
+        clearGauge.SetActive(true);
+        pollutionGauge.SetActive(true);
     }
 
     // 카메라 원위치

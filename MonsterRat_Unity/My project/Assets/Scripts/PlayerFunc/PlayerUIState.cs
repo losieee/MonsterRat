@@ -19,6 +19,7 @@ public class PlayerUIState : MonoBehaviour
 
     bool inStoreZone;
     bool uiOpen;
+    [HideInInspector] public bool storeOpen;
 
     public bool IsUIOpen => uiOpen;
 
@@ -45,6 +46,9 @@ public class PlayerUIState : MonoBehaviour
     void OpenStore()
     {
         uiOpen = true;
+        storeOpen = true;
+
+        GetComponentInParent<PlayerMov>().flash.SetActive(false);
 
         if (storePanel != null)
             storePanel.SetActive(true);
@@ -64,6 +68,9 @@ public class PlayerUIState : MonoBehaviour
     void CloseStore()
     {
         uiOpen = false;
+        storeOpen = false;
+
+        GetComponentInParent<PlayerMov>().flash.SetActive(true);
 
         if (storePanel != null)
             storePanel.SetActive(false);

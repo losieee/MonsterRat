@@ -15,6 +15,7 @@ public class PlayerMov : MonoBehaviour
 
     [Header("Look")]
     public Transform cam;
+    public GameObject flash;
     public float sensitiv = 2f;
     public float maxAngle = 85f;
 
@@ -118,6 +119,7 @@ public class PlayerMov : MonoBehaviour
         pitch -= mouseY;
         pitch = Mathf.Clamp(pitch, -maxAngle, maxAngle);
         cam.localRotation = Quaternion.Euler(pitch, 0f, 0f);
+        flash.transform.localRotation = Quaternion.Euler(pitch, 0f, 0f);
     }
 
     void HandleFootstep(float x, float z, float actualMoveDistance)

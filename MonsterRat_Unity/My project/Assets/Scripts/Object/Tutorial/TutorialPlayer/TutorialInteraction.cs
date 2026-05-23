@@ -1,9 +1,7 @@
 using UnityEngine;
 
-public class TutorialHandGrab : TutorialInvenBase
+public class TutorialInteraction : MonoBehaviour
 {
-    public override TutorialToolType Type => TutorialToolType.Hand;
-
     [Header("Grab")]
     public float grabHoldDistance = 3f;
     public float grabMoveSpeed = 15f;
@@ -12,7 +10,9 @@ public class TutorialHandGrab : TutorialInvenBase
     public float grabPadding = 0.05f;
     public float minHoldDistance = 0.6f;
 
+    PlayerRaycast interactor;
     TutorialInventory inven;
+
     Rigidbody targetRb;
     Vector3 lastGrabPos;
     Vector3 lastGrabVel;
@@ -20,10 +20,11 @@ public class TutorialHandGrab : TutorialInvenBase
 
     private void Awake()
     {
+        interactor = GetComponent<PlayerRaycast>();
         inven = GetComponent<TutorialInventory>();
     }
 
-    public override void Tick()
+    private void Update()
     {
         if (interactor == null) return;
 
@@ -42,15 +43,11 @@ public class TutorialHandGrab : TutorialInvenBase
         if (Input.GetKeyDown(KeyCode.E))
         {
             Interaction();
-        }
-
-        if (Input.GetKeyDown(KeyCode.F))
-        {
             Incinerator();
         }
     }
 
-    public override void FixedTick()
+    private void FixedUpdate()
     {
         if (targetRb != null)
             MoveGrabbedObject();
@@ -68,7 +65,7 @@ public class TutorialHandGrab : TutorialInvenBase
         Collider col = targetRb.GetComponent<Collider>();
         if (col == null)
             col = targetRb.GetComponentInChildren<Collider>();
-        
+
         if (col != null)
         {
             Vector3 e = col.bounds.extents;
@@ -120,6 +117,7 @@ public class TutorialHandGrab : TutorialInvenBase
 
     void Incinerator()
     {
+        if (interactor == null) return;
         if (!interactor.RaycastWorld(grabHoldDistance, out RaycastHit hit)) return;
 
         int layer = hit.collider.gameObject.layer;
@@ -133,6 +131,7 @@ public class TutorialHandGrab : TutorialInvenBase
 
     void Interaction()
     {
+        if (interactor == null) return;
         if (!interactor.RaycastWorld(grabHoldDistance, out RaycastHit hit)) return;
 
         int layer = hit.collider.gameObject.layer;
@@ -145,12 +144,14 @@ public class TutorialHandGrab : TutorialInvenBase
                     if (btn != null) btn.OpenDoor();
                     break;
                 }
+
             case 18:
                 {
                     SafeZone_Door btn = hit.collider.GetComponentInParent<SafeZone_Door>();
                     if (btn != null) btn.OpenClearDoor();
                     break;
                 }
+
             case 20:
                 {
                     Destroy(hit.collider.gameObject);
@@ -160,6 +161,7 @@ public class TutorialHandGrab : TutorialInvenBase
                     inven.hasMop = true;
                     break;
                 }
+
             case 21:
                 {
                     Destroy(hit.collider.gameObject);
@@ -169,6 +171,7 @@ public class TutorialHandGrab : TutorialInvenBase
                     inven.hasGun = true;
                     break;
                 }
+
             case 22:
                 {
                     Destroy(hit.collider.gameObject);
@@ -178,9 +181,6 @@ public class TutorialHandGrab : TutorialInvenBase
                     inven.hasSpanner = true;
                     break;
                 }
-            default:
-                // ¹«½Ã
-                break;
         }
     }
 }
