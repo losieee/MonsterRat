@@ -6,6 +6,7 @@ public class ItemData : ScriptableObject
 {
     [Header("아이템 정보")]
     public int itemID;
+    public int itemPrice;
     public string itemName;
     public string storeName;
     public string itenInfo;

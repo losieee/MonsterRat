@@ -68,6 +68,7 @@ public class PhotonInventory : NetworkBehaviour
         // 스폰될 때 내 고유 번호표가 붙은 열쇠로 하드디스크를 열기
         if (HasInputAuthority)
         {
+            string myName = PlayerPrefs.GetString("PlayerName", "UnknownPlayer");
             // Runner.LocalPlayer.ToString()을 붙여서 나만의 고유 키를 만들기
             string myUniqueKey = "MySavedInventory_" + Runner.LocalPlayer.ToString();
             string jsonString = PlayerPrefs.GetString(myUniqueKey, "");
@@ -381,6 +382,7 @@ public class PhotonInventory : NetworkBehaviour
 
         string jsonString = JsonUtility.ToJson(saveData);
 
+        string myName = PlayerPrefs.GetString("PlayerName", "UnknownPlayer");
         // 내 고유 번호표를 붙여서 저장(예시로: MySavedInventory_[Player:1])
         string myUniqueKey = "MySavedInventory_" + Runner.LocalPlayer.ToString();
 

@@ -5,6 +5,14 @@ public class WorldLoadManager : NetworkBehaviour
 {
     public Transform[] itemSpawnPoints;
 
+    public static WorldLoadManager instance;
+    [Networked] public int SharedGold { get; set; }
+
+
+    private void Awake()
+    {
+        instance = this;
+    }
     public override void Spawned()
     {
         // 방장만 아이템을 스폰
@@ -45,5 +53,10 @@ public class WorldLoadManager : NetworkBehaviour
             }
             
         }
+    }
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_DeductGold(int amount)
+    {
+        SharedGold -= amount;
     }
 }

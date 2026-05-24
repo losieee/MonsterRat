@@ -18,6 +18,7 @@ public class PhotonPlayerUIState : NetworkBehaviour
     public Image selectIMG;
     public TMP_Text selectName;
     public TMP_Text selectInfo;
+    public TMP_Text currentGoldText;
 
     bool inStoreZone;
     bool uiOpen;
@@ -50,6 +51,11 @@ public class PhotonPlayerUIState : NetworkBehaviour
         {
             if (uiOpen) CloseStore();
             else OpenStore();
+        }
+
+        if (currentGoldText != null && WorldLoadManager.instance != null)
+        {
+            currentGoldText.text = $"{WorldLoadManager.instance.SharedGold}G";
         }
     }
 
@@ -99,7 +105,7 @@ public class PhotonPlayerUIState : NetworkBehaviour
             selectIMG.enabled = itemData.itemIcon != null;
         }
 
-        if(selectName != null)
+        if (selectName != null)
             selectName.text = itemData.storeName;
 
         if (selectInfo != null)
@@ -108,18 +114,30 @@ public class PhotonPlayerUIState : NetworkBehaviour
 
     public void OnClickSpawnSelectedItem()
     {
-        if (selectedItemIndex < 0)
+        if (selectedItemIndex < 0 || currentStore == null)
             return;
 
+        ItemData itemData = ItemDatabase.Instance.GetItemByIndex(selectedItemIndex);
         if (currentStore == null)
             return;
-
+        if(WorldLoadManager.instance.SharedGold >= itemData.itemPrice)
+        {
+            //방장한테 돈 차감하라고 하기 (클라이언트 기준)
+            WorldLoadManager.instance.RPC_DeductGold(itemData.itemPrice);
+            NetworkObject StoreNetObj = currentStore.GetComponent<NetworkObject>();
+            RPC_RequestSpawnToHost(StoreNetObj, selectedItemIndex);
+        }
+        if (WorldLoadManager.instance == null)
+        {
+            Debug.LogError("[상점 오류] 현재 씬에 WorldLoadManager가 없습니다! 골드 결제를 진행할 수 없습니다.");
+            return;
+        }
         NetworkObject storeNetObj = currentStore.GetComponent<NetworkObject>();
 
         if (storeNetObj == null)
             return;
 
-        RPC_RequestSpawnToHost(storeNetObj, selectedItemIndex);
+      //  RPC_RequestSpawnToHost(storeNetObj, selectedItemIndex); 이거 주석풀면 2개 스폰됩니다
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
