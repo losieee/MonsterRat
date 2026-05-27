@@ -272,6 +272,7 @@ public class ClearManager : NetworkBehaviour
         }
 
         if (Input.GetKeyDown(KeyCode.F1)) SpawnWatcher();
+        if (Input.GetKeyDown(KeyCode.F2)) SpawnBoxHead();
     }
 
     public override void FixedUpdateNetwork()
