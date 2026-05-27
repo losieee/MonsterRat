@@ -25,6 +25,7 @@ public class SpannerMiniGame : MonoBehaviour
     public RectTransform successZone;
     public RectTransform leftPoint;
     public RectTransform rightPoint;
+    public GameObject aimDot;
 
     public float moveSpeed = 300f;
     public int successCount = 4;
@@ -71,6 +72,8 @@ public class SpannerMiniGame : MonoBehaviour
     public void StartMiniGame(GasValveSync valve, PhotonSpanner spanner)
     {
         if (isPlaying) return;
+
+        aimDot.SetActive(false);
 
         targetValve = valve;
         ownerSpanner = spanner;
@@ -189,6 +192,7 @@ public class SpannerMiniGame : MonoBehaviour
     private void EndMiniGame()
     {
         isPlaying = false;
+        aimDot.SetActive(true);
         targetValve = null;
         ownerSpanner = null;
         currentSuccessCount = 0;

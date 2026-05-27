@@ -1,67 +1,132 @@
+using SlimUI.ModernMenu;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SpannerMiniGameAimLab : MonoBehaviour
 {
     [Header("Spawn Settings")]
+    public GameObject panel;
     public List<RectTransform> spawnPoints = new List<RectTransform>();
     public RectTransform pipeBrokenPrefab;
 
     public float spawnInterval = 3f;
-    public int totalSpawnCount = 10;
+    public int totalNeedCount = 10;
 
-    [Header("스폰되는 박스 크기 (중앙 맞춤용)")]
-    public Vector2 horizontalSize = new Vector2(160f, 60f);
-    public Vector2 verticalSize = new Vector2(60f, 160f);
+    public AudioSource source;
+    public AudioClip breakSound;
 
-    private int spawnedCount = 0;
+    [Header("스폰되는 균열 크기")]
+    public Vector2 horizontalSize = new Vector2(160f, 60f);     // 옆이 긴 스폰 전용
+    public Vector2 verticalSize = new Vector2(60f, 160f);       // 위아래가 긴 스폰 전용
 
-    void Start()
+    private int successCount = 0;
+    private bool isGameOver = false;
+    private Coroutine spawnCoroutine;
+
+    public bool IsPlaying { get; private set; }
+
+    private GasValveSync targetValve;
+    private PhotonSpanner spanner;
+
+    public void StartMiniGame(GasValveSync valve, PhotonSpanner photonSpanner)
     {
-        StartCoroutine(SpawnRoutine());
+        if (IsPlaying) return;
+
+        if (UISettingsManager.Instance != null)
+            UISettingsManager.Instance.canUseEscKey = false;
+
+        GameInputLock.Lock();
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        targetValve = valve;
+        spanner = photonSpanner;
+
+        successCount = 0;
+        isGameOver = false;
+        IsPlaying = true;
+
+        panel.SetActive(true);
+
+        spawnCoroutine = StartCoroutine(SpawnRoutine());
     }
 
     IEnumerator SpawnRoutine()
     {
-        while (spawnedCount < totalSpawnCount && spawnPoints.Count > 0)
+        while (!isGameOver && successCount < totalNeedCount)
         {
             yield return new WaitForSeconds(spawnInterval);
 
             RectTransform point = spawnPoints[Random.Range(0, spawnPoints.Count)];
-
-            RectTransform broken = Instantiate(
-                pipeBrokenPrefab,
-                point.parent
-            );
+            RectTransform broken = Instantiate(pipeBrokenPrefab, point.parent);
 
             broken.position = point.position;
             broken.rotation = point.rotation;
             broken.localScale = Vector3.one;
 
-            RectTransform pointRect = point;
+            bool isHorizontal = point.rect.width >= point.rect.height;
+            broken.sizeDelta = isHorizontal ? horizontalSize : verticalSize;
 
-            bool isHorizontal = pointRect.rect.width >= pointRect.rect.height;
+            PipeBroken pipeBroken = broken.GetComponent<PipeBroken>();
+            pipeBroken.Init(this);
 
-            if (isHorizontal)       // 만약 스폰될 공간의 박스의 가로가 더 크면
-            {
-                broken.sizeDelta = horizontalSize;
-
-                Vector2 pos = broken.anchoredPosition;
-                pos.y = pointRect.anchoredPosition.y;           // Y축 중앙 고정
-                broken.anchoredPosition = pos;
-            }
-            else
-            {
-                broken.sizeDelta = verticalSize;
-
-                Vector2 pos = broken.anchoredPosition;
-                pos.x = pointRect.anchoredPosition.x;           // X축 중앙 고정
-                broken.anchoredPosition = pos;
-            }
-
-            spawnedCount++;
+            source.PlayOneShot(breakSound);
         }
+    }
+
+    public void AddCount()
+    {
+        if (isGameOver) return;
+
+        successCount++;
+
+        if (spanner != null)
+            spanner.Rpc_StartSpannerSound();
+
+        if (successCount >= totalNeedCount)
+        {
+            if (targetValve != null)
+            {
+                targetValve.FixValve();
+            }
+
+            EndMiniGame();
+        }
+    }
+
+    public void Missed()
+    {
+        if (isGameOver) return;
+
+        isGameOver = true;
+        IsPlaying = false;
+
+        panel.SetActive(false);
+
+        if (UISettingsManager.Instance != null)
+            UISettingsManager.Instance.canUseEscKey = true;
+
+        GameInputLock.Unlock();
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    void EndMiniGame()
+    {
+        isGameOver = true;
+        IsPlaying = false;
+
+        panel.SetActive(false);
+
+        if (UISettingsManager.Instance != null)
+            UISettingsManager.Instance.canUseEscKey = true;
+
+        GameInputLock.Unlock();
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 }

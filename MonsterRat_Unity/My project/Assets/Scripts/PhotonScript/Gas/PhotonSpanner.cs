@@ -7,6 +7,7 @@ public class PhotonSpanner : InvenBase
     public override ToolType Type => ToolType.Spanner;
 
     public SpannerMiniGame spannerMiniGame;
+    public SpannerMiniGameAimLab spannerMiniGameAimLab;
 
     public float distance = 2f;
     public AudioSource source;
@@ -42,12 +43,23 @@ public class PhotonSpanner : InvenBase
 
             if (valve != null)
             {
-                if (spannerMiniGame != null)
-                {
-                    if (spannerMiniGame.IsPlaying)
-                        return;
+                bool normalPlaying = spannerMiniGame != null && spannerMiniGame.IsPlaying;
+                bool aimLabPlaying = spannerMiniGameAimLab != null && spannerMiniGameAimLab.IsPlaying;
 
-                    spannerMiniGame.StartMiniGame(valve, this);
+                if (normalPlaying || aimLabPlaying)
+                    return;
+
+                int randomGame = Random.Range(0, 2);
+
+                if (randomGame == 0)
+                {
+                    if (spannerMiniGame != null)
+                        spannerMiniGame.StartMiniGame(valve, this);
+                }
+                else
+                {
+                    if (spannerMiniGameAimLab != null)
+                        spannerMiniGameAimLab.StartMiniGame(valve, this);
                 }
             }
         }

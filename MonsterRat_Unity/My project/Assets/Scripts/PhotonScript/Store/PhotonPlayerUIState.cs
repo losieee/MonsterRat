@@ -163,7 +163,7 @@ public class PhotonPlayerUIState : NetworkBehaviour
         isGlobalStoreOpen = true;  
 
         if (storePanel != null) storePanel.SetActive(true);
-        if (aimDot != null) aimDot.SetActive(false);
+        aimDot.SetActive(false);
         if (clearGauge != null) clearGauge.SetActive(false);
         if (pollutionGauge != null) pollutionGauge.SetActive(false);
         Cursor.lockState = CursorLockMode.None;
@@ -182,7 +182,7 @@ public class PhotonPlayerUIState : NetworkBehaviour
         selectedItemIndex = -1;
 
         if (storePanel != null) storePanel.SetActive(false);
-        if (aimDot != null) aimDot.SetActive(true);
+        aimDot.SetActive(true);
         if (clearGauge != null) clearGauge.SetActive(true);
         if (pollutionGauge != null) pollutionGauge.SetActive(true);
         Cursor.lockState = CursorLockMode.Locked;
