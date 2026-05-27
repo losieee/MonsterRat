@@ -252,7 +252,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
                 string json = PlayerPrefs.GetString(saveKey);
                 SaveSlotData data = JsonUtility.FromJson<SaveSlotData>(json);
 
-                slotTexts[i].text = $"[Slot {i + 1}] {data.roomName}\n<size=80%>{data.savedStageName}</size>";
+                slotTexts[i].text = $"[Slot {i + 1}] {data.roomName}\n<size=80%>{data.savedStageName}</size>";  
                 deleteButtons[i].gameObject.SetActive(true);
             }
             else
