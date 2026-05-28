@@ -3,57 +3,80 @@ using Fusion;
 
 public class WorldLoadManager : NetworkBehaviour
 {
+    [Header("이 스테이지 진입 시 지급할 골드")]
+    public int currentStageReward = 500;  //이게 스테이지별 얼마씩 줄건지 적는 변수
+
     public Transform[] itemSpawnPoints;
 
     public static WorldLoadManager instance;
     [Networked] public int SharedGold { get; set; }
 
-
     private void Awake()
     {
         instance = this;
     }
+
     public override void Spawned()
     {
-        // 방장만 아이템을 스폰
+       
         if (!HasStateAuthority) return;
-
         string json = PlayerPrefs.GetString("MasterWorldSave", "");
-
         if (!string.IsNullOrEmpty(json))
         {
             WorldSaveData data = JsonUtility.FromJson<WorldSaveData>(json);
 
-            //문 상태 복구
+            // 문 상태 복구
             TransStageDoor.isPollutionLeft = data.isDoorActive;
-
-            // 2. 바닥 아이템들을 지정된 위치에 순서대로 스폰
-            if (itemSpawnPoints != null && itemSpawnPoints.Length > 0)
+            SharedGold = data.currentGold; 
+            if (!data.isStageStartGoldClaimed) 
             {
-                int spawnIndex = 0; // 스폰할 위치 번호
+                SharedGold += currentStageReward;    // 남은 돈 + 인스펙터 설정값 더하기
+                data.currentGold = SharedGold;       // 세이브 장부에 최신 골드 기록
+                data.isStageStartGoldClaimed = true; // 돈 중복 입금 금지
 
+                // 즉시 세이브 파일을 덮어써서 게임을 껐다 켜도 돈이 중복으로 안 들어오게 방지
+                string updatedJson = JsonUtility.ToJson(data);
+                PlayerPrefs.SetString("MasterWorldSave", updatedJson);
+                int activeSlot = PlayerPrefs.GetInt("CurrentActiveSaveSlot", 0);
+                PlayerPrefs.SetString("SaveSlot_" + activeSlot, updatedJson);
+                PlayerPrefs.Save();
+                
+            }
+
+            //바닥 아이템들을 지정된 위치에 순서대로 스폰
+            if (itemSpawnPoints != null && itemSpawnPoints.Length > 0 && data.shipItems != null)
+            {
+                int spawnIndex = 0; 
                 foreach (var sItem in data.shipItems)
                 {
                     ItemData itemData = ItemDatabase.Instance.GetItem(sItem.itemID);
                     if (itemData != null && itemData.itemPrefab != null)
                     {
                         NetworkObject prefabNetObj = itemData.itemPrefab.GetComponent<NetworkObject>();
-
-                        // %itemSpawnPoints.Length 를 쓰면, 아이템이 스폰 포인트 개수보다 많아도 다시 0번부터 겹쳐서 소환
                         Transform currentPoint = itemSpawnPoints[spawnIndex % itemSpawnPoints.Length];
-
-                        Vector3 spawnPos = currentPoint.position;
-                        Quaternion spawnRot = currentPoint.rotation;
-
-                        Runner.Spawn(prefabNetObj, spawnPos, spawnRot);
-
+                        Runner.Spawn(prefabNetObj, currentPoint.position, currentPoint.rotation);
                         spawnIndex++; 
                     }
                 }
             }
+        }
+        else
+        {
+            // 세이브 파일이 아예 없는 1스테이지 최초 시작 시
+            SharedGold = currentStageReward;
             
+            WorldSaveData newData = new WorldSaveData();
+            newData.currentGold = SharedGold;
+            newData.isStageStartGoldClaimed = true;
+            
+            string newJson = JsonUtility.ToJson(newData);
+            PlayerPrefs.SetString("MasterWorldSave", newJson);
+            int activeSlot = PlayerPrefs.GetInt("CurrentActiveSaveSlot", 0);
+            PlayerPrefs.SetString("SaveSlot_" + activeSlot, newJson);
+            PlayerPrefs.Save();
         }
     }
+
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_DeductGold(int amount)
     {

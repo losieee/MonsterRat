@@ -325,6 +325,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
             //빈 슬롯이면 새스테이지로 그냥 만듦
             SaveSlotData initData = new SaveSlotData { roomName = roomName, savedStageName = "1Stage" };
             PlayerPrefs.SetString("SaveSlot_" + currentSelectedSlot, JsonUtility.ToJson(initData));
+            PlayerPrefs.DeleteKey("MasterWorldSave");
             PlayerPrefs.Save();
 
             Cursor.lockState = CursorLockMode.Locked;
@@ -343,6 +344,8 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         string json = PlayerPrefs.GetString(saveKey);
         SaveSlotData data = JsonUtility.FromJson<SaveSlotData>(json);
 
+        PlayerPrefs.SetString("MasterWorldSave", json);
+        PlayerPrefs.Save();
         var startGameArgs = new StartGameArgs()
         {
             GameMode = GameMode.Host,

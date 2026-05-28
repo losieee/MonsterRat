@@ -31,8 +31,8 @@ public class SafeZoneTrigger : NetworkBehaviour
     private float currentTimer = 0f;
     private bool hasSaved = false;
 
-    [Header("스테이지 클리어 보상 ")]
-    public int stageClearReward = 300;
+   //[Header("스테이지 클리어 보상 ")]
+   //public int stageClearReward = 300;
 
 
     [Networked] public int PlayersInZoneCount { get; set; }
@@ -152,7 +152,7 @@ public class SafeZoneTrigger : NetworkBehaviour
 
         if(WorldLoadManager.instance != null)
         {
-
+            worldData.currentGold = WorldLoadManager.instance.SharedGold; // + stageClearReward;
         }
 
         // [핵심 추가] 기존 세이브 슬롯에 있던 방 이름(roomName)을 읽어와서 유지시킵니다.

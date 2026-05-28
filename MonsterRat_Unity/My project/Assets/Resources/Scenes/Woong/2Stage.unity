@@ -40677,7 +40677,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb3d09beed252af43b12df2de91fcd21, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SafeZoneTrigger
-  currentStageName: 1Stage
+  currentStageName: 2Stage
   lobbySceneName: 3Stage
   canCreateSaveFile: 1
   shipCenter: {fileID: 8070617}
@@ -72086,11 +72086,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 184bb0a99835249408a1ad8bc5ae0e67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WorldLoadManager
+  currentStageReward: 500
   itemSpawnPoints:
   - {fileID: 895208102}
   - {fileID: 945577456}
   - {fileID: 46631735}
   - {fileID: 922463191}
+  _SharedGold: 0
 --- !u!4 &1268302430
 Transform:
   m_ObjectHideFlags: 0
@@ -104428,6 +104430,10 @@ MonoBehaviour:
   spawnner: {fileID: 0}
   toolSpawn: {fileID: 0}
   uiState: {fileID: 0}
+  selectIMG: {fileID: 0}
+  selectName: {fileID: 0}
+  selectInfo: {fileID: 0}
+  tools: []
 --- !u!114 &1820912653
 MonoBehaviour:
   m_ObjectHideFlags: 0

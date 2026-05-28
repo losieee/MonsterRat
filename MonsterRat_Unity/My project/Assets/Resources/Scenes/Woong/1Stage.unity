@@ -202,8 +202,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 184bb0a99835249408a1ad8bc5ae0e67, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WorldLoadManager
+  currentStageReward: 300
   itemSpawnPoints: []
-  _SharedGold: 500
+  _SharedGold: 0
 --- !u!1001 &11561682
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23019,7 +23020,6 @@ MonoBehaviour:
   checkLayers:
     serializedVersion: 2
     m_Bits: 584
-  stageClearReward: 300
   _PlayersInZoneCount: 0
   _IsDoorOpened:
     _value: 1
@@ -56573,7 +56573,6 @@ MonoBehaviour:
   checkLayers:
     serializedVersion: 2
     m_Bits: 576
-  stageClearReward: 300
   _PlayersInZoneCount: 0
   _IsDoorOpened:
     _value: 0

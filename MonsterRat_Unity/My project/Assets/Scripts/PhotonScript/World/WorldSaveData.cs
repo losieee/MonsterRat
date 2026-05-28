@@ -15,5 +15,6 @@ public class WorldSaveData
     public string roomName;        
     public bool isDoorActive;
     public int currentGold;
+    public bool isStageStartGoldClaimed;
     public List<ShipItemData> shipItems = new List<ShipItemData>();
 }
