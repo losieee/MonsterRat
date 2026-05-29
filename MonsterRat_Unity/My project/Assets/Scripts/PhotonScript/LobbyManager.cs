@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using System;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 
 [System.Serializable]
@@ -42,6 +43,8 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     private bool hasJoinedLobby = false;
     private bool isSubmittingNickname = false;
 
+    private bool isConnecting = false;
+
     void Start()
     {
         if (goToRoomListButton != null)
@@ -64,6 +67,10 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         if (_runner == null)
         {
             _runner = GetComponent<NetworkRunner>();
+            if (_runner == null)
+            {
+                _runner = gameObject.AddComponent<NetworkRunner>();
+            }
             _runner.ProvideInput = true;
         }
     }
@@ -365,6 +372,28 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
             // 저장되어 있던 스테이지 씬을 로드합니다.
             string targetScene = data.savedStageName;
             _runner.LoadScene(SceneRef.FromIndex(SceneUtility.GetBuildIndexByScenePath($"Assets/Resources/Scenes/Woong/{targetScene}.unity")));
+        }
+    }
+
+    public async void LeaveCurrentGameAndReset()
+    {
+        if(_runner != null && _runner.IsRunning)
+        {
+            await _runner.Shutdown();
+        }
+        hasJoinedLobby = false;
+        Cursor.lockState= CursorLockMode.None;
+        Cursor.visible = true;
+        string savedName = PlayerPrefs.GetString("PlayerName", "");
+        if(!string.IsNullOrEmpty(savedName))
+        {
+            nicknameInput.text = savedName;
+            OnClick_SubmitNickname();
+        }
+        else
+        {
+            LoginPanel.SetActive(false);
+            MainPanel.SetActive(false);
         }
     }
     #endregion

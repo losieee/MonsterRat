@@ -1,5 +1,6 @@
 using UnityEngine;
 using Fusion;
+using UnityEngine.SceneManagement;
 
 public class WorldLoadManager : NetworkBehaviour
 {
@@ -68,10 +69,19 @@ public class WorldLoadManager : NetworkBehaviour
             WorldSaveData newData = new WorldSaveData();
             newData.currentGold = SharedGold;
             newData.isStageStartGoldClaimed = true;
-            
+            newData.savedStageName = SceneManager.GetActiveScene().name;
+
+            int activeSlot = PlayerPrefs.GetInt("CurrentActiveSaveSlot", 0);
+            string existingSlotJson = PlayerPrefs.GetString("SaveSlot_" + activeSlot, "");
+            if (!string.IsNullOrEmpty(existingSlotJson))
+            {
+                SaveSlotData slotData = JsonUtility.FromJson<SaveSlotData>(existingSlotJson);
+                newData.roomName = slotData.roomName; // 로비에서 입력했던 방 이름 복구
+            }
+
+
             string newJson = JsonUtility.ToJson(newData);
             PlayerPrefs.SetString("MasterWorldSave", newJson);
-            int activeSlot = PlayerPrefs.GetInt("CurrentActiveSaveSlot", 0);
             PlayerPrefs.SetString("SaveSlot_" + activeSlot, newJson);
             PlayerPrefs.Save();
         }
