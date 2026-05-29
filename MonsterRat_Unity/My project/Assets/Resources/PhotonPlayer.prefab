@@ -601,7 +601,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u20A9 100"
+  m_Text: "\uAE30\uBCF8 \uC9C0\uAE09 "
 --- !u!1 &254407836263463062
 GameObject:
   m_ObjectHideFlags: 0
@@ -680,7 +680,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u20A9 800"
+  m_Text: "\u20A9 300"
 --- !u!1 &285910180417626565
 GameObject:
   m_ObjectHideFlags: 0
@@ -1507,7 +1507,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u20A9 500"
+  m_Text: "\u20A9 2,700"
 --- !u!1 &1054608500124242993
 GameObject:
   m_ObjectHideFlags: 0
@@ -2540,7 +2540,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\u20A9 300"
+  m_Text: "\u20A9 3000"
 --- !u!1 &1412196204419588726
 GameObject:
   m_ObjectHideFlags: 0
@@ -2989,7 +2989,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u20A9 500"
+  m_Text: "\u20A9 3,000"
 --- !u!1 &1727016033050823677
 GameObject:
   m_ObjectHideFlags: 0
@@ -3201,7 +3201,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u20A9 300"
+  m_Text: "\u20A9 1,100"
 --- !u!1 &1854414265921017584
 GameObject:
   m_ObjectHideFlags: 0
@@ -5697,7 +5697,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u20A9 100"
+  m_Text: "\uAE30\uBCF8 \uC9C0\uAE09"
 --- !u!1 &3506144849107255918
 GameObject:
   m_ObjectHideFlags: 0
@@ -6371,7 +6371,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8289639222199004923}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6815836651522158606}
+        m_TargetAssemblyTypeName: PhotonPlayerUIState, Assembly-CSharp
+        m_MethodName: OnClickBuyItem
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 10
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3882290207161638457
 GameObject:
   m_ObjectHideFlags: 0
@@ -6652,8 +6664,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 305.737}
+  m_AnchoredPosition: {x: 0, y: -2.3032}
+  m_SizeDelta: {x: 100, y: 180.2719}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7303371744824768072
 CanvasRenderer:
@@ -7445,7 +7457,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 74017932686398963}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6815836651522158606}
+        m_TargetAssemblyTypeName: PhotonPlayerUIState, Assembly-CSharp
+        m_MethodName: OnClickBuyItem
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 6
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &4237405632141333501
 GameObject:
   m_ObjectHideFlags: 0
@@ -8635,7 +8659,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u20A9 500"
+  m_Text: "\u20A9 2,200"
 --- !u!1 &5058573820536124611
 GameObject:
   m_ObjectHideFlags: 0
@@ -9921,7 +9945,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u20A9 100"
+  m_Text: "\uAE30\uBCF8 \uC9C0\uAE09"
 --- !u!1 &5706614388585474287
 GameObject:
   m_ObjectHideFlags: 0
@@ -10000,7 +10024,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u20A9 100"
+  m_Text: "\uAE30\uBCF8 \uC9C0\uAE09"
 --- !u!1 &5730628702417815290
 GameObject:
   m_ObjectHideFlags: 0
@@ -11519,7 +11543,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u20A9 100"
+  m_Text: "\uAE30\uBCF8 \uC9C0\uAE09"
 --- !u!1 &6922177283343928651
 GameObject:
   m_ObjectHideFlags: 0
@@ -13928,7 +13952,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u20A9 300"
+  m_Text: "\u20A9 100"
 --- !u!1 &8078564819268966722
 GameObject:
   m_ObjectHideFlags: 0
@@ -14501,12 +14525,14 @@ GameObject:
   - component: {fileID: 3609349469311375477}
   - component: {fileID: 397505550945006201}
   - component: {fileID: 6485104510951080755}
+  - component: {fileID: 498113228031985454}
   - component: {fileID: -7700335762669202677}
   - component: {fileID: 1895867736823702318}
   - component: {fileID: 7257840843770053752}
   - component: {fileID: -2269410624895731831}
   - component: {fileID: 8943479002848974585}
   - component: {fileID: 5174149936337874965}
+  - component: {fileID: -1658591146180488875}
   m_Layer: 11
   m_Name: PhotonPlayer
   m_TagString: Player
@@ -14832,8 +14858,10 @@ MonoBehaviour:
   - {fileID: 6803444661598496178}
   - {fileID: 4127117641017231365}
   - {fileID: 3609349469311375477}
+  - {fileID: 498113228031985454}
   - {fileID: -7700335762669202677}
   - {fileID: 1895867736823702318}
+  - {fileID: -1658591146180488875}
   - {fileID: 456797845056109112}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &1532325441129902764
@@ -14945,7 +14973,7 @@ MonoBehaviour:
   ButtonLayer:
     serializedVersion: 2
     m_Bits: 1024
-  PushButton: 102
+  PushButton: 101
 --- !u!114 &3341103897251282659
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15233,6 +15261,21 @@ MonoBehaviour:
   aimDot: {fileID: 7820126729800601948}
   moveSpeed: 300
   successCount: 4
+--- !u!114 &498113228031985454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8289719037013333509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c299b890315a64f9d0c52699f2ddc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PhotonNewGasMaskController
+  gasMaskFill: {fileID: 5151790806727230529}
+  coolTime: 10
+  gasIgnoreTime: 20
 --- !u!114 &-7700335762669202677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15353,6 +15396,18 @@ MonoBehaviour:
   breakSound: {fileID: 8300000, guid: 11c32f3d467f07c459e867ea135f241c, type: 3}
   horizontalSize: {x: 100, y: 100}
   verticalSize: {x: 100, y: 100}
+--- !u!114 &-1658591146180488875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8289719037013333509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5ffbd1d460bc6048bec7d897b10a7fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AntidoteControl
 --- !u!1 &8342933584836251165
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,9 +3,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PhotonGasMaskController : InvenBase
+public class PhotonNewGasMaskController : InvenBase
 {
-    public override ToolType Type => ToolType.GasMask;
+    public override ToolType Type => ToolType.NewGasMask;
 
     public Image gasMaskFill;
     public float coolTime = 20f;
@@ -37,7 +37,7 @@ public class PhotonGasMaskController : InvenBase
 
     private void Awake()
     {
-        if(gasMaskFill.gameObject != null)
+        if (gasMaskFill.gameObject != null)
             gasMaskFill.gameObject.SetActive(false);
 
         if (gasMaskFill != null)
@@ -87,11 +87,10 @@ public class PhotonGasMaskController : InvenBase
 
         UpdateGasMaskUI();
     }
-    
-    // 다른 가스 마스크 사용 중
+
     private bool IsOtherMaskBusy()
     {
-        PhotonNewGasMaskController other = GetComponent<PhotonNewGasMaskController>();
+        PhotonGasMaskController other = GetComponent<PhotonGasMaskController>();
 
         if (other == null) return false;
 

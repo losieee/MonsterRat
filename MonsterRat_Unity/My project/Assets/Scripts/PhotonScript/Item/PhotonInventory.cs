@@ -389,4 +389,19 @@ public class PhotonInventory : NetworkBehaviour
         PlayerPrefs.SetString(myUniqueKey, jsonString);
         PlayerPrefs.Save();
     }
+
+    // 해독제 전용 (인벤에서 아이템 제거 )
+    public void ConsumeSelectedItem()
+    {
+        if (currentSelectedSlot < 0 || currentSelectedSlot >= heldItems.Length) return;
+        if (heldItems[currentSelectedSlot] == null) return;
+
+        heldItems[currentSelectedSlot] = null;
+
+        selectSlots[currentSelectedSlot].SetActive(false);
+        currentSelectedSlot = -1;
+
+        RPC_ChangeTool(ToolType.Hand);
+        UpdateInventoryUI();
+    }
 }

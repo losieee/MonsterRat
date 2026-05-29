@@ -18,6 +18,7 @@ public class PlayerGas : MonoBehaviour
     private NetworkObject networkObject;
     private GasZone[] gasZones;
     private PhotonGasMaskController gasMask;
+    private PhotonNewGasMaskController newGasMask;
 
     private FullGaugeBlind fullGaugeBlind;
     private FullGaugeSlow fullGaugeSlow;
@@ -29,6 +30,7 @@ public class PlayerGas : MonoBehaviour
     {
         networkObject = GetComponentInParent<NetworkObject>();
         gasMask = GetComponentInParent<PhotonGasMaskController>();
+        newGasMask = GetComponentInParent<PhotonNewGasMaskController>();
         fullGaugeBlind = GetComponentInParent<FullGaugeBlind>();
         fullGaugeSlow = GetComponentInParent<FullGaugeSlow>();
         fullHeadShake = GetComponentInParent<FullGaugeHeadShake>();
@@ -69,6 +71,9 @@ public class PlayerGas : MonoBehaviour
             if (!zone.IsDangerousAt(pos)) continue;
 
             if (gasMask != null && gasMask.UseMask)
+                break;
+
+            if (newGasMask != null && newGasMask.UseMask)
                 break;
 
             AddExposure(zone.exposurePerSec * checkInterval);

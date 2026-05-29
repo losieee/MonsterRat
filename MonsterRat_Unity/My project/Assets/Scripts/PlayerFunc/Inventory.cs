@@ -6,13 +6,18 @@ public enum ToolType
 {
     Hand,           // 맨손
     Gun,            // 총
-    Mop,            // 대걸레
+    Sol,            // 솔
     DeGassing,      // 가스제거기
     Spanner,        // 스패너
     Cutter,         // 절단기
     Flame,          // 화염방사기
     Flash,          // 손전등
     GasMask,        // 방독면
+    Antidote,       // 해독제
+    Mop,            // 걸레
+    BigMop,         // 대걸레
+    NewGasMask,     // 신형 방독면
+    ShotGun         // 샷건
 }
 
 public class Inventory : MonoBehaviour
@@ -66,7 +71,7 @@ public class Inventory : MonoBehaviour
 
         slots.Add(tool);
 
-        if (tool == ToolType.Mop) hasMop = true;
+        if (tool == ToolType.Sol) hasMop = true;
         else if (tool == ToolType.Gun) hasGun = true;
         else if (tool == ToolType.Spanner) hasSpanner = true;
 

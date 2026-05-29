@@ -16,7 +16,7 @@ public class StoreUI : MonoBehaviour
     public void BuyMop()
     {
         if (inventory == null) return;
-        inventory.AddTool(ToolType.Mop);
+        inventory.AddTool(ToolType.Sol);
         inventory.hasMop = true;
     }
 

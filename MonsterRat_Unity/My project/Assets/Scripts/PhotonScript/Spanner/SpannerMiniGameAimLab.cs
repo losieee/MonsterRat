@@ -24,6 +24,8 @@ public class SpannerMiniGameAimLab : MonoBehaviour
     private bool isGameOver = false;
     private Coroutine spawnCoroutine;
 
+    private readonly List<GameObject> spawnedBrokens = new List<GameObject>();
+
     public bool IsPlaying { get; private set; }
 
     private GasValveSync targetValve;
@@ -32,6 +34,8 @@ public class SpannerMiniGameAimLab : MonoBehaviour
     public void StartMiniGame(GasValveSync valve, PhotonSpanner photonSpanner)
     {
         if (IsPlaying) return;
+
+        ClearMiniGame();
 
         if (UISettingsManager.Instance != null)
             UISettingsManager.Instance.canUseEscKey = false;
@@ -61,6 +65,7 @@ public class SpannerMiniGameAimLab : MonoBehaviour
 
             RectTransform point = spawnPoints[Random.Range(0, spawnPoints.Count)];
             RectTransform broken = Instantiate(pipeBrokenPrefab, point.parent);
+            spawnedBrokens.Add(broken.gameObject);
 
             broken.position = point.position;
             broken.rotation = point.rotation;
@@ -100,6 +105,8 @@ public class SpannerMiniGameAimLab : MonoBehaviour
     {
         if (isGameOver) return;
 
+        ClearMiniGame();
+
         isGameOver = true;
         IsPlaying = false;
 
@@ -116,6 +123,8 @@ public class SpannerMiniGameAimLab : MonoBehaviour
 
     void EndMiniGame()
     {
+        ClearMiniGame();
+
         isGameOver = true;
         IsPlaying = false;
 
@@ -128,5 +137,23 @@ public class SpannerMiniGameAimLab : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+
+    // √ ±‚»≠
+    private void ClearMiniGame()
+    {
+        if (spawnCoroutine != null)
+        {
+            StopCoroutine(spawnCoroutine);
+            spawnCoroutine = null;
+        }
+
+        foreach (var obj in spawnedBrokens)
+        {
+            if (obj != null)
+                Destroy(obj);
+        }
+
+        spawnedBrokens.Clear();
     }
 }
