@@ -265,19 +265,12 @@ namespace SlimUI.ModernMenu{
 				Application.Quit();
 			#endif
 		}
-        public void ExitGameAndDisconnect()
+        public void LeaveGameAndReturnToMenu() 
         {
-            // 1. 카메라는 메인 메뉴 위치로 부드럽게 이동 (기존 Position1 기능)
             Position1();
-
-            // 2. 1단계에서 만든 서버 완전 종료 로직을 호출!
             if (lobbyManager != null)
             {
                 lobbyManager.LeaveCurrentGameAndReset();
-            }
-            else
-            {
-                Debug.LogError("UIMenuManager에 LobbyManager가 연결되지 않았습니다!");
             }
         }
         // Load Bar synching animation

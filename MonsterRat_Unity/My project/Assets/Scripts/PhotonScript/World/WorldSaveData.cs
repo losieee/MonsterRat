@@ -17,4 +17,6 @@ public class WorldSaveData
     public int currentGold;
     public bool isStageStartGoldClaimed;
     public List<ShipItemData> shipItems = new List<ShipItemData>();
+    public List<int> savedInventoryItems = new List<int>();
+
 }

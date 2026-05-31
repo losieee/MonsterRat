@@ -220,6 +220,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         if (HostMigrationManager.Instance != null)
             HostMigrationManager.Instance.RegisterRunner(_runner);
 
+        PlayerPrefs.SetInt("JoinedFromLobby", 1);
         var result = await _runner.StartGame(startGameArgs);
 
         if (result.Ok)
@@ -325,6 +326,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         };
 
         CreateRoomPanel.SetActive(false);
+        PlayerPrefs.SetInt("JoinedFromLobby", 1);
         var result = await _runner.StartGame(startGameArgs);
 
         if (result.Ok)
@@ -362,6 +364,8 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         };
 
         SaveSlotPanel.SetActive(false);
+        PlayerPrefs.SetInt("JoinedFromLobby", 1);
+        PlayerPrefs.SetInt("SpawnInventoryOnGround", 1);
         var result = await _runner.StartGame(startGameArgs);
 
         if (result.Ok)

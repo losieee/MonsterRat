@@ -4,18 +4,19 @@ using TMPro;
 using Fusion;
 using UnityEngine.SceneManagement;
 using System.Linq;
+using System.Collections.Generic;
 
 public class SafeZoneTrigger : NetworkBehaviour
 {
     [Header("스테이지 및 세이브 설정")]
-    public string currentStageName = "1Stage"; // 현재 씬 이름
-    public string lobbySceneName = "2Stage";   // 넘어갈 씬 이름
-    public bool canCreateSaveFile = true;      // true면 이 씬을 클리어했을 때 세이브 파일 생성
+    public string currentStageName = "1Stage";
+    public string lobbySceneName = "2Stage";
+    public bool canCreateSaveFile = true;
 
     [Header("함선(스폰) 보관 구역 설정")]
-    public Transform shipCenter;       // 콜라이더 정중앙 기준점 
-    public Collider shipStorageArea;   // 아이템을 스캔할 트리거 콜라이더
-    public LayerMask itemLayer;        // 아이템 레이어
+    public Transform shipCenter;
+    public Collider shipStorageArea;
+    public LayerMask itemLayer;
     private float scanTimer = 0f;
     private int lastItemCount = -1;
 
@@ -31,9 +32,8 @@ public class SafeZoneTrigger : NetworkBehaviour
     private float currentTimer = 0f;
     private bool hasSaved = false;
 
-   //[Header("스테이지 클리어 보상 ")]
-   //public int stageClearReward = 300;
-
+    // 통신으로 받은 아이템을 임시로 모아둘 리스트
+    private List<int> tempReportedItems = new List<int>();
 
     [Networked] public int PlayersInZoneCount { get; set; }
     [Networked] public NetworkBool IsDoorOpened { get; set; }
@@ -41,10 +41,7 @@ public class SafeZoneTrigger : NetworkBehaviour
 
     public void OpenSafeZone()
     {
-        if (HasStateAuthority)
-        {
-            IsDoorOpened = true;
-        }
+        if (HasStateAuthority) IsDoorOpened = true;
     }
 
     void Start()
@@ -61,7 +58,7 @@ public class SafeZoneTrigger : NetworkBehaviour
             if (!hasSaved)
             {
                 hasSaved = true;
-                SaveMyInventoryLocally();
+                //SaveMyInventoryLocally();
             }
             if (infoText != null) infoText.text = "이동 중...";
             return;
@@ -72,7 +69,7 @@ public class SafeZoneTrigger : NetworkBehaviour
             if (scanTimer >= 0.5f)
             {
                 scanTimer = 0f;
-                CheckRealTimeItems(); // 감시 함수 실행
+                CheckRealTimeItems();
             }
         }
 
@@ -107,7 +104,7 @@ public class SafeZoneTrigger : NetworkBehaviour
     void EvacuateToLobby()
     {
         if (IsEvacuating) return;
-        SaveMyInventoryLocally();
+        //SaveMyInventoryLocally();
         hasSaved = true;
         RPC_RequestEvacuation();
     }
@@ -131,16 +128,37 @@ public class SafeZoneTrigger : NetworkBehaviour
         if (!HasStateAuthority) return;
 
         bool hasLeftover = CheckForPollution();
+        tempReportedItems.Clear();
 
-        //방장이 월드 상태와 함선 내 아이템을 스캔하여 저장
-        SaveWorldState(hasLeftover);
-
+        PhotonInventory[] allInvens = FindObjectsOfType<PhotonInventory>();
+        foreach (var inv in allInvens)
+        {
+            inv.RPC_CommandSaveLocal();
+            inv.RPC_CommandReportInventory(); // 권한이 있는 곳으로 직접 통신!
+        }
         await System.Threading.Tasks.Task.Delay(1500);
+        SaveWorldState(hasLeftover);
 
         int sceneIndex = SceneUtility.GetBuildIndexByScenePath($"Assets/Resources/Scenes/Woong/{lobbySceneName}.unity");
         if (sceneIndex >= 0)
         {
             Runner.LoadScene(SceneRef.FromIndex(sceneIndex));
+        }
+    }
+
+    // 클라이언트의 PhotonInventory에서 제출한 텍스트를 장부에 적는 함수 //근데 안돼 왜 안돼 ㅇ오0애애ㅐㅗㅇ애애애
+    public void AddReportedItems(string itemString)
+    {
+        if (!string.IsNullOrEmpty(itemString))
+        {
+            string[] split = itemString.Split(',');
+            foreach (string s in split)
+            {
+                if (int.TryParse(s, out int id) && id != -1) 
+                {
+                    tempReportedItems.Add(id);
+                }
+            }
         }
     }
 
@@ -150,12 +168,11 @@ public class SafeZoneTrigger : NetworkBehaviour
         worldData.savedStageName = lobbySceneName;
         worldData.isDoorActive = hasLeftover;
 
-        if(WorldLoadManager.instance != null)
+        if (WorldLoadManager.instance != null)
         {
-            worldData.currentGold = WorldLoadManager.instance.SharedGold; // + stageClearReward;
+            worldData.currentGold = WorldLoadManager.instance.SharedGold;
         }
 
-        // [핵심 추가] 기존 세이브 슬롯에 있던 방 이름(roomName)을 읽어와서 유지시킵니다.
         int activeSlot = PlayerPrefs.GetInt("CurrentActiveSaveSlot", 0);
         string saveKey = "SaveSlot_" + activeSlot;
         string existingJson = PlayerPrefs.GetString(saveKey, "");
@@ -165,7 +182,6 @@ public class SafeZoneTrigger : NetworkBehaviour
             worldData.roomName = existingData.roomName;
         }
 
-        // 아이템 스캔 정밀 계산 로직 (유저님 코드 그대로 유지)
         BoxCollider boxCol = shipStorageArea as BoxCollider;
         if (boxCol != null && shipCenter != null)
         {
@@ -186,20 +202,21 @@ public class SafeZoneTrigger : NetworkBehaviour
                     sItem.localRotation = Quaternion.Inverse(shipCenter.rotation) * itemObj.transform.rotation;
 
                     worldData.shipItems.Add(sItem);
-                    Debug.Log($"safezonetirgger 아이템 스캔 성공: {itemObj.itemData.itemName}");
                 }
             }
         }
 
+        // 제출받아 모아둔 아이템 목록을 장부에 최종 추가
+        worldData.savedInventoryItems.AddRange(tempReportedItems);
+
         string json = JsonUtility.ToJson(worldData);
 
-        // [핵심 수정] 1스테이지든 2스테이지든 정식 세이브 슬롯에 덮어씌워야 로비에서 2Stage 이어하기가 가능해집니다.
         PlayerPrefs.SetInt("IsPollutionLeft", hasLeftover ? 1 : 0);
         PlayerPrefs.SetString(saveKey, json);
         PlayerPrefs.SetString("MasterWorldSave", json);
         PlayerPrefs.Save();
 
-        Debug.Log($"[WorldSave] {saveKey} 슬롯에 저장 완료! 다음 스테이지: {worldData.savedStageName}");
+        Debug.Log($"[WorldSave] 저장 완료! 장부에 적힌 유저들의 총 아이템 개수: {worldData.savedInventoryItems.Count}개");
     }
 
     private void CheckRealTimeItems()
@@ -207,7 +224,6 @@ public class SafeZoneTrigger : NetworkBehaviour
         BoxCollider boxCol = shipStorageArea as BoxCollider;
         if (boxCol == null || shipCenter == null) return;
 
-        // 세이브할 때와 동일한 크기로 스캔
         Vector3 exactCenter = boxCol.transform.TransformPoint(boxCol.center);
         Vector3 halfExtents = Vector3.Scale(boxCol.size, boxCol.transform.lossyScale) * 0.5f;
 
@@ -222,10 +238,9 @@ public class SafeZoneTrigger : NetworkBehaviour
             }
         }
 
-        // 아이템 개수가 이전과 달라졌을 때만 로그띄움
         if (lastItemCount != currentItemCount)
         {
-           
+
             if (lastItemCount != -1)
             {
                 if (currentItemCount > lastItemCount)
@@ -237,6 +252,14 @@ public class SafeZoneTrigger : NetworkBehaviour
         }
     }
 
+    private void SaveMyInventoryLocally()
+    {
+        PhotonInventory inv = GetComponent<PhotonInventory>();
+        if (inv == null) inv = FindObjectsOfType<PhotonInventory>().FirstOrDefault(x => x.HasInputAuthority);
+
+        if (inv != null) inv.SaveInventoryData();
+    }
+
     private bool CheckForPollution()
     {
         GameObject[] allObjects = FindObjectsOfType<GameObject>();
@@ -245,14 +268,6 @@ public class SafeZoneTrigger : NetworkBehaviour
             if (obj.activeInHierarchy && ((1 << obj.layer) & checkLayers) != 0) return true;
         }
         return false;
-    }
-
-    private void SaveMyInventoryLocally()
-    {
-        PhotonInventory inv = GetComponent<PhotonInventory>();
-        if (inv == null) inv = FindObjectsOfType<PhotonInventory>().FirstOrDefault(x => x.HasInputAuthority);
-
-        if (inv != null) inv.SaveInventoryData();
     }
 
     private int GetCurrentRoomPlayerCount()

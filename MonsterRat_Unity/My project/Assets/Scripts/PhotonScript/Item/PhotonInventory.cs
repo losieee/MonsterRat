@@ -54,7 +54,6 @@ public class PhotonInventory : NetworkBehaviour
 
         tools = GetComponentsInChildren<InvenBase>(true);
         PlayerUIState ui = GetComponent<PlayerUIState>();
-
         PlayerRaycast interactor = GetComponentInChildren<PlayerRaycast>(true);
 
         foreach (var t in tools)
@@ -65,32 +64,35 @@ public class PhotonInventory : NetworkBehaviour
 
         if (HasInputAuthority) RPC_ChangeTool(ToolType.Hand);
 
-        // 스폰될 때 내 고유 번호표가 붙은 열쇠로 하드디스크를 열기
+        // 스폰될 떄 로비에서 왔는가? 또는 게임을 이어서 하는가?
         if (HasInputAuthority)
         {
-            string myName = PlayerPrefs.GetString("PlayerName", "UnknownPlayer");
-            // Runner.LocalPlayer.ToString()을 붙여서 나만의 고유 키를 만들기
+            // 닉네임 대신 고유 번호표 
             string myUniqueKey = "MySavedInventory_" + Runner.LocalPlayer.ToString();
-            string jsonString = PlayerPrefs.GetString(myUniqueKey, "");
 
-            if (!string.IsNullOrEmpty(jsonString))
+            if (PlayerPrefs.GetInt("JoinedFromLobby", 0) == 1)
             {
-                InventorySaveData loadedData = JsonUtility.FromJson<InventorySaveData>(jsonString);
-
-                for (int i = 0; i < loadedData.itemIDs.Count; i++)
-                {
-                    if (i < heldItems.Length && loadedData.itemIDs[i] != -1)
-                    {
-                        heldItems[i] = ItemDatabase.Instance.GetItem(loadedData.itemIDs[i]);
-                    }
-                }
-
-                Debug.Log($"[Inventory] JSON 복구 완료: {jsonString}");
                 PlayerPrefs.DeleteKey(myUniqueKey);
+                PlayerPrefs.SetInt("JoinedFromLobby", 0);
                 PlayerPrefs.Save();
             }
+            else
+            {
+                string jsonString = PlayerPrefs.GetString(myUniqueKey, "");
+                if (!string.IsNullOrEmpty(jsonString))
+                {
+                    InventorySaveData loadedData = JsonUtility.FromJson<InventorySaveData>(jsonString);
+                    for (int i = 0; i < loadedData.itemIDs.Count; i++)
+                    {
+                        if (i < heldItems.Length && loadedData.itemIDs[i] != -1)
+                        {
+                            heldItems[i] = ItemDatabase.Instance.GetItem(loadedData.itemIDs[i]);
+                        }
+                    }
+                    PlayerPrefs.DeleteKey(myUniqueKey);
+                }
+            }
         }
-
         UpdateInventoryUI();
     }
 
@@ -371,23 +373,27 @@ public class PhotonInventory : NetworkBehaviour
         if (!HasInputAuthority) return;
 
         InventorySaveData saveData = new InventorySaveData();
-
         foreach (var item in heldItems)
         {
-            if (item != null)
-                saveData.itemIDs.Add(item.itemID);
-            else
-                saveData.itemIDs.Add(-1);
+            if (item != null) saveData.itemIDs.Add(item.itemID);
+            else saveData.itemIDs.Add(-1);
         }
 
         string jsonString = JsonUtility.ToJson(saveData);
-
-        string myName = PlayerPrefs.GetString("PlayerName", "UnknownPlayer");
-        // 내 고유 번호표를 붙여서 저장(예시로: MySavedInventory_[Player:1])
         string myUniqueKey = "MySavedInventory_" + Runner.LocalPlayer.ToString();
 
         PlayerPrefs.SetString(myUniqueKey, jsonString);
         PlayerPrefs.Save();
+    }
+
+    public List<int> GetHeldItemIDs()
+    {
+        List<int> ids = new List<int>();
+        for (int i = 0; i < heldItems.Length; i++)
+        {
+            if (heldItems[i] != null) ids.Add(heldItems[i].itemID);
+        }
+        return ids;
     }
 
     // 해독제 전용 (인벤에서 아이템 제거 )
@@ -403,5 +409,36 @@ public class PhotonInventory : NetworkBehaviour
 
         RPC_ChangeTool(ToolType.Hand);
         UpdateInventoryUI();
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void RPC_CommandSaveLocal()
+    {
+        if (HasInputAuthority)
+        {
+            SaveInventoryData();
+        }
+    }
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void RPC_CommandReportInventory()
+    {
+        if (HasInputAuthority)
+        {
+            List<int> myItems = GetHeldItemIDs();
+            string itemStr = myItems.Count > 0 ? string.Join(",", myItems) : "";
+            RPC_SubmitToHost(itemStr);
+        }
+    }
+
+    //클라이언트 호스트한테 아이템 인벤토리 장부 내용 보내기 함수인데 안됨 
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    public void RPC_SubmitToHost(string itemString)
+    {
+        // 방장은 이 대답을 받아서 SafeZoneTrigger의 장부에 기록
+        SafeZoneTrigger trigger = FindObjectOfType<SafeZoneTrigger>();
+        if (trigger != null)
+        {
+            trigger.AddReportedItems(itemString);
+        }
     }
 }
