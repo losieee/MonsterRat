@@ -2,12 +2,13 @@ using Fusion;
 using System.Collections;
 using UnityEngine;
 
-public class MopController : InvenBase
+public class BigMopControl : InvenBase
 {
-    public override ToolType Type => ToolType.Sol;
+    public override ToolType Type => ToolType.BigMop;
 
     [SerializeField] private LayerMask pollutionMask;
     [SerializeField] private float cleanDistance = 3f;
+    [SerializeField] private int cleanAmount = 1;
 
     [SerializeField] private AudioSource source;
     [SerializeField] private AudioClip mopSound;
@@ -37,7 +38,7 @@ public class MopController : InvenBase
             PhotonPollutionControl multiPol = hit.collider.GetComponentInParent<PhotonPollutionControl>();
             if (multiPol != null)
             {
-                multiPol.CleanOnce();
+                multiPol.CleanOnce(cleanAmount);
                 // 임시 사운드
                 Rpc_PlayMopSound();
 
@@ -49,18 +50,10 @@ public class MopController : InvenBase
             PhotonRePollutionControl multiRePol = hit.collider.GetComponentInParent<PhotonRePollutionControl>();
             if (multiRePol != null)
             {
-                multiRePol.CleanOnce();
+                multiRePol.CleanOnce(cleanAmount);
                 // 임시 사운드
                 Rpc_PlayMopSound();
 
-                StartCoroutine(Cooldown());
-                return;
-            }
-
-            PollutionControl pol = hit.collider.GetComponentInParent<PollutionControl>();
-            if (pol != null)
-            {
-                pol.CleanOnce();
                 StartCoroutine(Cooldown());
                 return;
             }

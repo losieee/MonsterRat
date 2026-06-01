@@ -240,16 +240,28 @@ public class StandaloneHandGrab : NetworkBehaviour
         // 릴리즈용 속도는 부드럽게 평균화
         smoothedHandVel = Vector3.Lerp(smoothedHandVel, handVel, 0.35f);
 
-        // 목표지점에 거의 다 왔으면 속도 0
-        // 바들바들 떨림 방지
-        if (toTarget.sqrMagnitude < stopDistance * stopDistance)
-        {
-            grabbedRb.linearVelocity = Vector3.zero;
-            return;
-        }
-
         Vector3 desiredVel = toTarget * followSpeed;
         desiredVel = Vector3.ClampMagnitude(desiredVel, maxFollowVelocity);
+
+        // 벽에 닿아도 벽을 따라 움직이게 하기
+        if (desiredVel.sqrMagnitude > 0.001f)
+        {
+            Vector3 dir = desiredVel.normalized;
+            float checkDistance = grabbedRadius + grabPadding;
+
+            if (Physics.SphereCast(
+                    grabbedRb.position,
+                    grabbedRadius,
+                    dir,
+                    out RaycastHit hitObj,
+                    checkDistance,
+                    grabBlock,
+                    QueryTriggerInteraction.Ignore))
+            {
+                // 벽 안으로 들어가는 성분만 제거
+                desiredVel = Vector3.ProjectOnPlane(desiredVel, hitObj.normal);
+            }
+        }
 
         grabbedRb.linearVelocity = desiredVel;
     }

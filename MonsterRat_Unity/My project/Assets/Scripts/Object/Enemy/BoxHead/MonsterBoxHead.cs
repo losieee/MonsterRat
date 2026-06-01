@@ -20,6 +20,9 @@ public class MonsterBoxHead : NetworkBehaviour, IClearTarget
     private bool registered = false;
     private bool deathHandled = false;
 
+    [Networked] public int boxHitCount { get; set; }
+
+
     public float Remain01 => dead ? 0f : 1f;
     public float Weight => weight;
 
@@ -48,11 +51,11 @@ public class MonsterBoxHead : NetworkBehaviour, IClearTarget
 
     // 총에서 호출할 함수
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void Rpc_RequestHit()
+    public void Rpc_RequestHit(int amount)
     {
         if (dead) return;
 
-        hitCount++;
+        hitCount += amount;
 
         if (hitCount >= maxHits)
             Die();

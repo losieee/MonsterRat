@@ -52,7 +52,7 @@ public class PhotonRePollutionControl : NetworkBehaviour
     }
 
     // 대걸레 스크립트(TutorialMop)가 마우스 클릭 시 이 함수를 실행 
-    public void CleanOnce()
+    public void CleanOnce(int amount)
     {
         if (Object == null)
             return;
@@ -60,24 +60,24 @@ public class PhotonRePollutionControl : NetworkBehaviour
         // 내가 방장이면 바로 청소를 진행하고 게스트면 방장에게 부탁 
         if (Object.HasStateAuthority)
         {
-            ApplyClean();
+            ApplyClean(amount);
         }
         else
         {
-            RPC_RequestClean();
+            RPC_RequestClean(amount);
         }
     }
 
     // 게스트가 방장에게 보내는 청소신호
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void RPC_RequestClean()
+    public void RPC_RequestClean(int amount)
     {
-        ApplyClean();
+        ApplyClean(amount);
     }
 
-    private void ApplyClean()
+    private void ApplyClean(int amount)
     {
-        cleanCount++;
+        cleanCount += amount;
 
         if (cleanCount >= 3)
         {

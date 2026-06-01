@@ -3,9 +3,10 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 
-public class PhotonGun : InvenBase
+
+public class ShotgunController : InvenBase
 {
-    public override ToolType Type => ToolType.Gun;
+    public override ToolType Type => ToolType.ShotGun;
 
     public float ratDistance = 8f;
     public float ratAimRadius = 0.15f;
@@ -15,12 +16,12 @@ public class PhotonGun : InvenBase
     public int hitCountAmount = 1;
 
     [Header("Cooldown")]
-    public float fireCooldown = 1f;
+    public float fireCooldown = 1.5f;
     private float nextFireTime = 0f;
 
     [Header("Ammo")]
-    public int maxAmmo = 8;
-    public float reloadTime = 1.5f;
+    public int maxAmmo = 2;
+    public float reloadTime = 2f;
     public GameObject ammoUIGroup;
     public Image[] ammoImages;
 

@@ -7,7 +7,7 @@ public class SpannerMiniGameAimLab : MonoBehaviour
 {
     [Header("Spawn Settings")]
     public GameObject panel;
-    public List<RectTransform> spawnPoints = new List<RectTransform>();
+    public RectTransform spawnArea;
     public RectTransform pipeBrokenPrefab;
 
     public float spawnInterval = 3f;
@@ -15,6 +15,7 @@ public class SpannerMiniGameAimLab : MonoBehaviour
 
     public AudioSource source;
     public AudioClip breakSound;
+    public AudioClip successSound;
 
     [Header("스폰되는 균열 크기")]
     public Vector2 horizontalSize = new Vector2(160f, 60f);     // 옆이 긴 스폰 전용
@@ -63,20 +64,33 @@ public class SpannerMiniGameAimLab : MonoBehaviour
         {
             yield return new WaitForSeconds(spawnInterval);
 
-            RectTransform point = spawnPoints[Random.Range(0, spawnPoints.Count)];
-            RectTransform broken = Instantiate(pipeBrokenPrefab, point.parent);
+            RectTransform broken = Instantiate(pipeBrokenPrefab, spawnArea);
             spawnedBrokens.Add(broken.gameObject);
 
-            broken.position = point.position;
-            broken.rotation = point.rotation;
-            broken.localScale = Vector3.one;
+            broken.anchorMin = new Vector2(0.5f, 0.5f);
+            broken.anchorMax = new Vector2(0.5f, 0.5f);
+            broken.pivot = new Vector2(0.5f, 0.5f);
 
-            bool isHorizontal = point.rect.width >= point.rect.height;
+            broken.localScale = Vector3.one;
+            broken.localRotation = Quaternion.identity;
+
+            bool isHorizontal = Random.value > 0.5f;
             broken.sizeDelta = isHorizontal ? horizontalSize : verticalSize;
+
+            Rect rect = spawnArea.rect;
+
+            float halfW = broken.sizeDelta.x * 0.5f;
+            float halfH = broken.sizeDelta.y * 0.5f;
+
+            float randomX = Random.Range(rect.xMin + halfW, rect.xMax - halfW);
+            float randomY = Random.Range(rect.yMin + halfH, rect.yMax - halfH);
+
+            broken.anchoredPosition = new Vector2(randomX, randomY);
 
             PipeBroken pipeBroken = broken.GetComponent<PipeBroken>();
             pipeBroken.Init(this);
 
+            source.volume = 1f;
             source.PlayOneShot(breakSound);
         }
     }
@@ -87,8 +101,8 @@ public class SpannerMiniGameAimLab : MonoBehaviour
 
         successCount++;
 
-        if (spanner != null)
-            spanner.Rpc_StartSpannerSound();
+        source.volume = 0.3f;
+        source.PlayOneShot(successSound);
 
         if (successCount >= totalNeedCount)
         {

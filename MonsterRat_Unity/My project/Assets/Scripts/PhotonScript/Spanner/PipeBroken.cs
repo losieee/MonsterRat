@@ -27,7 +27,7 @@ public class PipeBroken : MonoBehaviour, IPointerClickHandler
     IEnumerator RevealRoutine()
     {
         yield return new WaitForSeconds(1f);
-        mat.SetFloat("_Reveal", 0.2f);
+        mat.SetFloat("_Reveal", 0.15f);
 
         yield return new WaitForSeconds(1f);
         mat.SetFloat("_Reveal", 0.3f);

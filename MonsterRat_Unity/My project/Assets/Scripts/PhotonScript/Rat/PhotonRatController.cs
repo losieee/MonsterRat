@@ -17,6 +17,7 @@ public class PhotonRatController : NetworkBehaviour
     public float attackCooldown = 0.5f;
     public float attackDamage = 15f;
     public float attackAnimDuration = 0.8f;
+    public int maxHitCount = 2;
 
     [Header("Dead Effects")]
     public GameObject bloodPreb;
@@ -27,6 +28,7 @@ public class PhotonRatController : NetworkBehaviour
     public float runSpeed = 3.5f;       // 멀리 있을 때
     public float walkSpeed = 1.6f;      // 가까이 있을 때
     [Networked] public float NetMoveSpeed { get; set; }
+    [Networked] public int hitCount { get; set; }
 
     [Networked] public float NetTurn { get; set; }
     private float baseSpeed;
@@ -209,9 +211,15 @@ public class PhotonRatController : NetworkBehaviour
     }
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
-    public void Rpc_TakeDamage(Vector3 hitPoint)
+    public void Rpc_TakeDamage(Vector3 hitPoint, int hitAmount)
     {
         if (IsDead) return;
+
+        hitCount += hitAmount;
+
+        if (hitCount < maxHitCount)
+            return;
+
         IsDead = true;
 
         StartCoroutine(EnableDeadPhysicsDelayed());
@@ -219,9 +227,14 @@ public class PhotonRatController : NetworkBehaviour
         if (bloodPreb != null)
         {
             Vector3 start = transform.position + Vector3.up * 0.3f;
+
             if (Physics.Raycast(start, Vector3.down, out RaycastHit groundHit, 5f, groundMask, QueryTriggerInteraction.Ignore))
             {
-                Runner.Spawn(bloodPreb, groundHit.point, Quaternion.FromToRotation(Vector3.up, groundHit.normal));
+                Runner.Spawn(
+                    bloodPreb,
+                    groundHit.point,
+                    Quaternion.FromToRotation(Vector3.up, groundHit.normal)
+                );
             }
             else
             {
