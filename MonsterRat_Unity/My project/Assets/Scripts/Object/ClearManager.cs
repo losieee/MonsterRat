@@ -274,6 +274,7 @@ public class ClearManager : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.F1)) SpawnWatcher();
         if (Input.GetKeyDown(KeyCode.F2)) SpawnBoxHead();
         if (Input.GetKeyDown(KeyCode.F3)) SpawnRatOnly();
+        if (Input.GetKeyDown(KeyCode.L)) SpawnRoachOnly();
     }
 
     public override void FixedUpdateNetwork()

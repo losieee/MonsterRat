@@ -1605,7 +1605,7 @@ MonoBehaviour:
               m_StringArgument: 
               m_BoolArgument: 0
             m_CallState: 2
-      weight: 25
+      weight: 30
       dangerType: 1
       useSpawnCountOptions: 1
       spawnCountOptions:
@@ -1631,7 +1631,7 @@ MonoBehaviour:
               m_StringArgument: 
               m_BoolArgument: 0
             m_CallState: 2
-      weight: 20
+      weight: 30
       dangerType: 1
       useSpawnCountOptions: 1
       spawnCountOptions:
@@ -1657,7 +1657,7 @@ MonoBehaviour:
               m_StringArgument: 
               m_BoolArgument: 0
             m_CallState: 2
-      weight: 10
+      weight: 25
       dangerType: 2
       useSpawnCountOptions: 0
       spawnCountOptions: []
@@ -1679,29 +1679,7 @@ MonoBehaviour:
               m_StringArgument: 
               m_BoolArgument: 0
             m_CallState: 2
-      weight: 25
-      dangerType: 0
-      useSpawnCountOptions: 0
-      spawnCountOptions: []
-    - prefab:
-        RawGuidValue: 00000000000000000000000000000000
-      spawnPoint: {fileID: 0}
-      onInvoke:
-        m_PersistentCalls:
-          m_Calls:
-          - m_Target: {fileID: 129977966}
-            m_TargetAssemblyTypeName: PollutionSpawner, Assembly-CSharp
-            m_MethodName: WoodSpawnOnce
-            m_Mode: 1
-            m_Arguments:
-              m_ObjectArgument: {fileID: 0}
-              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-              m_IntArgument: 0
-              m_FloatArgument: 0
-              m_StringArgument: 
-              m_BoolArgument: 0
-            m_CallState: 2
-      weight: 20
+      weight: 15
       dangerType: 0
       useSpawnCountOptions: 0
       spawnCountOptions: []
@@ -1727,7 +1705,7 @@ MonoBehaviour:
               m_StringArgument: 
               m_BoolArgument: 0
             m_CallState: 2
-      weight: 15
+      weight: 5
       dangerType: 1
       useSpawnCountOptions: 1
       spawnCountOptions:
@@ -1753,7 +1731,7 @@ MonoBehaviour:
               m_StringArgument: 
               m_BoolArgument: 0
             m_CallState: 2
-      weight: 10
+      weight: 5
       dangerType: 1
       useSpawnCountOptions: 1
       spawnCountOptions:
@@ -1779,7 +1757,7 @@ MonoBehaviour:
               m_StringArgument: 
               m_BoolArgument: 0
             m_CallState: 2
-      weight: 15
+      weight: 20
       dangerType: 2
       useSpawnCountOptions: 0
       spawnCountOptions: []
@@ -1792,28 +1770,6 @@ MonoBehaviour:
           - m_Target: {fileID: 129977966}
             m_TargetAssemblyTypeName: PollutionSpawner, Assembly-CSharp
             m_MethodName: SpawnGas
-            m_Mode: 1
-            m_Arguments:
-              m_ObjectArgument: {fileID: 0}
-              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-              m_IntArgument: 0
-              m_FloatArgument: 0
-              m_StringArgument: 
-              m_BoolArgument: 0
-            m_CallState: 2
-      weight: 15
-      dangerType: 0
-      useSpawnCountOptions: 0
-      spawnCountOptions: []
-    - prefab:
-        RawGuidValue: 00000000000000000000000000000000
-      spawnPoint: {fileID: 0}
-      onInvoke:
-        m_PersistentCalls:
-          m_Calls:
-          - m_Target: {fileID: 129977966}
-            m_TargetAssemblyTypeName: PollutionSpawner, Assembly-CSharp
-            m_MethodName: WoodSpawnOnce
             m_Mode: 1
             m_Arguments:
               m_ObjectArgument: {fileID: 0}
@@ -1867,7 +1823,7 @@ MonoBehaviour:
               m_StringArgument: 
               m_BoolArgument: 0
             m_CallState: 2
-      weight: 15
+      weight: 25
       dangerType: 2
       useSpawnCountOptions: 0
       spawnCountOptions: []

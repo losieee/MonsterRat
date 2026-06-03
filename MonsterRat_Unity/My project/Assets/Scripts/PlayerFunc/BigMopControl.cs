@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BigMopControl : InvenBase
 {
-    public override ToolType Type => ToolType.BigMop;
+    public override ToolType Type => ToolType.LongSol;
 
     [SerializeField] private LayerMask pollutionMask;
     [SerializeField] private float cleanDistance = 3f;

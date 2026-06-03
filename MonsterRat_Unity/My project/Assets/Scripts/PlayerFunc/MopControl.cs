@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MopControl : InvenBase
 {
-    public override ToolType Type => ToolType.Mop;
+    public override ToolType Type => ToolType.Brush;
 
     [SerializeField] private LayerMask pollutionMask;
     [SerializeField] private float cleanDistance = 3f;

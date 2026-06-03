@@ -14,8 +14,8 @@ public enum ToolType
     Flash,          // 손전등
     GasMask,        // 방독면
     Antidote,       // 해독제
-    Mop,            // 걸레
-    BigMop,         // 대걸레
+    Brush,          // 청소 브러쉬
+    LongSol,         // 장대솔
     NewGasMask,     // 신형 방독면
     ShotGun         // 샷건
 }
