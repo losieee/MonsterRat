@@ -66,30 +66,34 @@ public class GasValveSync : NetworkBehaviour
         if (Object == null || !Object.IsValid) return;
 
         if (Object.HasStateAuthority)
+            DespawnParentOrSelf();
+        else
+            RPC_RequestFix();
+    }
+
+    private void DespawnParentOrSelf()
+    {
+        if (Object == null || !Object.IsValid) return;
+
+        Transform parent = Object.transform.parent;
+
+        if (parent != null)
         {
-            NetworkObject parentNetObj = Object.transform.parent.GetComponent<NetworkObject>();
+            NetworkObject parentNetObj = parent.GetComponent<NetworkObject>();
 
             if (parentNetObj != null && parentNetObj.IsValid)
             {
                 Runner.Despawn(parentNetObj);
-            }
-            else
-            {
-                Runner.Despawn(Object);
+                return;
             }
         }
-        else
-        {
-            RPC_RequestFix();
-        }
+
+        Runner.Despawn(Object);
     }
 
-    [Rpc(RpcSources.All, RpcTargets.StateAuthority)] // mopcontroller이랑 비슷한 개념입니다. PhotonSpanner은 InvenBase 받아오되 이 스크립트는 Fusion2 전용으로
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
     public void RPC_RequestFix()
     {
-        if (Object != null && Object.IsValid)
-        {
-            Runner.Despawn(Object);
-        }
+        DespawnParentOrSelf();
     }
 }
