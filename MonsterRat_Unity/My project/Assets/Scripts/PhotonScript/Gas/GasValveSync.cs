@@ -67,7 +67,16 @@ public class GasValveSync : NetworkBehaviour
 
         if (Object.HasStateAuthority)
         {
-            Runner.Despawn(Object);
+            NetworkObject parentNetObj = Object.transform.parent.GetComponent<NetworkObject>();
+
+            if (parentNetObj != null && parentNetObj.IsValid)
+            {
+                Runner.Despawn(parentNetObj);
+            }
+            else
+            {
+                Runner.Despawn(Object);
+            }
         }
         else
         {
