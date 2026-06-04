@@ -434,6 +434,7 @@ public class PhotonInventory : NetworkBehaviour
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
     public void RPC_SubmitToHost(string itemString)
     {
+        Debug.Log($"[RPC 수신 확인] 호스트가 통신을 받았습니다! 받은 아이템 내용: {itemString}");
         // 방장은 이 대답을 받아서 SafeZoneTrigger의 장부에 기록
         SafeZoneTrigger trigger = FindObjectOfType<SafeZoneTrigger>();
         if (trigger != null)
