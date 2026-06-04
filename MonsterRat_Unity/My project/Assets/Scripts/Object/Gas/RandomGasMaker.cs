@@ -66,13 +66,29 @@ public class RandomGasMaker : NetworkBehaviour
             indices.Add(i);
         }
 
+        bool[] selectedGas = new bool[count];
+
         for (int i = 0; i < gasSpawnCount; i++)
         {
             int randIndex = Random.Range(0, indices.Count);
             int selected = indices[randIndex];
 
+            selectedGas[selected] = true;
             GasActive.Set(selected, true);
             indices.RemoveAt(randIndex);        // 선택됐으면 제거
+        }
+
+        for (int i = 0; i < count; i++)
+        {
+            if (randomGas[i] == null) continue;
+
+            if (!selectedGas[i])
+            {
+                Transform parent = randomGas[i].transform.parent;
+
+                if (parent != null)
+                    parent.gameObject.SetActive(false);
+            }
         }
     }
 

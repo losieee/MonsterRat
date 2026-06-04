@@ -26,12 +26,16 @@ public class RoachController : NetworkBehaviour
     public float lifeTime = 20f;
 
     private NavMeshAgent agent;
+    private Animator animator;
+    private AudioSource source;
     private float timer;
     private bool isIdling;
 
     public override void Spawned()
     {
         agent = GetComponent<NavMeshAgent>();
+        animator = GetComponentInChildren<Animator>();
+        source = GetComponent<AudioSource>();
 
         if (agent != null)
         {
@@ -52,6 +56,35 @@ public class RoachController : NetworkBehaviour
     {
         if (Object == null || !Object.HasStateAuthority) return;
         if (agent == null) return;
+
+        bool isMoving =
+        !isIdling &&
+        agent.isOnNavMesh &&
+        !agent.pathPending &&
+        agent.velocity.sqrMagnitude > 0.01f;
+
+        float effectVolume = 1f;
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+            effectVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+        source.volume = effectVolume;
+
+        if (animator != null)
+            animator.SetBool("IsMove", isMoving);
+
+        if (source != null)
+        {
+            if (isMoving)
+            {
+                if (!source.isPlaying)
+                    source.Play();
+            }
+            else
+            {
+                if (source.isPlaying)
+                    source.Stop();
+            }
+        }
+
         if (isIdling) return;
         if (!agent.isOnNavMesh) return;
 
@@ -76,6 +109,12 @@ public class RoachController : NetworkBehaviour
         if (agent == null) yield break;
 
         isIdling = true;
+
+        if (animator != null)
+            animator.SetBool("IsMove", false);
+
+        if (source != null && source.isPlaying)
+            source.Stop();
 
         if (agent.isOnNavMesh)
             agent.isStopped = true;

@@ -16,9 +16,9 @@ GameObject:
   - component: {fileID: 6351721499751940681}
   - component: {fileID: 5009148028818013220}
   - component: {fileID: 9067654493731722961}
-  - component: {fileID: 5852200616037015018}
-  m_Layer: 9
-  m_Name: GasParticle
+  - component: {fileID: 1885226792583287816}
+  m_Layer: 26
+  m_Name: PipeGasParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4778,12 +4778,12 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.9836864, y: 2.247351, z: 3.0480976}
-  m_Center: {x: -0.060956, y: 0.17285264, z: 0.12749767}
+  m_Size: {x: 4.2167225, y: 3.8892043, z: 5.5874014}
+  m_Center: {x: -0.677474, y: 0.17285265, z: 0.0915885}
 --- !u!199 &4462028504230037640
 ParticleSystemRenderer:
   serializedVersion: 7
@@ -4909,13 +4909,13 @@ MonoBehaviour:
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 2535621234
+  SortKey: 462283089
   ObjectInterest: 1
   Flags: 262145
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 9067654493731722961}
-  - {fileID: 5852200616037015018}
+  - {fileID: 1885226792583287816}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &9067654493731722961
 MonoBehaviour:
@@ -4934,7 +4934,7 @@ MonoBehaviour:
   SyncParent: 0
   _autoAOIOverride: 1
   DisableSharedModeInterpolation: 0
---- !u!114 &5852200616037015018
+--- !u!114 &1885226792583287816
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4943,11 +4943,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 2506526457179035695}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b4c477966ef7104e9740b084a712c53, type: 3}
+  m_Script: {fileID: 11500000, guid: d287078df507dc049823c03b45c32df9, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SmallGasObject
-  originalScale: {x: 0.8, y: 0.8, z: 0.8}
-  _currentRatio: 0
+  m_EditorClassIdentifier: Assembly-CSharp::PipeSmallGasObject
+  gasEffect: {fileID: 4693366578790921242}
+  gasZone: {fileID: 6351721499751940681}
 --- !u!1001 &4891502362169615452
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5069,6 +5069,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6f672a31584a6a748912a49c1dce2f0c, type: 3}
+--- !u!198 &4693366578790921242 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 198206152677216326, guid: 6f672a31584a6a748912a49c1dce2f0c, type: 3}
+  m_PrefabInstance: {fileID: 4891502362169615452}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4896362164926241672 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4859880167833556, guid: 6f672a31584a6a748912a49c1dce2f0c, type: 3}

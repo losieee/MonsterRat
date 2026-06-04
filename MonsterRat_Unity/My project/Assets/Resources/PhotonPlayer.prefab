@@ -15444,6 +15444,9 @@ MonoBehaviour:
   gasLayerMask:
     serializedVersion: 2
     m_Bits: 512
+  pipeGasLayerMask:
+    serializedVersion: 2
+    m_Bits: 67108864
 --- !u!114 &3609349469311375477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15615,7 +15618,6 @@ MonoBehaviour:
   spawnInterval: 3
   totalNeedCount: 10
   source: {fileID: 5053122888985684548}
-  breakSound: {fileID: 8300000, guid: 11c32f3d467f07c459e867ea135f241c, type: 3}
   successSound: {fileID: 8300000, guid: ada609006a93d5a449cb4008594bf7c2, type: 3}
   horizontalSize: {x: 250, y: 250}
   verticalSize: {x: 250, y: 250}
