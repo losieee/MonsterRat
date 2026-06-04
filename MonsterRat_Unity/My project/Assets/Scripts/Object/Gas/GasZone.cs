@@ -7,24 +7,23 @@ public class GasZone : MonoBehaviour
     public int minParticleCount = 30;
     public float exposurePerSec = 10f;
 
-    private Collider zoneCollider;
-
     private void Awake()
     {
         if (gas == null)
             gas = GetComponent<GasControl>();
-
-        zoneCollider = GetComponent<Collider>();
     }
 
     public bool Contains(Vector3 worldPos)
     {
-        if (zoneCollider == null) return false;
+        BoxCollider box = GetComponent<BoxCollider>();
+        if (box == null) return false;
 
-        Vector3 closest = zoneCollider.ClosestPoint(worldPos);
-        float dist = Vector3.Distance(closest, worldPos);
+        Vector3 localPos = transform.InverseTransformPoint(worldPos) - box.center;
+        Vector3 halfSize = box.size * 0.5f;
 
-        return dist < 0.05f;
+        return Mathf.Abs(localPos.x) <= halfSize.x &&
+               Mathf.Abs(localPos.y) <= halfSize.y &&
+               Mathf.Abs(localPos.z) <= halfSize.z;
     }
 
     public bool IsDangerousAt(Vector3 worldPos)

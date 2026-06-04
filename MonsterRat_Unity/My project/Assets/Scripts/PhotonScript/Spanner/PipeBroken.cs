@@ -7,6 +7,9 @@ public class PipeBroken : MonoBehaviour, IPointerClickHandler
 {
     public Image crackImage;
 
+    public AudioSource source;
+    public AudioClip clip;
+
     private Material mat;
     private SpannerMiniGameAimLab manager;
     private bool clicked = false;
@@ -28,12 +31,15 @@ public class PipeBroken : MonoBehaviour, IPointerClickHandler
     {
         yield return new WaitForSeconds(1f);
         mat.SetFloat("_Reveal", 0.15f);
+        PlaySound();
 
         yield return new WaitForSeconds(1f);
         mat.SetFloat("_Reveal", 0.3f);
+        PlaySound();
 
         yield return new WaitForSeconds(1f);
         mat.SetFloat("_Reveal", 0.5f);
+        PlaySound();
 
         if (!clicked)
         {
@@ -41,6 +47,16 @@ public class PipeBroken : MonoBehaviour, IPointerClickHandler
         }
 
         Destroy(gameObject);
+    }
+
+    void PlaySound()
+    {
+        float effectVolume = 1f;
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+            effectVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+        source.volume = effectVolume;
+
+        source.PlayOneShot(clip);
     }
 
     public void OnPointerClick(PointerEventData eventData)

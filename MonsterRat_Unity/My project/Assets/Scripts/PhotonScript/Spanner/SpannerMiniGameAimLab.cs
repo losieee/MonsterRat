@@ -14,7 +14,6 @@ public class SpannerMiniGameAimLab : MonoBehaviour
     public int totalNeedCount = 10;
 
     public AudioSource source;
-    public AudioClip breakSound;
     public AudioClip successSound;
 
     [Header("스폰되는 균열 크기")]
@@ -89,9 +88,6 @@ public class SpannerMiniGameAimLab : MonoBehaviour
 
             PipeBroken pipeBroken = broken.GetComponent<PipeBroken>();
             pipeBroken.Init(this);
-
-            source.volume = 1f;
-            source.PlayOneShot(breakSound);
         }
     }
 
@@ -101,7 +97,11 @@ public class SpannerMiniGameAimLab : MonoBehaviour
 
         successCount++;
 
-        source.volume = 0.3f;
+        float successVolume = 0.3f;
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+            successVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+        source.volume = successVolume;
+
         source.PlayOneShot(successSound);
 
         if (successCount >= totalNeedCount)
