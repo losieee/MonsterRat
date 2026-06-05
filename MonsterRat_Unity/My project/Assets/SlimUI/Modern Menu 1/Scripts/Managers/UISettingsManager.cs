@@ -142,6 +142,9 @@ namespace SlimUI.ModernMenu
 
         public void Update()
         {
+            if (GameInputLock.IsLocked)
+                return;
+
             // [수정됨] canUseEscKey가 true일 때만 ESC 키를 인식합니다.
             if (canUseEscKey && Input.GetKeyDown(KeyCode.Escape))
             {

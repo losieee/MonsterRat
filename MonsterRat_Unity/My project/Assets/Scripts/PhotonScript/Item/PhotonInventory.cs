@@ -100,6 +100,27 @@ public class PhotonInventory : NetworkBehaviour
     {
         if (!HasInputAuthority) return;
 
+        if (GameInputLock.IsLocked)
+        {
+            if (inventoryPanel != null)
+                inventoryPanel.SetActive(false);
+
+            currentSelectedSlot = -1;
+
+            for (int i = 0; i < selectSlots.Length; i++)
+            {
+                if (selectSlots[i] != null)
+                    selectSlots[i].SetActive(false);
+            }
+
+            if (currentTool != null)
+                currentTool.OnDeselect();
+
+            RPC_ChangeTool(ToolType.Hand);
+
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.I))
         {
             if (inventoryPanel != null) inventoryPanel.SetActive(!inventoryPanel.activeSelf);
@@ -137,6 +158,8 @@ public class PhotonInventory : NetworkBehaviour
 
     void FixedUpdate()
     {
+        if (GameInputLock.IsLocked) return;
+
         if (HasInputAuthority && currentTool != null)
         {
             currentTool.FixedTick();

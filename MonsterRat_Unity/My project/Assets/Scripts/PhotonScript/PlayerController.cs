@@ -3,6 +3,7 @@ using Fusion;
 using Fusion.Sockets;
 using System.Collections.Generic;
 using System;
+using UnityEngine.SceneManagement;
 
 public struct MyNetworkInput : INetworkInput
 {
@@ -74,6 +75,15 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
             {
                 originalFov = playerCamera.fieldOfView;
             }
+
+            if (SceneManager.GetActiveScene().name == "Ending")
+            {
+                GameInputLock.Lock();
+            }
+            else
+            {
+                GameInputLock.Unlock();
+            }
         }
         else
         {
@@ -131,6 +141,18 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
         MyNetworkInput myInput = new MyNetworkInput();
+
+        if (GameInputLock.IsLocked)
+        {
+            myInput.moveInput = Vector2.zero;
+            myInput.isRunning = false;
+            myInput.yaw = yaw;
+            myInput.pitch = pitch;
+
+            input.Set(myInput);
+            return;
+        }
+
         myInput.moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         myInput.isRunning = Input.GetKey(KeyCode.LeftShift);
         myInput.yaw = yaw;

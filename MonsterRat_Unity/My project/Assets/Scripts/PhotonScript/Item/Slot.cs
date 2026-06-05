@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class Slot : MonoBehaviour
 {
     public Image icon;
+    public Sprite blankImage;
 
 
 
@@ -34,7 +35,6 @@ public class Slot : MonoBehaviour
 
         if (icon == null) return;
 
-        icon.sprite = null;
-        icon.enabled = false;
+        icon.sprite = blankImage;
     }
 }

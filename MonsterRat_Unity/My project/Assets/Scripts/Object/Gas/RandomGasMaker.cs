@@ -12,7 +12,7 @@ public class RandomGasMaker : NetworkBehaviour
     [SerializeField] private int currentStageNum = 1;
     [SerializeField] private bool isRePollution;
 
-    [Networked, Capacity(6)]       // Capacity 가 크기 - 1스테이지 가스는 6개니까 6
+    [Networked, Capacity(20)]       // Capacity 가 크기 - 1스테이지 가스는 6개니까 6
     private NetworkArray<NetworkBool> GasActive => default;
     // Fusion용 bool 배열
     // 사용법

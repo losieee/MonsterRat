@@ -168,6 +168,11 @@ public class SafeZoneTrigger : NetworkBehaviour
         worldData.savedStageName = lobbySceneName;
         worldData.isDoorActive = hasLeftover;
 
+        if (PlayTimeManager.Instance != null)
+        {
+            worldData.playTime = PlayTimeManager.Instance.PlayTime;
+        }
+
         if (WorldLoadManager.instance != null)
         {
             worldData.currentGold = WorldLoadManager.instance.SharedGold;

@@ -16,6 +16,7 @@ public class WorldSaveData
     public bool isDoorActive;
     public int currentGold;
     public bool isStageStartGoldClaimed;
+    public float playTime;
     public List<ShipItemData> shipItems = new List<ShipItemData>();
     public List<int> savedInventoryItems = new List<int>();
 

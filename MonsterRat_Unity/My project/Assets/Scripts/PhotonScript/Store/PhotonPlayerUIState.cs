@@ -37,6 +37,14 @@ public class PhotonPlayerUIState : NetworkBehaviour
     {
         if (!HasInputAuthority) return;
 
+        if(GameInputLock.IsLocked)
+        {
+            aimDot.SetActive(false);
+            clearGauge.SetActive(false);
+            pollutionGauge.SetActive(false);
+            storePanel.SetActive(false);
+        }
+
         CheckForStoreRadar();
 
         if (!inStoreZone) return;

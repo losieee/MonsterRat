@@ -15,6 +15,7 @@ public class SaveSlotData
 {
     public string savedStageName;
     public string roomName;
+    public float playTime;
 }
 public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 {
@@ -51,6 +52,9 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             goToRoomListButton.interactable = false;
         }
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     public void OnClickPlay()
@@ -315,6 +319,12 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         if (_runner == null || !_runner.IsCloudReady) return;
 
+        if (PlayTimeManager.Instance != null)
+        {
+            PlayTimeManager.Instance.ResetPlayTime();
+            PlayTimeManager.Instance.StartCounting();
+        }
+
         string roomName = string.IsNullOrEmpty(roomnameInput.text) ? $"{PlayerPrefs.GetString("PlayerName", "Player")}'s Room" : roomnameInput.text;
 
         var startGameArgs = new StartGameArgs()
@@ -332,7 +342,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         if (result.Ok)
         {
             //ºó ½½·ÔÀÌ¸é »õ½ºÅ×ÀÌÁö·Î ±×³É ¸¸µê
-            SaveSlotData initData = new SaveSlotData { roomName = roomName, savedStageName = "1Stage" };
+            SaveSlotData initData = new SaveSlotData { roomName = roomName, savedStageName = "1Stage", playTime = 0f };
             PlayerPrefs.SetString("SaveSlot_" + currentSelectedSlot, JsonUtility.ToJson(initData));
             PlayerPrefs.DeleteKey("MasterWorldSave");
             PlayerPrefs.Save();
@@ -352,6 +362,12 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
 
         string json = PlayerPrefs.GetString(saveKey);
         SaveSlotData data = JsonUtility.FromJson<SaveSlotData>(json);
+
+        if (PlayTimeManager.Instance != null)
+        {
+            PlayTimeManager.Instance.SetPlayTime(data.playTime);
+            PlayTimeManager.Instance.StartCounting();
+        }
 
         PlayerPrefs.SetString("MasterWorldSave", json);
         PlayerPrefs.Save();
