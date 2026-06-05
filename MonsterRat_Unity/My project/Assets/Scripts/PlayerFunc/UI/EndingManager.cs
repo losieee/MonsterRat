@@ -12,7 +12,7 @@ public class EndingManager : NetworkBehaviour
     [SerializeField] private float fadeDuration = 1.5f;
     [SerializeField] private string lobbySceneName = "ZZin_Main_Lobby";
 
-    private void Start()
+    public override void Spawned()
     {
         SetAlpha(ending, 0f);
         SetAlpha(playTime, 0f);
@@ -88,6 +88,10 @@ public class EndingManager : NetworkBehaviour
 
     IEnumerator FadeInText(TMP_Text text, float duration)
     {
+        if (text == null) yield break;
+
+        text.gameObject.SetActive(true);
+
         float elapsed = 0f;
         Color color = text.color;
 
