@@ -21045,15 +21045,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3074478739252330358, guid: bf926fc706056f347933a16249cd701a, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3074478739252330358, guid: bf926fc706056f347933a16249cd701a, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3074478739252330358, guid: bf926fc706056f347933a16249cd701a, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3268273155791939093, guid: bf926fc706056f347933a16249cd701a, type: 3}
       propertyPath: m_PlayOnAwake
@@ -21105,11 +21105,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6753596041253727370, guid: bf926fc706056f347933a16249cd701a, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6753596041253727370, guid: bf926fc706056f347933a16249cd701a, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7866157349067515594, guid: bf926fc706056f347933a16249cd701a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -21118,7 +21118,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7059470410700060847, guid: bf926fc706056f347933a16249cd701a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: bf926fc706056f347933a16249cd701a, type: 3}
 --- !u!114 &1297624820 stripped
 MonoBehaviour:

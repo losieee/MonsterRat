@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using System.Collections;
 using Fusion;
-using UnityEngine.SceneManagement;
+using SlimUI.ModernMenu;
 
 public class EndingManager : NetworkBehaviour
 {
@@ -12,15 +12,28 @@ public class EndingManager : NetworkBehaviour
     [SerializeField] private float fadeDuration = 1.5f;
     [SerializeField] private string lobbySceneName = "ZZin_Main_Lobby";
 
+    private float finalPlayTime;
+
     public override void Spawned()
     {
         SetAlpha(ending, 0f);
         SetAlpha(playTime, 0f);
 
-        if (PlayTimeManager.Instance != null)
+        if (HasStateAuthority)
         {
-            playTime.text = FormatPlayTime(PlayTimeManager.Instance.PlayTime);
+            finalPlayTime = PlayTimeManager.Instance != null
+                ? PlayTimeManager.Instance.PlayTime
+                : 0f;
+
+            RPC_SetFinalPlayTime(finalPlayTime);
         }
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void RPC_SetFinalPlayTime(float time)
+    {
+        finalPlayTime = time;
+        playTime.text = FormatPlayTime(finalPlayTime);
 
         StartCoroutine(StartEnding());
     }
@@ -54,7 +67,29 @@ public class EndingManager : NetworkBehaviour
 
         DeleteCurrentSaveSlot();
 
-        Runner.LoadScene(lobbySceneName);
+        int sceneIndex = UnityEngine.SceneManagement.SceneUtility.GetBuildIndexByScenePath(
+            $"Assets/Resources/Scenes/Min/{lobbySceneName}.unity"
+        );
+
+        if (sceneIndex >= 0)
+        {
+            Runner.LoadScene(SceneRef.FromIndex(sceneIndex));
+        }
+        else
+        {
+            Debug.LogError($"씬을 찾을 수 없습니다: {lobbySceneName}");
+        }
+    }
+
+    string FormatPlayTime(float time)
+    {
+        int totalSeconds = Mathf.FloorToInt(time);
+
+        int hours = totalSeconds / 3600;
+        int minutes = (totalSeconds % 3600) / 60;
+        int seconds = totalSeconds % 60;
+
+        return $"클리어 타임 : {hours:00}시간 {minutes:00}분 {seconds:00}초";
     }
 
     void DeleteCurrentSaveSlot()
@@ -71,27 +106,10 @@ public class EndingManager : NetworkBehaviour
         PlayerPrefs.DeleteKey("SpawnInventoryOnGround");
 
         PlayerPrefs.Save();
-
-        Debug.Log($"클리어 완료: SaveSlot_{activeSlot} 삭제됨");
-    }
-
-    string FormatPlayTime(float time)
-    {
-        int totalSeconds = Mathf.FloorToInt(time);
-
-        int hours = totalSeconds / 3600;
-        int minutes = (totalSeconds % 3600) / 60;
-        int seconds = totalSeconds % 60;
-
-        return $"클리어 타임 : {hours:00}시간 {minutes:00}분 {seconds:00}초";
     }
 
     IEnumerator FadeInText(TMP_Text text, float duration)
     {
-        if (text == null) yield break;
-
-        text.gameObject.SetActive(true);
-
         float elapsed = 0f;
         Color color = text.color;
 
