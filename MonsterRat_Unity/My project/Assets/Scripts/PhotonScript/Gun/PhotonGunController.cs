@@ -14,6 +14,10 @@ public class PhotonGun : InvenBase
     public GameObject pollutionPreb;
     public int hitCountAmount = 1;
 
+    public AudioSource source;
+    public AudioClip gunSound;
+    public AudioClip reloadSound;
+
     [Header("Cooldown")]
     public float fireCooldown = 1f;
     private float nextFireTime = 0f;
@@ -53,6 +57,9 @@ public class PhotonGun : InvenBase
 
     public override void Tick()
     {
+        if (SlimUI.ModernMenu.UISettingsManager.isMenuOpen || PhotonPlayerUIState.isGlobalStoreOpen)
+            return;
+
         if (isReloading) return;
 
         if (Input.GetKeyDown(KeyCode.R))
@@ -71,6 +78,8 @@ public class PhotonGun : InvenBase
         }
 
         nextFireTime = Time.time + fireCooldown;
+
+        Rpc_PlayGunSound();
 
         bool rat = TryShootRat();
         if (rat) return;
@@ -183,6 +192,40 @@ public class PhotonGun : InvenBase
         }
     }
 
+    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    public void Rpc_PlayGunSound()
+    {
+        if (source == null || gunSound == null)
+            return;
+
+        float effectVolume = 1f;
+
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+            effectVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+
+        float baseVolume = HasInputAuthority ? 0.85f : 1f;
+        float finalVolume = baseVolume * effectVolume;
+
+        source.PlayOneShot(gunSound, finalVolume);
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    public void Rpc_PlayReRoadSound()
+    {
+        if (source == null || reloadSound == null)
+            return;
+
+        float effectVolume = 1f;
+
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+            effectVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+
+        float baseVolume = HasInputAuthority ? 0.85f : 1f;
+        float finalVolume = baseVolume * effectVolume;
+
+        source.PlayOneShot(reloadSound, finalVolume);
+    }
+
     private IEnumerator Reload()
     {
         isReloading = true;
@@ -193,6 +236,7 @@ public class PhotonGun : InvenBase
                 ammoImages[i].enabled = false;
         }
 
+        Rpc_PlayReRoadSound();
         yield return new WaitForSeconds(reloadTime);
 
         for (int i = 0; i < ammoImages.Length; i++)

@@ -15,6 +15,9 @@ public class MonsterBoxHead : NetworkBehaviour, IClearTarget
     public LayerMask floorMask;
     public ParticleSystem boxheadParticle;
 
+    public AudioSource source;
+    public AudioClip boxheadSound;
+
     private int hitCount = 0;
     private bool dead = false;
     private bool registered = false;
@@ -40,6 +43,11 @@ public class MonsterBoxHead : NetworkBehaviour, IClearTarget
         }
     }
 
+    private void Update()
+    {
+        UpdateBoxHeadVolume();
+    }
+
     private void OnDisable()
     {
         if (registered && ClearManager.Instance != null)
@@ -59,6 +67,18 @@ public class MonsterBoxHead : NetworkBehaviour, IClearTarget
 
         if (hitCount >= maxHits)
             Die();
+    }
+
+    private void UpdateBoxHeadVolume()
+    {
+        if (source == null) return;
+
+        float effectVolume = 1f;
+
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+            effectVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+
+        source.volume = 0.5f * effectVolume;
     }
 
     private void Die()

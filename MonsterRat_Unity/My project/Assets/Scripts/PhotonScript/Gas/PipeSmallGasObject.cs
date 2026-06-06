@@ -7,15 +7,27 @@ public class PipeSmallGasObject : NetworkBehaviour
     [Header("Effect")]
     public ParticleSystem gasEffect;
     public GasZone gasZone;
+    public bool isBoxHead;
     
     private BoxCollider boxcol;
+    private AudioSource source;
 
     private void Awake()
     {
         boxcol = GetComponent<BoxCollider>();
+        source = GetComponent<AudioSource>();
         gasZone = GetComponent<GasZone>();
         if (gasEffect == null)
             gasEffect = GetComponentInChildren<ParticleSystem>();
+    }
+
+    private void Update()
+    {
+        if (isBoxHead) return;
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+        {
+            source.volume = 0.2f * SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+        }
     }
 
     public override void Spawned()

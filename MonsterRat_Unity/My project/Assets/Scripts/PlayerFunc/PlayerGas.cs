@@ -70,8 +70,6 @@ public class PlayerGas : MonoBehaviour
             if (!zone.Contains(pos)) continue;
             if (!zone.IsDangerousAt(pos)) continue;
 
-            Debug.Log($"∞°Ω∫ ¡ı∞°µ  / Zone: {zone.name} / PlayerPos: {pos}");
-
             if (gasMask != null && gasMask.UseMask)
                 break;
 

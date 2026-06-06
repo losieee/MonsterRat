@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using Fusion;
 using System;
 using TMPro;
@@ -6,17 +6,18 @@ using UnityEngine.UI;
 
 public class PhotonPlayerUIState : NetworkBehaviour
 {
-    [Header("UI ¼³Á¤")]
+    [Header("UI ì„¤ì •")]
     public GameObject storePanel;
     public float storeDetectRadius = 2.5f;
     public GameObject aimDot;
     public GameObject clearGauge;
     public GameObject pollutionGauge;
 
-    [Header("»óÁ¡ Select")]
+    [Header("ìƒì  Select")]
     public Sprite selectNormal;
     public Image selectIMG;
     public TMP_Text selectName;
+    public TMP_Text selectPrice ;
     public TMP_Text selectInfo;
     public TMP_Text currentGoldText;
 
@@ -63,7 +64,7 @@ public class PhotonPlayerUIState : NetworkBehaviour
 
         if (currentGoldText != null && WorldLoadManager.instance != null)
         {
-            currentGoldText.text = $"{WorldLoadManager.instance.SharedGold}G";
+            currentGoldText.text = $"â‚© {WorldLoadManager.instance.SharedGold}";
         }
     }
 
@@ -116,6 +117,9 @@ public class PhotonPlayerUIState : NetworkBehaviour
         if (selectName != null)
             selectName.text = itemData.storeName;
 
+        if (selectPrice != null)
+            selectPrice.text = $"â‚© {itemData.itemPrice}";
+
         if (selectInfo != null)
             selectInfo.text = itemData.itenInfo;
     }
@@ -130,14 +134,14 @@ public class PhotonPlayerUIState : NetworkBehaviour
             return;
         if(WorldLoadManager.instance.SharedGold >= itemData.itemPrice)
         {
-            //¹æÀåÇÑÅ× µ· Â÷°¨ÇÏ¶ó°í ÇÏ±â (Å¬¶óÀÌ¾ğÆ® ±âÁØ)
+            //ë°©ì¥í•œí…Œ ëˆ ì°¨ê°í•˜ë¼ê³  í•˜ê¸° (í´ë¼ì´ì–¸íŠ¸ ê¸°ì¤€)
             WorldLoadManager.instance.RPC_DeductGold(itemData.itemPrice);
             NetworkObject StoreNetObj = currentStore.GetComponent<NetworkObject>();
             RPC_RequestSpawnToHost(StoreNetObj, selectedItemIndex);
         }
         if (WorldLoadManager.instance == null)
         {
-            Debug.LogError("[»óÁ¡ ¿À·ù] ÇöÀç ¾À¿¡ WorldLoadManager°¡ ¾ø½À´Ï´Ù! °ñµå °áÁ¦¸¦ ÁøÇàÇÒ ¼ö ¾ø½À´Ï´Ù.");
+            Debug.LogError("[ìƒì  ì˜¤ë¥˜] í˜„ì¬ ì”¬ì— WorldLoadManagerê°€ ì—†ìŠµë‹ˆë‹¤! ê³¨ë“œ ê²°ì œë¥¼ ì§„í–‰í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
             return;
         }
         NetworkObject storeNetObj = currentStore.GetComponent<NetworkObject>();
@@ -145,7 +149,7 @@ public class PhotonPlayerUIState : NetworkBehaviour
         if (storeNetObj == null)
             return;
 
-      //  RPC_RequestSpawnToHost(storeNetObj, selectedItemIndex); ÀÌ°Å ÁÖ¼®Ç®¸é 2°³ ½ºÆùµË´Ï´Ù
+      //  RPC_RequestSpawnToHost(storeNetObj, selectedItemIndex); ì´ê±° ì£¼ì„í’€ë©´ 2ê°œ ìŠ¤í°ë©ë‹ˆë‹¤
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
@@ -185,8 +189,9 @@ public class PhotonPlayerUIState : NetworkBehaviour
         isGlobalStoreOpen = false;
 
         selectIMG.sprite = selectNormal;
-        selectInfo.text = "¾ÆÀÌÅÛÀ» ¼±ÅÃÇÏ¼¼¿ä.";
+        selectInfo.text = "ì•„ì´í…œì„ ì„ íƒí•˜ì„¸ìš”.";
         selectName.text = " ";
+        selectPrice.text = " ";
         selectedItemIndex = -1;
 
         if (storePanel != null) storePanel.SetActive(false);

@@ -1,5 +1,6 @@
 using UnityEngine;
 using Fusion;
+using System.Collections;
 
 public class PhotonDeGassing : InvenBase
 {
@@ -9,11 +10,19 @@ public class PhotonDeGassing : InvenBase
     public float shrinkSpeed = 1.2f;
     public LayerMask gasLayerMask;
     public LayerMask pipeGasLayerMask;
+    public AudioSource source;
+    public AudioClip degassingClip;
+    public float fadeOutTime = 0.25f;
 
+    private Coroutine fadeCoroutine;
     private PipeSmallGasObject currentGas;
+    private bool isHoldingSound;
 
     public override void Tick()
     {
+        if (SlimUI.ModernMenu.UISettingsManager.isMenuOpen || PhotonPlayerUIState.isGlobalStoreOpen)
+            return;
+
         if (interactor == null) return;
         if (interactor.cam == null) return;
 
@@ -38,6 +47,18 @@ public class PhotonDeGassing : InvenBase
             }
         }
 
+        if (Input.GetMouseButtonDown(0))
+        {
+            isHoldingSound = true;
+            Rpc_StartGasCleanerSound();
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            isHoldingSound = false;
+            Rpc_StopGasCleanerSound();
+        }
+
         if (targetPipeGas != currentGas)
         {
             if (currentGas != null)
@@ -57,5 +78,70 @@ public class PhotonDeGassing : InvenBase
                 currentGas = null;
             }
         }
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    public void Rpc_StartGasCleanerSound()
+    {
+        if (source == null || degassingClip == null)
+            return;
+
+        float effectVolume = 1f;
+
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+            effectVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+
+        if (fadeCoroutine != null)
+        {
+            StopCoroutine(fadeCoroutine);
+            fadeCoroutine = null;
+        }
+
+        source.volume = effectVolume;
+
+        if (source.clip != degassingClip)
+            source.clip = degassingClip;
+
+        source.loop = true;
+
+        if (!source.isPlaying)
+            source.Play();
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    public void Rpc_StopGasCleanerSound()
+    {
+        if (source == null)
+            return;
+
+        if (fadeCoroutine != null)
+            StopCoroutine(fadeCoroutine);
+
+        fadeCoroutine = StartCoroutine(FadeOutGasSound());
+    }
+
+    private IEnumerator FadeOutGasSound()
+    {
+        float startVolume = source.volume;
+        float time = 0f;
+
+        while (time < fadeOutTime)
+        {
+            if (isHoldingSound)
+            {
+                fadeCoroutine = null;
+                yield break;
+            }
+
+            time += Time.deltaTime;
+            source.volume = Mathf.Lerp(startVolume, 0f, time / fadeOutTime);
+            yield return null;
+        }
+
+        if (!isHoldingSound)
+            source.Stop();
+
+        source.volume = startVolume;
+        fadeCoroutine = null;
     }
 }

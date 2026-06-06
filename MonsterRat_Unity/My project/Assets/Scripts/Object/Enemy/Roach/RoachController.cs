@@ -46,6 +46,12 @@ public class RoachController : NetworkBehaviour
             agent.autoBraking = false;
         }
 
+        if (source != null)
+        {
+            source.loop = true;
+            source.playOnAwake = false;
+        }
+
         PickNewDestination();
 
         if (Object != null && Object.HasStateAuthority)
@@ -54,25 +60,24 @@ public class RoachController : NetworkBehaviour
 
     private void Update()
     {
-        if (Object == null || !Object.HasStateAuthority) return;
+        if (Object == null) return;
         if (agent == null) return;
 
         bool isMoving =
-        !isIdling &&
-        agent.isOnNavMesh &&
-        !agent.pathPending &&
-        agent.velocity.sqrMagnitude > 0.01f;
+            !isIdling &&
+            agent.isOnNavMesh &&
+            !agent.pathPending &&
+            agent.velocity.sqrMagnitude > 0.01f;
 
         float effectVolume = 1f;
         if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
             effectVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
-        source.volume = effectVolume;
-
-        if (animator != null)
-            animator.SetBool("IsMove", isMoving);
 
         if (source != null)
         {
+            source.loop = true;
+            source.volume = effectVolume;
+
             if (isMoving)
             {
                 if (!source.isPlaying)
@@ -84,6 +89,11 @@ public class RoachController : NetworkBehaviour
                     source.Stop();
             }
         }
+
+        if (animator != null)
+            animator.SetBool("IsMove", isMoving);
+
+        if (!Object.HasStateAuthority) return;
 
         if (isIdling) return;
         if (!agent.isOnNavMesh) return;

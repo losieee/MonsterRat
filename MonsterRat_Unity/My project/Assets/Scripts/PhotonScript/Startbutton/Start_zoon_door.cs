@@ -17,10 +17,15 @@ public class Start_zoon_door : NetworkBehaviour
     [Header("문 움직임 설정")]
     public Transform doorVisual;         
     public Vector3 openOffset = new Vector3(0f, 0f, -5f);  // 문 어디로 열리게 할건지 // 스테이지 문 같은경우에는 Z축임
-    public float moveSpeed = 5f;        
+    public float moveSpeed = 5f;
+
+    [Header("문 사운드")]
+    public AudioSource source;
+    public AudioClip doorClip;
 
     private Vector3 closedPosition;
     private Vector3 openPosition;
+    private bool previousDoorOpenState;
 
     [Networked] public NetworkBool IsDoorOpen { get; set; }
 
@@ -119,6 +124,12 @@ public class Start_zoon_door : NetworkBehaviour
         // IsDoorOpen이 true면 openPosition으로 false면 closedPosition으로 부드럽게 이동
         Vector3 targetPos = IsDoorOpen ? openPosition : closedPosition;
         doorVisual.localPosition = Vector3.Lerp(doorVisual.localPosition, targetPos, Time.deltaTime * moveSpeed);
+
+        if (previousDoorOpenState != IsDoorOpen)
+        {
+            PlayDoorSound();
+            previousDoorOpenState = IsDoorOpen;
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -173,6 +184,15 @@ public class Start_zoon_door : NetworkBehaviour
                 currentHoldTime = 0f;
                 if (fillImage != null) fillImage.fillAmount = 0f;
             }
+        }
+    }
+
+    private void PlayDoorSound()
+    {
+        if (source != null && doorClip != null)
+        {
+            source.volume = 0.6f * SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+            source.PlayOneShot(doorClip);
         }
     }
 }

@@ -15,6 +15,10 @@ public class ShotgunController : InvenBase
     public GameObject pollutionPreb;
     public int hitCountAmount = 1;
 
+    public AudioSource source;
+    public AudioClip shotgunSound;
+    public AudioClip reloadSound;
+
     [Header("Cooldown")]
     public float fireCooldown = 1.5f;
     private float nextFireTime = 0f;
@@ -54,6 +58,9 @@ public class ShotgunController : InvenBase
 
     public override void Tick()
     {
+        if (SlimUI.ModernMenu.UISettingsManager.isMenuOpen || PhotonPlayerUIState.isGlobalStoreOpen)
+            return;
+
         if (isReloading) return;
 
         if (Input.GetKeyDown(KeyCode.R))
@@ -72,6 +79,8 @@ public class ShotgunController : InvenBase
         }
 
         nextFireTime = Time.time + fireCooldown;
+
+        Rpc_PlayShotgunSound();
 
         bool rat = TryShootRat();
         if (rat) return;
@@ -184,9 +193,47 @@ public class ShotgunController : InvenBase
         }
     }
 
+    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    public void Rpc_PlayShotgunSound()
+    {
+        if (source == null || shotgunSound == null)
+            return;
+
+        float effectVolume = 1f;
+
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+            effectVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+
+        float baseVolume = HasInputAuthority ? 0.85f : 1f;
+        float finalVolume = baseVolume * effectVolume;
+
+        source.PlayOneShot(shotgunSound, finalVolume);
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    public void Rpc_PlayReRoadSound()
+    {
+        if (source == null || reloadSound == null)
+            return;
+
+        float effectVolume = 1f;
+
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+            effectVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+
+        float baseVolume = HasInputAuthority ? 0.85f : 1f;
+        float finalVolume = baseVolume * effectVolume;
+
+        source.PlayOneShot(reloadSound, finalVolume);
+    }
+
     private IEnumerator Reload()
     {
+        if (currentAmmo >= maxAmmo) yield break;
+
         isReloading = true;
+
+        int reloadCount = maxAmmo - currentAmmo;
 
         for (int i = 0; i < ammoImages.Length; i++)
         {
@@ -194,7 +241,12 @@ public class ShotgunController : InvenBase
                 ammoImages[i].enabled = false;
         }
 
-        yield return new WaitForSeconds(reloadTime);
+        for (int i = 0; i < reloadCount; i++)
+        {
+            Rpc_PlayReRoadSound();
+
+            yield return new WaitForSeconds(reloadTime / reloadCount);
+        }
 
         for (int i = 0; i < ammoImages.Length; i++)
         {
