@@ -3028,7 +3028,7 @@ Transform:
   m_GameObject: {fileID: 31952608}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -32.68, y: 0.97, z: -2.932}
+  m_LocalPosition: {x: -32.68, y: 0.9, z: -2.932}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -21810,7 +21810,7 @@ GameObject:
   - component: {fileID: 207810242}
   - component: {fileID: 207810241}
   - component: {fileID: 207810240}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29593,7 +29593,7 @@ GameObject:
   - component: {fileID: 279339210}
   - component: {fileID: 279339209}
   - component: {fileID: 279339208}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (10)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38350,7 +38350,7 @@ GameObject:
   - component: {fileID: 356663280}
   - component: {fileID: 356663279}
   - component: {fileID: 356663278}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (20)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38759,7 +38759,7 @@ GameObject:
   - component: {fileID: 358892289}
   - component: {fileID: 358892288}
   - component: {fileID: 358892287}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44035,7 +44035,7 @@ GameObject:
   - component: {fileID: 404153996}
   - component: {fileID: 404153995}
   - component: {fileID: 404153994}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (27)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -50737,7 +50737,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 480874580}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
   m_Name: 
@@ -50756,7 +50756,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 480874580}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 81629f5ae8259c64c8609bd653bec64b, type: 3}
   m_Name: 
@@ -50764,11 +50764,13 @@ MonoBehaviour:
   uiCanvas: {fileID: 210819254}
   fillImage: {fileID: 210819256}
   infoText: {fileID: 210819255}
-  holdDuration: 10
+  holdDuration: 2
   doorOpenTime: 5
-  doorVisual: {fileID: 0}
-  openOffset: {x: 0, y: 0, z: -5}
-  moveSpeed: 5
+  doorVisual: {fileID: 712798204}
+  openOffset: {x: 0, y: 0, z: -2}
+  moveSpeed: 1
+  source: {fileID: 712798205}
+  doorClip: {fileID: 8300000, guid: 2b9623b67e40f2b449eb7e43bcf64b98, type: 3}
   _IsDoorOpen:
     _value: 0
 --- !u!1 &481377820
@@ -57261,7 +57263,7 @@ GameObject:
   - component: {fileID: 564488281}
   - component: {fileID: 564488280}
   - component: {fileID: 564488279}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (26)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -57519,7 +57521,7 @@ GameObject:
   - component: {fileID: 566438551}
   - component: {fileID: 566438550}
   - component: {fileID: 566438549}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (13)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -62227,7 +62229,7 @@ GameObject:
   - component: {fileID: 623897955}
   - component: {fileID: 623897954}
   - component: {fileID: 623897953}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (11)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -63536,7 +63538,7 @@ GameObject:
   - component: {fileID: 632484322}
   - component: {fileID: 632484321}
   - component: {fileID: 632484320}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -65266,7 +65268,7 @@ GameObject:
   - component: {fileID: 645674907}
   - component: {fileID: 645674906}
   - component: {fileID: 645674905}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (14)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -65693,7 +65695,7 @@ GameObject:
   - component: {fileID: 648314555}
   - component: {fileID: 648314557}
   - component: {fileID: 648314556}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: IncineratorModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -67353,156 +67355,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 663106031}
   m_Mesh: {fileID: 3477176812772559159, guid: 777f76e242fdfcc419fa98114be6458b, type: 3}
---- !u!1 &663583952
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 663583953}
-  - component: {fileID: 663583956}
-  - component: {fileID: 663583955}
-  - component: {fileID: 663583954}
-  - component: {fileID: 663583958}
-  - component: {fileID: 663583957}
-  m_Layer: 0
-  m_Name: Cube
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &663583953
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 663583952}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 38.573, y: 0, z: 0.014}
-  m_LocalScale: {x: 0.35476, y: 3.683101, z: 1.9124717}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1977197043}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &663583954
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 663583952}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!23 &663583955
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 663583952}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: bdccc9a2fa3bb08488f74c467ba82aba, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_MaskInteraction: 0
-  m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &663583956
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 663583952}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &663583957
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 663583952}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 158639473, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkTransform
-  _stateAuthorityChangeErrorCorrectionDelta: 0
-  SyncScale: 0
-  SyncParent: 0
-  _autoAOIOverride: 1
-  DisableSharedModeInterpolation: 0
---- !u!114 &663583958
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 663583952}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 1817797142
-  ObjectInterest: 1
-  Flags: 262145
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 663583957}
-  ForceRemoteRenderTimeframe: 0
 --- !u!1 &664506668
 GameObject:
   m_ObjectHideFlags: 0
@@ -72686,6 +72538,216 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!1 &712798203
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 712798204}
+  - component: {fileID: 712798208}
+  - component: {fileID: 712798207}
+  - component: {fileID: 712798206}
+  - component: {fileID: 712798205}
+  m_Layer: 0
+  m_Name: SafeZone_Door
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &712798204
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712798203}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 72.64063, y: 1.8144002, z: 30.02953}
+  m_LocalScale: {x: 0.59999996, y: 3.6831, z: 1.91247}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2133281146}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &712798205
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712798203}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 0.6
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 2
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!65 &712798206
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712798203}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &712798207
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712798203}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: bdccc9a2fa3bb08488f74c467ba82aba, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &712798208
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712798203}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1001 &713311937
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -83169,7 +83231,7 @@ GameObject:
   - component: {fileID: 829389182}
   - component: {fileID: 829389181}
   - component: {fileID: 829389180}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (22)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94008,7 +94070,7 @@ GameObject:
   - component: {fileID: 943186430}
   - component: {fileID: 943186429}
   - component: {fileID: 943186428}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (17)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104300,7 +104362,7 @@ GameObject:
   - component: {fileID: 1015940179}
   - component: {fileID: 1015940178}
   - component: {fileID: 1015940177}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (16)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113750,7 +113812,7 @@ GameObject:
   - component: {fileID: 1101457223}
   - component: {fileID: 1101457222}
   - component: {fileID: 1101457221}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (24)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -114297,7 +114359,7 @@ GameObject:
   - component: {fileID: 1106388584}
   - component: {fileID: 1106388583}
   - component: {fileID: 1106388582}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (19)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -119239,7 +119301,7 @@ GameObject:
   - component: {fileID: 1155413897}
   - component: {fileID: 1155413896}
   - component: {fileID: 1155413895}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (12)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -135566,7 +135628,7 @@ GameObject:
   - component: {fileID: 1335859866}
   - component: {fileID: 1335859868}
   - component: {fileID: 1335859867}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: IncineratorModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140006,7 +140068,7 @@ GameObject:
   - component: {fileID: 1370884852}
   - component: {fileID: 1370884851}
   - component: {fileID: 1370884850}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (11)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -146124,8 +146186,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 8.15, y: 1, z: 15.716534}
-  m_Center: {x: 0, y: 0, z: 7.358267}
+  m_Size: {x: 8.15, y: 1.7908412, z: 13.728504}
+  m_Center: {x: 0, y: -0.3954206, z: 6.364252}
 --- !u!114 &1426324363
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -153005,7 +153067,7 @@ GameObject:
   - component: {fileID: 1479257227}
   - component: {fileID: 1479257226}
   - component: {fileID: 1479257225}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (23)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -164415,7 +164477,7 @@ GameObject:
   - component: {fileID: 1578280315}
   - component: {fileID: 1578280314}
   - component: {fileID: 1578280313}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (10)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -164655,7 +164717,7 @@ Transform:
   m_GameObject: {fileID: 1580204730}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 114.6, y: 0.97, z: -2.9}
+  m_LocalPosition: {x: 114.6, y: 0.9, z: -2.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -190549,7 +190611,7 @@ GameObject:
   - component: {fileID: 1822409920}
   - component: {fileID: 1822409919}
   - component: {fileID: 1822409918}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (15)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -196234,8 +196296,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 8.15, y: 1, z: 15.716534}
-  m_Center: {x: 0, y: 0, z: 7.358267}
+  m_Size: {x: 8.15, y: 2.0518084, z: 13.510273}
+  m_Center: {x: 0, y: -0.5259043, z: 6.2551365}
 --- !u!114 &1883651854
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -206007,7 +206069,6 @@ Transform:
   m_Children:
   - {fileID: 480874581}
   - {fileID: 1697029460}
-  - {fileID: 663583953}
   m_Father: {fileID: 2133281146}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!111 &1977197045
@@ -206066,7 +206127,6 @@ MonoBehaviour:
   Flags: 262145
   NestedObjects:
   - {fileID: 480874586}
-  - {fileID: 663583958}
   NetworkedBehaviours:
   - {fileID: 1977197048}
   - {fileID: 1977197049}
@@ -206091,6 +206151,8 @@ MonoBehaviour:
   doorVisual: {fileID: 0}
   openOffset: {x: 0, y: 0, z: -5}
   moveSpeed: 5
+  source: {fileID: 0}
+  doorClip: {fileID: 0}
   _IsDoorOpen:
     _value: 0
 --- !u!114 &1977197049
@@ -212331,7 +212393,7 @@ GameObject:
   - component: {fileID: 2028156712}
   - component: {fileID: 2028156711}
   - component: {fileID: 2028156710}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (25)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -214807,7 +214869,7 @@ GameObject:
   - component: {fileID: 2054081207}
   - component: {fileID: 2054081206}
   - component: {fileID: 2054081205}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (28)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -218061,7 +218123,7 @@ GameObject:
   - component: {fileID: 2091409302}
   - component: {fileID: 2091409301}
   - component: {fileID: 2091409300}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (21)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -223483,6 +223545,7 @@ Transform:
   - {fileID: 3946373972478182683}
   - {fileID: 26992631}
   - {fileID: 1977197043}
+  - {fileID: 712798204}
   - {fileID: 1993847847}
   - {fileID: 738859059}
   m_Father: {fileID: 756348985}
@@ -223746,7 +223809,7 @@ GameObject:
   - component: {fileID: 2136391683}
   - component: {fileID: 2136391682}
   - component: {fileID: 2136391681}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (18)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -232438,7 +232501,7 @@ GameObject:
   - component: {fileID: 1257837265816678189}
   - component: {fileID: 3931725066316848103}
   - component: {fileID: 1059765879081742699}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -244145,7 +244208,7 @@ GameObject:
   - component: {fileID: 6140990454847391952}
   - component: {fileID: 8277010291383778330}
   - component: {fileID: 5402236458536867478}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -244164,7 +244227,7 @@ GameObject:
   - component: {fileID: 6140990454774398384}
   - component: {fileID: 8277010291379964282}
   - component: {fileID: 5402236458408551414}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -244183,7 +244246,7 @@ GameObject:
   - component: {fileID: 6140990455555822479}
   - component: {fileID: 8277010291085600581}
   - component: {fileID: 5402236459237723593}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -244202,7 +244265,7 @@ GameObject:
   - component: {fileID: 6140990455352940764}
   - component: {fileID: 8277010290884783126}
   - component: {fileID: 5402236459037951642}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -244221,7 +244284,7 @@ GameObject:
   - component: {fileID: 6140990453897920230}
   - component: {fileID: 8277010292382534188}
   - component: {fileID: 5402236457271763104}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -244240,7 +244303,7 @@ GameObject:
   - component: {fileID: 6140990453776244953}
   - component: {fileID: 8277010292462130195}
   - component: {fileID: 5402236457460612767}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -244259,7 +244322,7 @@ GameObject:
   - component: {fileID: 6140990454349119332}
   - component: {fileID: 8277010291760024494}
   - component: {fileID: 5402236457760088354}
-  m_Layer: 0
+  m_Layer: 15
   m_Name: msp_tunnel_brace (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
