@@ -22,7 +22,7 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
 
     [Header("연결 요소")]
     public GameObject myCamObj;
-    public Transform flashPivot;            // 손전등 전용 불빛
+    public Transform flashPivot;
 
     [Header("발소리")]
     public AudioClip[] footSteps;
@@ -43,7 +43,6 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
     private float originalFov;
     private Camera playerCamera;
 
-    // 다시 익숙한 Rigidbody로 돌아옵니다!
     private Rigidbody rb;
     private float pitch = 0f;
     private float yaw = 0f;
@@ -51,7 +50,13 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
     private float footstepTimer = 0f;
     private PlayerFootStepType footStepType;
 
-    [Networked] public float NetPitch { get; set; }     // 플레이어 위아래 시선 처리
+    private Vector2 currentMouseDelta;
+
+    private float cachedXSens = 1f;
+    private float cachedYSens = 1f;
+    private float cachedSmoothing = 0f;
+
+    [Networked] public float NetPitch { get; set; }
 
     public override void Spawned()
     {
@@ -84,12 +89,25 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
             {
                 GameInputLock.Unlock();
             }
+            LoadSettingsDataSafely();
         }
         else
         {
             myCamObj.SetActive(false);
             var listener = GetComponentInChildren<AudioListener>();
             if (listener != null) listener.enabled = false;
+        }
+    }
+
+    private void LoadSettingsDataSafely()
+    {
+        string jsonString = PlayerPrefs.GetString("MasterGameSettings", "");
+        if (!string.IsNullOrEmpty(jsonString))
+        {
+            SlimUI.ModernMenu.GameSettingsData data = JsonUtility.FromJson<SlimUI.ModernMenu.GameSettingsData>(jsonString);
+            cachedXSens = data.xSensitivity;
+            cachedYSens = data.ySensitivity;
+            cachedSmoothing = data.mouseSmoothing;
         }
     }
 
@@ -105,22 +123,49 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
     {
         if (!HasInputAuthority) return;
 
-        if (SlimUI.ModernMenu.UISettingsManager.isMenuOpen || PhotonPlayerUIState.isGlobalStoreOpen)
+        bool isMenuRealOpen = SlimUI.ModernMenu.UISettingsManager.isMenuOpen && SlimUI.ModernMenu.UISettingsManager.Instance != null;
+        if (isMenuRealOpen || PhotonPlayerUIState.isGlobalStoreOpen)
         {
-            return; 
+            return;
         }
 
         if (GameInputLock.IsLocked)
             return;
 
-        yaw += Input.GetAxis("Mouse X") * mouseSensitivity;
-        pitch -= Input.GetAxis("Mouse Y") * mouseSensitivity;
+        float xSens = cachedXSens;
+        float ySens = cachedYSens;
+        float smoothing = cachedSmoothing;
+
+       
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+        {
+            xSens = SlimUI.ModernMenu.UISettingsManager.Instance.XSensitivity;
+            ySens = SlimUI.ModernMenu.UISettingsManager.Instance.YSensitivity;
+            smoothing = SlimUI.ModernMenu.UISettingsManager.Instance.MouseSmoothing;
+        }
+
+        xSens = Mathf.Max(0.1f, xSens);
+        ySens = Mathf.Max(0.1f, ySens);
+
+        Vector2 targetMouseDelta = new Vector2(Input.GetAxis("Mouse X") * xSens, Input.GetAxis("Mouse Y") * ySens);
+
+        if (smoothing <= 0.01f)
+        {
+            currentMouseDelta = targetMouseDelta;
+        }
+        else
+        {
+            float lerpSpeed = Mathf.Lerp(40f, 5f, smoothing);
+            currentMouseDelta = Vector2.Lerp(currentMouseDelta, targetMouseDelta, Time.deltaTime * lerpSpeed);
+        }
+
+        yaw += currentMouseDelta.x * mouseSensitivity * 0.1f; 
+        pitch -= currentMouseDelta.y * mouseSensitivity * 0.1f; 
         pitch = Mathf.Clamp(pitch, -90f, 90f);
 
         if (myCamObj != null)
         {
             myCamObj.transform.localRotation = Quaternion.Euler(pitch, 0f, 0f) * Quaternion.Euler(cameraEffectEuler);
-
             myCamObj.transform.localPosition = originalCameraLocalPosition + cameraEffectPosition;
 
             if (playerCamera != null)
@@ -163,14 +208,12 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
 
     public override void FixedUpdateNetwork()
     {
-        if (GameInputLock.IsLocked)
-            return;
+        if (GameInputLock.IsLocked) return;
 
         if (GetInput(out MyNetworkInput input))
         {
             Vector3 beforePos = transform.position;
 
-            // 좌우 회전
             transform.rotation = Quaternion.Euler(0, input.yaw, 0);
 
             if (HasStateAuthority)
@@ -178,7 +221,6 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
                 NetPitch = input.pitch;
             }
 
-            // 이동 계산
             float currentSpeed = input.isRunning ? runSpeed : moveSpeed;
             Vector3 moveDir = (transform.right * input.moveInput.x + transform.forward * input.moveInput.y).normalized;
 
@@ -186,20 +228,16 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
             {
                 Vector3 origin = transform.position + Vector3.up * 1f;
 
-                // 내가 갈 위치에 벽이 있는지 검사
                 bool isBlocked = Physics.SphereCast(origin, 0.3f, moveDir, out RaycastHit hit, wallCheckDistance, wallLayer);
 
                 if (!isBlocked)
                 {
-                    // Rigidbody와 Network Transform을 같이 쓸 때는 position을 직접 밀어주는 방식이 가장 충돌이 적습니다.
                     transform.position += moveDir * currentSpeed * Runner.DeltaTime;
                 }
                 else
                 {
-                    // 벽에 딱 달아붙어 있는 경우 자연스럽게 벽을 따라 슬라이딩
                     Vector3 slideDir = Vector3.ProjectOnPlane(moveDir, hit.normal).normalized;
 
-                    // 앞이 막혀있는 경우
                     if (slideDir.sqrMagnitude > 0.01f)
                     {
                         transform.position += slideDir * currentSpeed * 0.5f * Runner.DeltaTime;
@@ -208,13 +246,11 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
             }
 
             Vector3 afterPos = transform.position;
-
             Vector3 actualDelta = afterPos - beforePos;
             actualDelta.y = 0f;
 
             float actualMoveDistance = actualDelta.magnitude;
 
-            // 애니메이션
             if (animator != null)
             {
                 float animMultiplier = input.isRunning ? 1.0f : 0.5f;
@@ -222,30 +258,24 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
                 animator.SetFloat("MoveY", input.moveInput.y * animMultiplier, 0.1f, Runner.DeltaTime);
             }
 
-            // 발소리
             if (HasInputAuthority && Runner.IsForward)
             {
                 HandleFootstep(input, actualMoveDistance);
             }
         }
 
-        // 상하 회전
         if (flashPivot != null)
         {
-            flashPivot.localRotation = Quaternion.Euler(NetPitch, 0f, 0f);          // 손전등 빛 오브젝트도 같이
+            flashPivot.localRotation = Quaternion.Euler(NetPitch, 0f, 0f);
         }
     }
 
     void HandleFootstep(MyNetworkInput input, float actualMoveDistance)
     {
-        if (footstepAudioSource == null)
-            return;
+        if (footstepAudioSource == null) return;
 
         bool hasInput = input.moveInput.sqrMagnitude > 0.01f;
-
-        // 실제 이동 거리가 거의 없으면 발소리 X
         bool actuallyMoving = actualMoveDistance > 0.001f;
-
         float interval = input.isRunning ? runStepInterval : walkStepInterval;
 
         if (!hasInput || !actuallyMoving)
@@ -256,8 +286,7 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
 
         footstepTimer -= Runner.DeltaTime;
 
-        if (footstepTimer > 0f)
-            return;
+        if (footstepTimer > 0f) return;
 
         FootStepRangeType currentType = footStepType != null
             ? footStepType.CurrentRangeType
@@ -268,7 +297,6 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
         footstepTimer = interval;
     }
 
-    // 다른 사람한테도 발소리 들릴 수 있도록
     [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
     public void Rpc_PlayFootstep(FootStepRangeType stepType)
     {
@@ -287,11 +315,9 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
         PlayFootstep(stepType);
     }
 
-    // 타입 별 발소리 (돌, 철, 물)
     void PlayFootstep(FootStepRangeType stepType)
     {
-        if (footstepAudioSource == null || footSteps == null || footSteps.Length == 0)
-            return;
+        if (footstepAudioSource == null || footSteps == null || footSteps.Length == 0) return;
 
         AudioClip clip = null;
 
@@ -300,11 +326,9 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
             case FootStepRangeType.Metal:
                 if (footSteps.Length > 1) clip = footSteps[1];
                 break;
-
             case FootStepRangeType.Water:
                 if (footSteps.Length > 2) clip = footSteps[2];
                 break;
-
             case FootStepRangeType.Stone:
             default:
                 if (footSteps.Length > 0) clip = footSteps[0];

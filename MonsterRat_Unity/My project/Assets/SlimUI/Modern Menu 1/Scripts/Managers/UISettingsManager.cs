@@ -1,14 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System.IO;
 using Fusion;
 using UnityEngine.SceneManagement;
 
 namespace SlimUI.ModernMenu
 {
-
-    // json으로 저장할 데이터 클래스 
+    // json으로 변환시킬 데이터 클래스
     [System.Serializable]
     public class GameSettingsData
     {
@@ -58,14 +56,6 @@ namespace SlimUI.ModernMenu
         public enum Platform { Desktop, Mobile };
         public Platform platform;
 
-        // // toggle buttons   필요음슴
-        // [Header("MOBILE SETTINGS")]
-        // public GameObject mobileSFXtext;
-        // public GameObject mobileMusictext;
-        // public GameObject mobileShadowofftextLINE;
-        // public GameObject mobileShadowlowtextLINE;
-        // public GameObject mobileShadowhightextLINE;
-
         [Header("VIDEO SETTINGS")]
         public GameObject fullscreentext;
         public GameObject ambientocclusiontext;
@@ -106,13 +96,10 @@ namespace SlimUI.ModernMenu
         public GameObject sensitivityYSlider;
         public GameObject mouseSmoothSlider;
 
-
-
         // JSON 데이터 관리 객체
         private GameSettingsData currentSettings;
-        private string saveFilePath;
 
-        private bool isInitializing = false;        // 초기화중에는 Json값 저장 못하게 막음
+        private bool isInitializing = false;
 
         private void Awake()
         {
@@ -121,35 +108,25 @@ namespace SlimUI.ModernMenu
 
         public void Start()
         {
-            // 저장 경로 설정 (OS별로 안전한 영구 저장 경로 자동 지정됨)
-            saveFilePath = Application.persistentDataPath + "/GameSettings.json";
-
             isInitializing = true;
 
             // 시작 시 JSON 파일 불러오기 
             LoadSettings();
 
-            // 시작할 때는 메뉴를 숨겨둡니다.
             if (settingsPanel != null) settingsPanel.SetActive(false);
 
-            // 불러온 데이터로 UI 및 게임 엔진 설정 업데이트
             ApplySettingsToUIAndEngine();
 
             isInitializing = false;
-
-            Debug.Log("세이브 파일 실제 위치: " + Application.persistentDataPath);
         }
 
         public void Update()
         {
-            if (GameInputLock.IsLocked)
-                return;
+            if (GameInputLock.IsLocked) return;
 
-            // [수정됨] canUseEscKey가 true일 때만 ESC 키를 인식합니다.
             if (canUseEscKey && Input.GetKeyDown(KeyCode.Escape))
             {
                 if (isTutorialPlayer && state.storeOpen) return;
-
                 if (PhotonPlayerUIState.isGlobalStoreOpen) return;
 
                 ToggleSettingsMenu();
@@ -158,15 +135,10 @@ namespace SlimUI.ModernMenu
 
         bool CanUseMenu()
         {
-            if (!useLocalPlayerCheck)
-                return true;
-
+            if (!useLocalPlayerCheck) return true;
             return isLocalPlayer;
         }
 
-        // ==========================================
-        // UI 토글 및 마우스 커서 관리 (멀티플레이 고려)
-        // ==========================================
         public void ToggleSettingsMenu()
         {
             if (settingsPanel == null) return;
@@ -178,37 +150,32 @@ namespace SlimUI.ModernMenu
             isMenuOpen = settingsPanel.activeSelf;
             if (!isCurrentlyActive)
             {
-                // 메뉴가 열렸을 때 (게임은 계속 진행되도록 Time.timeScale = 0은 쓰지 않음)
-                Cursor.lockState = CursorLockMode.None; // 마우스 락 풀기
-                Cursor.visible = true;                  // 마우스 보이기
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
             }
             else
             {
-                // 메뉴가 닫혔을 때 (다시 게임 조작 상태로 복귀)
-                Cursor.lockState = CursorLockMode.Locked; // 마우스 다시 화면 중앙에 고정
-                Cursor.visible = false;                   // 마우스 숨기기
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
 
-                // 메뉴를 닫을 때 현재 슬라이더 값들을 한 번 더 확실하게 저장
                 SaveSettings();
                 exitPanel.SetActive(false);
             }
         }
 
-        // json 세이브로드 로직
+        // ★ 수정됨: PhotonInventory처럼 PlayerPrefs에 JSON 형식으로 읽고 쓰기
         private void LoadSettings()
         {
-            if (File.Exists(saveFilePath))
+            string jsonString = PlayerPrefs.GetString("MasterGameSettings", "");
+
+            if (!string.IsNullOrEmpty(jsonString))
             {
-                string json = File.ReadAllText(saveFilePath);
-                currentSettings = JsonUtility.FromJson<GameSettingsData>(json);
-               // Debug.Log("설정 파일 불러오기 성공: " + saveFilePath);
+                currentSettings = JsonUtility.FromJson<GameSettingsData>(jsonString);
             }
             else
             {
-                // 파일이 없으면 새 객체 생성 (기본값)
                 currentSettings = new GameSettingsData();
                 SaveSettings();
-               // Debug.Log("새 설정 파일 생성됨: " + saveFilePath);
             }
         }
 
@@ -220,20 +187,14 @@ namespace SlimUI.ModernMenu
             if (runner != null)
             {
                 await runner.Shutdown();
-
                 Destroy(runner.gameObject);
-
                 runner = null;
             }
 
-            if (settingsPanel != null)
-                settingsPanel.SetActive(false);
+            if (settingsPanel != null) settingsPanel.SetActive(false);
 
             isMenuOpen = false;
-            
-            // Shutdown 후 Runner 제거까지 대기
             await System.Threading.Tasks.Task.Delay(200);
-
             SceneManager.LoadScene("ZZin_Main_Lobby");
         }
 
@@ -246,71 +207,56 @@ namespace SlimUI.ModernMenu
         {
             if (isInitializing) return;
 
-            // 1. Music Slider 저장 및 전체 볼륨 조절
             if (musicSlider != null)
             {
                 currentSettings.musicVolume = musicSlider.value;
                 PlayerPrefs.SetFloat("MusicVolume", currentSettings.musicVolume);
-
-                if (bgmSource != null)
-                    bgmSource.volume = currentSettings.musicVolume;
+                if (bgmSource != null) bgmSource.volume = currentSettings.musicVolume;
             }
 
             if (effectSlider != null)
             {
                 currentSettings.effectVolume = effectSlider.value;
                 PlayerPrefs.SetFloat("EffectVolume", currentSettings.effectVolume);
-
-                if (sfxSource != null)
-                    sfxSource.volume = currentSettings.effectVolume;
+                if (sfxSource != null) sfxSource.volume = currentSettings.effectVolume;
             }
 
-            PlayerPrefs.Save();
-
-            // 2. Sensitivity X 저장
             if (sensitivityXSlider != null)
             {
                 Slider slider = sensitivityXSlider.GetComponent<Slider>();
                 if (slider != null)
                 {
                     currentSettings.xSensitivity = slider.value;
-                    PlayerPrefs.SetFloat("XSensitivity", currentSettings.xSensitivity);
                 }
             }
 
-            // 3. Sensitivity Y 저장
             if (sensitivityYSlider != null)
             {
                 Slider slider = sensitivityYSlider.GetComponent<Slider>();
                 if (slider != null)
                 {
                     currentSettings.ySensitivity = slider.value;
-                    PlayerPrefs.SetFloat("YSensitivity", currentSettings.ySensitivity);
                 }
             }
 
-            // 4. Mouse Smoothing 저장
             if (mouseSmoothSlider != null)
             {
                 Slider slider = mouseSmoothSlider.GetComponent<Slider>();
                 if (slider != null)
                 {
                     currentSettings.mouseSmoothing = slider.value;
-                    PlayerPrefs.SetFloat("MouseSmoothing", currentSettings.mouseSmoothing);
                 }
             }
 
-            // JSON 파일로 영구 저장 (안전 장치 추가)
-            if (!string.IsNullOrEmpty(saveFilePath) && currentSettings != null)
+            // ★ 수정됨: PhotonInventory 방식으로 JSON 데이터를 레지스트리에 저장!
+            if (currentSettings != null)
             {
-                string json = JsonUtility.ToJson(currentSettings, true);
-                File.WriteAllText(saveFilePath, json);
+                string jsonString = JsonUtility.ToJson(currentSettings, true);
+                PlayerPrefs.SetString("MasterGameSettings", jsonString);
+                PlayerPrefs.Save();
             }
         }
 
-        // ==========================================
-        // 불러온 데이터로 UI 상태와 QualitySettings 맞추기
-        // ==========================================
         private void ApplySettingsToUIAndEngine()
         {
             if (currentSettings.normalDifficulty == 1)
@@ -327,11 +273,8 @@ namespace SlimUI.ModernMenu
             if (musicSlider) musicSlider.SetValueWithoutNotify(currentSettings.musicVolume);
             if (effectSlider) effectSlider.SetValueWithoutNotify(currentSettings.effectVolume);
 
-            if (bgmSource != null)
-                bgmSource.volume = currentSettings.musicVolume;
-
-            if (sfxSource != null)
-                sfxSource.volume = currentSettings.effectVolume;
+            if (bgmSource != null) bgmSource.volume = currentSettings.musicVolume;
+            if (sfxSource != null) sfxSource.volume = currentSettings.effectVolume;
 
             if (sensitivityXSlider) sensitivityXSlider.GetComponent<Slider>().value = currentSettings.xSensitivity;
             if (sensitivityYSlider) sensitivityYSlider.GetComponent<Slider>().value = currentSettings.ySensitivity;
@@ -347,12 +290,6 @@ namespace SlimUI.ModernMenu
                 else if (currentSettings.shadows == 1) ShadowsLow();
                 else if (currentSettings.shadows == 2) ShadowsHigh();
             }
-            //  else if (platform == Platform.Mobile)
-            //  {
-            //      if (currentSettings.mobileShadows == 0) MobileShadowsOff();
-            //      else if (currentSettings.mobileShadows == 1) MobileShadowsLow();
-            //      else if (currentSettings.mobileShadows == 2) MobileShadowsHigh();
-            //  }
 
             QualitySettings.vSyncCount = currentSettings.vSyncCount;
             if (vsynctext) vsynctext.GetComponent<TMP_Text>().text = currentSettings.vSyncCount == 0 ? "off" : "on";
@@ -365,26 +302,14 @@ namespace SlimUI.ModernMenu
             else if (currentSettings.textures == 2) TexturesHigh();
         }
 
-        // ==========================================
-        // UI 버튼 클릭 이벤트들 (값 변경 후 SaveSettings 호출)
-        // ==========================================
         public void FullScreen()
         {
             Screen.fullScreen = !Screen.fullScreen;
             if (fullscreentext) fullscreentext.GetComponent<TMP_Text>().text = Screen.fullScreen ? "on" : "off";
         }
 
-        public void MusicSlider()
-        {
-            if (isInitializing) return;
-            SaveSettings();
-        }
-
-        public void EffectSlider()
-        {
-            if (isInitializing) return;
-            SaveSettings();
-        }
+        public void MusicSlider() { if (!isInitializing) SaveSettings(); }
+        public void EffectSlider() { if (!isInitializing) SaveSettings(); }
         public void SensitivityXSlider() { SaveSettings(); }
         public void SensitivityYSlider() { SaveSettings(); }
         public void SensitivitySmoothing() { SaveSettings(); }
@@ -395,20 +320,6 @@ namespace SlimUI.ModernMenu
             if (showhudtext) showhudtext.GetComponent<TMP_Text>().text = currentSettings.showHUD == 0 ? "off" : "on";
             SaveSettings();
         }
-
-        // public void MobileSFXMute()
-        // {
-        //     currentSettings.mobileMuteSfx = currentSettings.mobileMuteSfx == 0 ? 1 : 0;
-        //     if (mobileSFXtext) mobileSFXtext.GetComponent<TMP_Text>().text = currentSettings.mobileMuteSfx == 0 ? "off" : "on";
-        //     SaveSettings();
-        // }
-        //
-        // public void MobileMusicMute()
-        // {
-        //     currentSettings.mobileMuteMusic = currentSettings.mobileMuteMusic == 0 ? 1 : 0;
-        //     if (mobileMusictext) mobileMusictext.GetComponent<TMP_Text>().text = currentSettings.mobileMuteMusic == 0 ? "off" : "on";
-        //     SaveSettings();
-        // }
 
         public void ToolTips()
         {
@@ -467,39 +378,6 @@ namespace SlimUI.ModernMenu
             if (shadowhightextLINE) shadowhightextLINE.gameObject.SetActive(true);
             SaveSettings();
         }
-
-        // public void MobileShadowsOff()
-        // {
-        //     currentSettings.mobileShadows = 0;
-        //     QualitySettings.shadowCascades = 0;
-        //     QualitySettings.shadowDistance = 0;
-        //     if (mobileShadowofftextLINE) mobileShadowofftextLINE.gameObject.SetActive(true);
-        //     if (mobileShadowlowtextLINE) mobileShadowlowtextLINE.gameObject.SetActive(false);
-        //     if (mobileShadowhightextLINE) mobileShadowhightextLINE.gameObject.SetActive(false);
-        //     SaveSettings();
-        // }
-        //
-        // public void MobileShadowsLow()
-        // {
-        //     currentSettings.mobileShadows = 1;
-        //     QualitySettings.shadowCascades = 2;
-        //     QualitySettings.shadowDistance = 75;
-        //     if (mobileShadowofftextLINE) mobileShadowofftextLINE.gameObject.SetActive(false);
-        //     if (mobileShadowlowtextLINE) mobileShadowlowtextLINE.gameObject.SetActive(true);
-        //     if (mobileShadowhightextLINE) mobileShadowhightextLINE.gameObject.SetActive(false);
-        //     SaveSettings();
-        // }
-        //
-        // public void MobileShadowsHigh()
-        // {
-        //     currentSettings.mobileShadows = 2;
-        //     QualitySettings.shadowCascades = 4;
-        //     QualitySettings.shadowDistance = 100;
-        //     if (mobileShadowofftextLINE) mobileShadowofftextLINE.gameObject.SetActive(false);
-        //     if (mobileShadowlowtextLINE) mobileShadowlowtextLINE.gameObject.SetActive(false);
-        //     if (mobileShadowhightextLINE) mobileShadowhightextLINE.gameObject.SetActive(true);
-        //     SaveSettings();
-        // }
 
         public void vsync()
         {
@@ -567,6 +445,9 @@ namespace SlimUI.ModernMenu
             SaveSettings();
         }
 
+        public float XSensitivity => currentSettings != null ? currentSettings.xSensitivity : 1f;
+        public float YSensitivity => currentSettings != null ? currentSettings.ySensitivity : 1f;
+        public float MouseSmoothing => currentSettings != null ? currentSettings.mouseSmoothing : 0f;
         public float EffectVolume => currentSettings != null ? currentSettings.effectVolume : 1f;
         public float MusicVolume => currentSettings != null ? currentSettings.musicVolume : 1f;
     }
