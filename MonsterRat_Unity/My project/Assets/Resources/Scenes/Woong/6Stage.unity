@@ -15406,7 +15406,7 @@ GameObject:
   - component: {fileID: 139561436}
   - component: {fileID: 139561435}
   - component: {fileID: 139561434}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: msp_trim (19)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -16857,6 +16857,8 @@ MonoBehaviour:
   doorVisual: {fileID: 643790293}
   openOffset: {x: 0, y: 0, z: -3}
   moveSpeed: 5
+  source: {fileID: 0}
+  doorClip: {fileID: 0}
   _IsDoorOpen:
     _value: 0
 --- !u!114 &164251800
@@ -25826,7 +25828,7 @@ GameObject:
   - component: {fileID: 254557264}
   - component: {fileID: 254557263}
   - component: {fileID: 254557262}
-  m_Layer: 15
+  m_Layer: 2
   m_Name: msp_column_tall (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39135,7 +39137,7 @@ GameObject:
   - component: {fileID: 427351367}
   - component: {fileID: 427351366}
   - component: {fileID: 427351365}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: msp_trim (19)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44429,8 +44431,10 @@ MonoBehaviour:
   holdDuration: 2
   doorOpenTime: 5
   doorVisual: {fileID: 772506558}
-  openOffset: {x: 0, y: 0, z: -3}
-  moveSpeed: 5
+  openOffset: {x: 0, y: 0, z: -2}
+  moveSpeed: 1
+  source: {fileID: 772506559}
+  doorClip: {fileID: 8300000, guid: 2b9623b67e40f2b449eb7e43bcf64b98, type: 3}
   _IsDoorOpen:
     _value: 0
 --- !u!1001 &483337157
@@ -53841,8 +53845,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 8.560797, y: 2.91, z: 17.658669}
-  m_Center: {x: -0.13039875, y: 0, z: 3.1693344}
+  m_Size: {x: 8.560797, y: 2.91, z: 13.7707405}
+  m_Center: {x: -0.13039875, y: 0, z: 1.2253704}
 --- !u!4 &578789710
 Transform:
   m_ObjectHideFlags: 0
@@ -56070,7 +56074,7 @@ GameObject:
   - component: {fileID: 617907895}
   - component: {fileID: 617907894}
   - component: {fileID: 617907893}
-  m_Layer: 15
+  m_Layer: 2
   m_Name: msp_column_tall (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56182,7 +56186,7 @@ GameObject:
   - component: {fileID: 618888136}
   - component: {fileID: 618888135}
   - component: {fileID: 618888134}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: msp_trim (17)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -63466,6 +63470,8 @@ MonoBehaviour:
   doorVisual: {fileID: 0}
   openOffset: {x: 0, y: 0, z: -5}
   moveSpeed: 5
+  source: {fileID: 0}
+  doorClip: {fileID: 0}
   _IsDoorOpen:
     _value: 0
 --- !u!114 &702007932
@@ -69087,7 +69093,7 @@ GameObject:
   - component: {fileID: 765892621}
   - component: {fileID: 765892620}
   - component: {fileID: 765892619}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: msp_trim (20)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -69538,6 +69544,7 @@ GameObject:
   - component: {fileID: 772506557}
   - component: {fileID: 772506556}
   - component: {fileID: 772506555}
+  - component: {fileID: 772506559}
   m_Layer: 0
   m_Name: SafeZone_Door
   m_TagString: Untagged
@@ -69638,6 +69645,103 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &772506559
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 772506554}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 0.6
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 2
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1001 &773177150
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -72996,6 +73100,8 @@ MonoBehaviour:
   doorVisual: {fileID: 0}
   openOffset: {x: 0, y: 0, z: -5}
   moveSpeed: 5
+  source: {fileID: 0}
+  doorClip: {fileID: 0}
   _IsDoorOpen:
     _value: 0
 --- !u!111 &794474765
@@ -77557,7 +77663,7 @@ GameObject:
   - component: {fileID: 840194087}
   - component: {fileID: 840194086}
   - component: {fileID: 840194085}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: msp_trim (18)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -84425,7 +84531,7 @@ Transform:
   m_GameObject: {fileID: 930673137}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 145.38, y: 1.16, z: 51.1}
+  m_LocalPosition: {x: 145.38, y: 0.9, z: 51.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -99790,8 +99896,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 8.56455, y: 2.91, z: 17.658669}
-  m_Center: {x: -0.13227558, y: 0, z: 3.1693344}
+  m_Size: {x: 8.56455, y: 2.91, z: 14.614689}
+  m_Center: {x: -0.13227558, y: 0, z: 1.6473446}
 --- !u!4 &1105155882
 Transform:
   m_ObjectHideFlags: 0
@@ -110187,8 +110293,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 8.56455, y: 2.91, z: 17.658669}
-  m_Center: {x: -0.13227558, y: 0, z: 3.1693344}
+  m_Size: {x: 8.56455, y: 2.91, z: 14.288235}
+  m_Center: {x: -0.13227558, y: 0, z: 1.4841175}
 --- !u!4 &1225899538
 Transform:
   m_ObjectHideFlags: 0
@@ -119061,7 +119167,7 @@ GameObject:
   - component: {fileID: 1330884474}
   - component: {fileID: 1330884473}
   - component: {fileID: 1330884472}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: msp_trim (20)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124654,7 +124760,7 @@ GameObject:
   - component: {fileID: 1402620560}
   - component: {fileID: 1402620562}
   - component: {fileID: 1402620561}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: IncineratorModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -132864,7 +132970,7 @@ Transform:
   m_GameObject: {fileID: 1484771932}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 147.78, y: 2.31, z: 23.81}
+  m_LocalPosition: {x: 147.78, y: 0.9, z: 23.81}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -135072,7 +135178,7 @@ GameObject:
   - component: {fileID: 1506351446}
   - component: {fileID: 1506351445}
   - component: {fileID: 1506351444}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: msp_trim (18)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -138572,7 +138678,7 @@ GameObject:
   - component: {fileID: 1548876070}
   - component: {fileID: 1548876072}
   - component: {fileID: 1548876071}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: IncineratorModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -140631,7 +140737,7 @@ GameObject:
   - component: {fileID: 1568925650}
   - component: {fileID: 1568925652}
   - component: {fileID: 1568925651}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: IncineratorModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -146897,7 +147003,7 @@ GameObject:
   - component: {fileID: 1640980323}
   - component: {fileID: 1640980322}
   - component: {fileID: 1640980321}
-  m_Layer: 15
+  m_Layer: 2
   m_Name: msp_column_tall (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -149055,8 +149161,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 8.560797, y: 2.91, z: 17.658669}
-  m_Center: {x: -0.13039875, y: 0, z: 3.1693344}
+  m_Size: {x: 8.560797, y: 2.91, z: 13.751656}
+  m_Center: {x: -0.13039875, y: 0, z: 1.215828}
 --- !u!4 &1669858471
 Transform:
   m_ObjectHideFlags: 0
@@ -154895,7 +155001,7 @@ GameObject:
   - component: {fileID: 1729104407}
   - component: {fileID: 1729104406}
   - component: {fileID: 1729104405}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: msp_trim (17)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171426,6 +171532,8 @@ MonoBehaviour:
   doorVisual: {fileID: 0}
   openOffset: {x: 0, y: 0, z: -5}
   moveSpeed: 5
+  source: {fileID: 0}
+  doorClip: {fileID: 0}
   _IsDoorOpen:
     _value: 0
 --- !u!111 &1928912202
@@ -175314,6 +175422,8 @@ MonoBehaviour:
   doorVisual: {fileID: 0}
   openOffset: {x: 0, y: 0, z: -5}
   moveSpeed: 5
+  source: {fileID: 0}
+  doorClip: {fileID: 0}
   _IsDoorOpen:
     _value: 0
 --- !u!114 &1977197049
@@ -192579,7 +192689,7 @@ GameObject:
   - component: {fileID: 2422584860350138253}
   - component: {fileID: 466746335596917575}
   - component: {fileID: 2422584860350138254}
-  m_Layer: 15
+  m_Layer: 2
   m_Name: msp_column_tall (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -199850,7 +199960,7 @@ Transform:
   m_GameObject: {fileID: 950403154158463430}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 38.76, y: 1.16, z: 51.09}
+  m_LocalPosition: {x: 38.76, y: 0.9, z: 51.09}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -211362,7 +211472,7 @@ GameObject:
   - component: {fileID: 8507982655136028498}
   - component: {fileID: 4737143252453316855}
   - component: {fileID: 7374998404219186237}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: IncineratorModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}

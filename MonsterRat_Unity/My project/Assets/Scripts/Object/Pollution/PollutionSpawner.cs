@@ -337,7 +337,7 @@ public class PollutionSpawner : NetworkBehaviour
 
             Vector3 spawnPos = hit.point + Vector3.up * 0.15f;
 
-            if (Physics.CheckSphere(spawnPos, 0.2f, spawnBlockMask, QueryTriggerInteraction.Ignore))
+            if (Physics.CheckSphere(spawnPos, 0.5f, spawnBlockMask, QueryTriggerInteraction.Ignore))
                 continue;
 
             NetworkObject obj = Runner.Spawn(plantPrefab, spawnPos, Quaternion.identity);
@@ -496,6 +496,15 @@ public class PollutionSpawner : NetworkBehaviour
 
             if (obj != null)
             {
+                Collider col = obj.GetComponentInChildren<Collider>();
+
+                if (col != null)
+                {
+                    float bottomY = col.bounds.min.y;
+                    float offsetY = spawnPos.y - bottomY + 0.02f;
+                    obj.transform.position += Vector3.up * offsetY;
+                }
+
                 spawnedTrashes.Add(obj);
                 spawned++;
             }
