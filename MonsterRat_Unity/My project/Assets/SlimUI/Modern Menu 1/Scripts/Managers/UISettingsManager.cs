@@ -3,10 +3,10 @@ using UnityEngine.UI;
 using TMPro;
 using Fusion;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 namespace SlimUI.ModernMenu
 {
-    // json으로 변환시킬 데이터 클래스
     [System.Serializable]
     public class GameSettingsData
     {
@@ -22,7 +22,7 @@ namespace SlimUI.ModernMenu
         public int showHUD = 1;
         public int toolTips = 1;
 
-        public int shadows = 2; // 0: Off, 1: Low, 2: High
+        public int shadows = 2;
         public int mobileShadows = 2;
 
         public int vSyncCount = 1;
@@ -30,10 +30,11 @@ namespace SlimUI.ModernMenu
         public int motionBlur = 1;
         public int ambientOcclusion = 1;
         public int cameraEffects = 1;
-        public int textures = 2; // 0: Low, 1: Med, 2: High
+        public int textures = 2;
 
-        public int mobileMuteSfx = 0;
-        public int mobileMuteMusic = 0;
+        // 해상도 및 안티앨리어싱
+        public int resolutionIndex = -1;
+        public int antiAliasing = 0; // 0: off, 1: 2x, 2: 4x, 3: 8x
     }
 
     public class UISettingsManager : MonoBehaviour
@@ -58,14 +59,18 @@ namespace SlimUI.ModernMenu
 
         [Header("VIDEO SETTINGS")]
         public GameObject fullscreentext;
+        public TMP_Dropdown resolutionDropdown;
         public GameObject ambientocclusiontext;
         public GameObject shadowofftextLINE;
         public GameObject shadowlowtextLINE;
         public GameObject shadowhightextLINE;
+
+        
         public GameObject aaofftextLINE;
         public GameObject aa2xtextLINE;
         public GameObject aa4xtextLINE;
         public GameObject aa8xtextLINE;
+
         public GameObject vsynctext;
         public GameObject motionblurtext;
         public GameObject texturelowtextLINE;
@@ -89,16 +94,14 @@ namespace SlimUI.ModernMenu
         public AudioSource bgmSource;
         public AudioSource sfxSource;
 
-        // sliders
         public Slider musicSlider;
         public Slider effectSlider;
         public GameObject sensitivityXSlider;
         public GameObject sensitivityYSlider;
         public GameObject mouseSmoothSlider;
 
-        // JSON 데이터 관리 객체
         private GameSettingsData currentSettings;
-
+        private Resolution[] resolutions;
         private bool isInitializing = false;
 
         private void Awake()
@@ -109,14 +112,12 @@ namespace SlimUI.ModernMenu
         public void Start()
         {
             isInitializing = true;
-
-            // 시작 시 JSON 파일 불러오기 
             LoadSettings();
+            InitializeResolutions();
 
             if (settingsPanel != null) settingsPanel.SetActive(false);
 
             ApplySettingsToUIAndEngine();
-
             isInitializing = false;
         }
 
@@ -157,17 +158,14 @@ namespace SlimUI.ModernMenu
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
-
                 SaveSettings();
                 exitPanel.SetActive(false);
             }
         }
 
-        // ★ 수정됨: PhotonInventory처럼 PlayerPrefs에 JSON 형식으로 읽고 쓰기
         private void LoadSettings()
         {
             string jsonString = PlayerPrefs.GetString("MasterGameSettings", "");
-
             if (!string.IsNullOrEmpty(jsonString))
             {
                 currentSettings = JsonUtility.FromJson<GameSettingsData>(jsonString);
@@ -179,33 +177,49 @@ namespace SlimUI.ModernMenu
             }
         }
 
-        public async void LeaveRoom()
+        private void InitializeResolutions()
         {
-            if (runner == null)
-                runner = FindObjectOfType<NetworkRunner>();
+            if (resolutionDropdown == null) return;
 
-            if (runner != null)
+            Resolution[] allResolutions = Screen.resolutions;
+            resolutionDropdown.ClearOptions();
+
+            List<string> options = new List<string>();
+            List<Resolution> uniqueResolutions = new List<Resolution>();
+            int currentResIndex = 0;
+
+            for (int i = 0; i < allResolutions.Length; i++)
             {
-                await runner.Shutdown();
-                Destroy(runner.gameObject);
-                runner = null;
+                string optionText = allResolutions[i].width + " x " + allResolutions[i].height;
+                if (!options.Contains(optionText))
+                {
+                    options.Add(optionText);
+                    uniqueResolutions.Add(allResolutions[i]);
+                    if (allResolutions[i].width == Screen.currentResolution.width &&
+                        allResolutions[i].height == Screen.currentResolution.height)
+                    {
+                        currentResIndex = uniqueResolutions.Count - 1;
+                    }
+                }
+            }
+            resolutions = uniqueResolutions.ToArray();
+
+            resolutionDropdown.AddOptions(options);
+
+            if (currentSettings.resolutionIndex == -1)
+            {
+                currentSettings.resolutionIndex = currentResIndex;
             }
 
-            if (settingsPanel != null) settingsPanel.SetActive(false);
-
-            isMenuOpen = false;
-            await System.Threading.Tasks.Task.Delay(200);
-            SceneManager.LoadScene("ZZin_Main_Lobby");
-        }
-
-        public void LeaveTutorial()
-        {
-            SceneManager.LoadScene("ZZin_Main_Lobby");
+            resolutionDropdown.value = currentSettings.resolutionIndex;
+            resolutionDropdown.RefreshShownValue();
         }
 
         public void SaveSettings()
         {
             if (isInitializing) return;
+
+            if (resolutionDropdown != null) currentSettings.resolutionIndex = resolutionDropdown.value;
 
             if (musicSlider != null)
             {
@@ -224,31 +238,21 @@ namespace SlimUI.ModernMenu
             if (sensitivityXSlider != null)
             {
                 Slider slider = sensitivityXSlider.GetComponent<Slider>();
-                if (slider != null)
-                {
-                    currentSettings.xSensitivity = slider.value;
-                }
+                if (slider != null) currentSettings.xSensitivity = slider.value;
             }
 
             if (sensitivityYSlider != null)
             {
                 Slider slider = sensitivityYSlider.GetComponent<Slider>();
-                if (slider != null)
-                {
-                    currentSettings.ySensitivity = slider.value;
-                }
+                if (slider != null) currentSettings.ySensitivity = slider.value;
             }
 
             if (mouseSmoothSlider != null)
             {
                 Slider slider = mouseSmoothSlider.GetComponent<Slider>();
-                if (slider != null)
-                {
-                    currentSettings.mouseSmoothing = slider.value;
-                }
+                if (slider != null) currentSettings.mouseSmoothing = slider.value;
             }
 
-            // ★ 수정됨: PhotonInventory 방식으로 JSON 데이터를 레지스트리에 저장!
             if (currentSettings != null)
             {
                 string jsonString = JsonUtility.ToJson(currentSettings, true);
@@ -272,17 +276,22 @@ namespace SlimUI.ModernMenu
 
             if (musicSlider) musicSlider.SetValueWithoutNotify(currentSettings.musicVolume);
             if (effectSlider) effectSlider.SetValueWithoutNotify(currentSettings.effectVolume);
-
             if (bgmSource != null) bgmSource.volume = currentSettings.musicVolume;
             if (sfxSource != null) sfxSource.volume = currentSettings.effectVolume;
 
             if (sensitivityXSlider) sensitivityXSlider.GetComponent<Slider>().value = currentSettings.xSensitivity;
             if (sensitivityYSlider) sensitivityYSlider.GetComponent<Slider>().value = currentSettings.ySensitivity;
             if (mouseSmoothSlider) mouseSmoothSlider.GetComponent<Slider>().value = currentSettings.mouseSmoothing;
+            if (invertmousetext) invertmousetext.GetComponent<TMP_Text>().text = currentSettings.inverted == 0 ? "off" : "on";
 
             if (fullscreentext) fullscreentext.GetComponent<TMP_Text>().text = Screen.fullScreen ? "on" : "off";
-            if (showhudtext) showhudtext.GetComponent<TMP_Text>().text = currentSettings.showHUD == 0 ? "off" : "on";
-            if (tooltipstext) tooltipstext.GetComponent<TMP_Text>().text = currentSettings.toolTips == 0 ? "off" : "on";
+            if (vsynctext) vsynctext.GetComponent<TMP_Text>().text = currentSettings.vSyncCount == 0 ? "off" : "on";
+
+            if (resolutions != null && resolutions.Length > 0 && currentSettings.resolutionIndex >= 0 && currentSettings.resolutionIndex < resolutions.Length)
+            {
+                Resolution res = resolutions[currentSettings.resolutionIndex];
+                Screen.SetResolution(res.width, res.height, Screen.fullScreen);
+            }
 
             if (platform == Platform.Desktop)
             {
@@ -292,57 +301,46 @@ namespace SlimUI.ModernMenu
             }
 
             QualitySettings.vSyncCount = currentSettings.vSyncCount;
-            if (vsynctext) vsynctext.GetComponent<TMP_Text>().text = currentSettings.vSyncCount == 0 ? "off" : "on";
-            if (invertmousetext) invertmousetext.GetComponent<TMP_Text>().text = currentSettings.inverted == 0 ? "off" : "on";
-            if (motionblurtext) motionblurtext.GetComponent<TMP_Text>().text = currentSettings.motionBlur == 0 ? "off" : "on";
-            if (ambientocclusiontext) ambientocclusiontext.GetComponent<TMP_Text>().text = currentSettings.ambientOcclusion == 0 ? "off" : "on";
 
             if (currentSettings.textures == 0) TexturesLow();
             else if (currentSettings.textures == 1) TexturesMed();
             else if (currentSettings.textures == 2) TexturesHigh();
+
+             
+            int aaLevel = 0;
+            if (currentSettings.antiAliasing == 1) aaLevel = 2;
+            else if (currentSettings.antiAliasing == 2) aaLevel = 4;
+            else if (currentSettings.antiAliasing == 3) aaLevel = 8;
+            QualitySettings.antiAliasing = aaLevel;
+            UpdateAAUI();
+
+            if (showhudtext) showhudtext.GetComponent<TMP_Text>().text = currentSettings.showHUD == 0 ? "off" : "on";
+            if (tooltipstext) tooltipstext.GetComponent<TMP_Text>().text = currentSettings.toolTips == 0 ? "off" : "on";
+            if (motionblurtext) motionblurtext.GetComponent<TMP_Text>().text = currentSettings.motionBlur == 0 ? "off" : "on";
+            if (ambientocclusiontext) ambientocclusiontext.GetComponent<TMP_Text>().text = currentSettings.ambientOcclusion == 0 ? "off" : "on";
+        }
+
+        public void SetResolution(int resolutionIndex)
+        {
+            Resolution res = resolutions[resolutionIndex];
+            Screen.SetResolution(res.width, res.height, Screen.fullScreen);
+            currentSettings.resolutionIndex = resolutionIndex;
+            SaveSettings();
+            Debug.Log($"적용된 해상도: {res.width} x {res.height}");
         }
 
         public void FullScreen()
         {
             Screen.fullScreen = !Screen.fullScreen;
             if (fullscreentext) fullscreentext.GetComponent<TMP_Text>().text = Screen.fullScreen ? "on" : "off";
-        }
-
-        public void MusicSlider() { if (!isInitializing) SaveSettings(); }
-        public void EffectSlider() { if (!isInitializing) SaveSettings(); }
-        public void SensitivityXSlider() { SaveSettings(); }
-        public void SensitivityYSlider() { SaveSettings(); }
-        public void SensitivitySmoothing() { SaveSettings(); }
-
-        public void ShowHUD()
-        {
-            currentSettings.showHUD = currentSettings.showHUD == 0 ? 1 : 0;
-            if (showhudtext) showhudtext.GetComponent<TMP_Text>().text = currentSettings.showHUD == 0 ? "off" : "on";
             SaveSettings();
         }
 
-        public void ToolTips()
+        public void vsync()
         {
-            currentSettings.toolTips = currentSettings.toolTips == 0 ? 1 : 0;
-            if (tooltipstext) tooltipstext.GetComponent<TMP_Text>().text = currentSettings.toolTips == 0 ? "off" : "on";
-            SaveSettings();
-        }
-
-        public void NormalDifficulty()
-        {
-            if (difficultyhardcoretextLINE) difficultyhardcoretextLINE.gameObject.SetActive(false);
-            if (difficultynormaltextLINE) difficultynormaltextLINE.gameObject.SetActive(true);
-            currentSettings.normalDifficulty = 1;
-            currentSettings.hardCoreDifficulty = 0;
-            SaveSettings();
-        }
-
-        public void HardcoreDifficulty()
-        {
-            if (difficultyhardcoretextLINE) difficultyhardcoretextLINE.gameObject.SetActive(true);
-            if (difficultynormaltextLINE) difficultynormaltextLINE.gameObject.SetActive(false);
-            currentSettings.normalDifficulty = 0;
-            currentSettings.hardCoreDifficulty = 1;
+            currentSettings.vSyncCount = currentSettings.vSyncCount == 0 ? 1 : 0;
+            QualitySettings.vSyncCount = currentSettings.vSyncCount;
+            if (vsynctext) vsynctext.GetComponent<TMP_Text>().text = currentSettings.vSyncCount == 0 ? "off" : "on";
             SaveSettings();
         }
 
@@ -379,42 +377,6 @@ namespace SlimUI.ModernMenu
             SaveSettings();
         }
 
-        public void vsync()
-        {
-            currentSettings.vSyncCount = currentSettings.vSyncCount == 0 ? 1 : 0;
-            QualitySettings.vSyncCount = currentSettings.vSyncCount;
-            if (vsynctext) vsynctext.GetComponent<TMP_Text>().text = currentSettings.vSyncCount == 0 ? "off" : "on";
-            SaveSettings();
-        }
-
-        public void InvertMouse()
-        {
-            currentSettings.inverted = currentSettings.inverted == 0 ? 1 : 0;
-            if (invertmousetext) invertmousetext.GetComponent<TMP_Text>().text = currentSettings.inverted == 0 ? "off" : "on";
-            SaveSettings();
-        }
-
-        public void MotionBlur()
-        {
-            currentSettings.motionBlur = currentSettings.motionBlur == 0 ? 1 : 0;
-            if (motionblurtext) motionblurtext.GetComponent<TMP_Text>().text = currentSettings.motionBlur == 0 ? "off" : "on";
-            SaveSettings();
-        }
-
-        public void AmbientOcclusion()
-        {
-            currentSettings.ambientOcclusion = currentSettings.ambientOcclusion == 0 ? 1 : 0;
-            if (ambientocclusiontext) ambientocclusiontext.GetComponent<TMP_Text>().text = currentSettings.ambientOcclusion == 0 ? "off" : "on";
-            SaveSettings();
-        }
-
-        public void CameraEffects()
-        {
-            currentSettings.cameraEffects = currentSettings.cameraEffects == 0 ? 1 : 0;
-            if (cameraeffectstext) cameraeffectstext.GetComponent<TMP_Text>().text = currentSettings.cameraEffects == 0 ? "off" : "on";
-            SaveSettings();
-        }
-
         public void TexturesLow()
         {
             currentSettings.textures = 0;
@@ -443,6 +405,21 @@ namespace SlimUI.ModernMenu
             if (texturemedtextLINE) texturemedtextLINE.gameObject.SetActive(false);
             if (texturehightextLINE) texturehightextLINE.gameObject.SetActive(true);
             SaveSettings();
+        }
+
+         
+        public void AntiAliasingOff() { currentSettings.antiAliasing = 0; QualitySettings.antiAliasing = 0; UpdateAAUI(); SaveSettings(); }
+        public void AntiAliasing2x() { currentSettings.antiAliasing = 1; QualitySettings.antiAliasing = 2; UpdateAAUI(); SaveSettings(); }
+        public void AntiAliasing4x() { currentSettings.antiAliasing = 2; QualitySettings.antiAliasing = 4; UpdateAAUI(); SaveSettings(); }
+        public void AntiAliasing8x() { currentSettings.antiAliasing = 3; QualitySettings.antiAliasing = 8; UpdateAAUI(); SaveSettings(); }
+
+         
+        private void UpdateAAUI()
+        {
+            if (aaofftextLINE) aaofftextLINE.SetActive(currentSettings.antiAliasing == 0);
+            if (aa2xtextLINE) aa2xtextLINE.SetActive(currentSettings.antiAliasing == 1);
+            if (aa4xtextLINE) aa4xtextLINE.SetActive(currentSettings.antiAliasing == 2);
+            if (aa8xtextLINE) aa8xtextLINE.SetActive(currentSettings.antiAliasing == 3);
         }
 
         public float XSensitivity => currentSettings != null ? currentSettings.xSensitivity : 1f;
