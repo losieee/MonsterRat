@@ -56,29 +56,24 @@ public class EndingManager : NetworkBehaviour
         MoveToLobby();
     }
 
-    void MoveToLobby()
+    async void MoveToLobby()
     {
         if (!HasStateAuthority) return;
 
         if (PlayTimeManager.Instance != null)
-        {
             PlayTimeManager.Instance.StopCounting();
-        }
 
         DeleteCurrentSaveSlot();
 
-        int sceneIndex = UnityEngine.SceneManagement.SceneUtility.GetBuildIndexByScenePath(
-            $"Assets/Resources/Scenes/Min/{lobbySceneName}.unity"
-        );
+        if (Runner != null && Runner.IsRunning)
+        {
+            await Runner.Shutdown();
+        }
 
-        if (sceneIndex >= 0)
-        {
-            Runner.LoadScene(SceneRef.FromIndex(sceneIndex));
-        }
-        else
-        {
-            Debug.LogError($"씬을 찾을 수 없습니다: {lobbySceneName}");
-        }
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        UnityEngine.SceneManagement.SceneManager.LoadScene(lobbySceneName);
     }
 
     string FormatPlayTime(float time)

@@ -39,11 +39,16 @@ public class ShotgunController : InvenBase
         if (ammoUIGroup != null)
             ammoUIGroup.SetActive(false);
 
+        if (!HasInputAuthority)
+            return;
+
         UpdateAmmoUI();
     }
 
     public override void OnSelect()
     {
+        if (!HasInputAuthority) return;
+
         if (ammoUIGroup != null)
             ammoUIGroup.SetActive(true);
 
@@ -52,12 +57,16 @@ public class ShotgunController : InvenBase
 
     public override void OnDeselect()
     {
+        if (!HasInputAuthority) return;
+
         if (ammoUIGroup != null)
             ammoUIGroup.SetActive(false);
     }
 
     public override void Tick()
     {
+        if (!HasInputAuthority) return;
+
         if (SlimUI.ModernMenu.UISettingsManager.isMenuOpen || PhotonPlayerUIState.isGlobalStoreOpen)
             return;
 

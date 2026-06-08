@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 337780018477315734}
   - component: {fileID: 1442015319551341725}
   - component: {fileID: 502886927943773872}
+  - component: {fileID: 3036528584052493212}
   m_Layer: 19
   m_Name: Antidote
   m_TagString: Item
@@ -147,6 +148,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 502886927943773872}
+  - {fileID: 3036528584052493212}
   ForceRemoteRenderTimeframe: 0
 --- !u!54 &1442015319551341725
 Rigidbody:
@@ -198,3 +200,15 @@ MonoBehaviour:
     Position: 0.01
     Rotation: 0.01
     Scale: 0.01
+--- !u!114 &3036528584052493212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2058781687710149048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93b347bfef33e0f4684dfadf34898a0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ColliderSyncDebugger

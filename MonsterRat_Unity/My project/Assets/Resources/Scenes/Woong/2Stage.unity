@@ -8542,6 +8542,172 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 143759674}
   m_Mesh: {fileID: 5461320835613783329, guid: f4d52e986fabb65489dc96e0800b2a28, type: 3}
+--- !u!1 &143895458
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 143895464}
+  - component: {fileID: 143895463}
+  - component: {fileID: 143895462}
+  - component: {fileID: 143895461}
+  - component: {fileID: 143895460}
+  - component: {fileID: 143895459}
+  m_Layer: 0
+  m_Name: SafeZoneTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 1
+--- !u!114 &143895459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143895458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb3d09beed252af43b12df2de91fcd21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SafeZoneTrigger
+  currentStageName: 2Stage
+  lobbySceneName: 3Stage
+  canCreateSaveFile: 1
+  shipCenter: {fileID: 8070617}
+  shipStorageArea: {fileID: 8070616}
+  itemLayer:
+    serializedVersion: 2
+    m_Bits: 524288
+  timeToEvacuate: 1
+  interactionUI: {fileID: 1559205855}
+  progressCircle: {fileID: 1559205857}
+  infoText: {fileID: 1559205856}
+  checkLayers:
+    serializedVersion: 2
+    m_Bits: 584
+  _PlayersInZoneCount: 0
+  _IsDoorOpened:
+    _value: 1
+  _IsEvacuating:
+    _value: 0
+--- !u!114 &143895460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143895458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
+  SortKey: 300933237
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 143895459}
+  ForceRemoteRenderTimeframe: 0
+--- !u!65 &143895461
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143895458}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4.229755, y: 4.229754, z: 4.583981}
+  m_Center: {x: 2.454892e-15, y: -0.00000026936908, z: -0.8334148}
+--- !u!23 &143895462
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143895458}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 5004cf38f39ecc44c83667b3bf14b58c, type: 2}
+  - {fileID: 2100000, guid: 45f65788d6998564587b10c1a0ac9372, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &143895463
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143895458}
+  m_Mesh: {fileID: 3477176812772559159, guid: 777f76e242fdfcc419fa98114be6458b, type: 3}
+--- !u!4 &143895464
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143895458}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: -0.7071068}
+  m_LocalPosition: {x: -44.647, y: 2.27, z: 24}
+  m_LocalScale: {x: 0.8851, y: 0.8851, z: 0.8851}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 270, z: 0}
 --- !u!1001 &144498235
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -40665,7 +40831,7 @@ GameObject:
   - component: {fileID: 707426418}
   - component: {fileID: 707426417}
   m_Layer: 0
-  m_Name: SafeZoneTrigger (1)
+  m_Name: SafeZoneTrigger_Cheat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -129249,6 +129415,10 @@ PrefabInstance:
       propertyPath: progressCircle
       value: 
       objectReference: {fileID: 16142560932435844}
+    - target: {fileID: 6955063998623138431, guid: 5a8a4b4194aa12e479b975623cfc843d, type: 3}
+      propertyPath: timeToTeleport
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8333609025403067512, guid: 5a8a4b4194aa12e479b975623cfc843d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 38.74
@@ -169943,6 +170113,7 @@ SceneRoots:
   - {fileID: 551653151}
   - {fileID: 772506558}
   - {fileID: 707426422}
+  - {fileID: 143895464}
   - {fileID: 1559205854}
   - {fileID: 1516416508054791264}
   - {fileID: 8070615}

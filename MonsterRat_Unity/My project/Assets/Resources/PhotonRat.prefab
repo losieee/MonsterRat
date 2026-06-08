@@ -1247,7 +1247,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 2928880065181653655}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 1.78
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -1334,6 +1334,7 @@ MonoBehaviour:
   attackCooldown: 1
   attackDamage: 15
   attackAnimDuration: 0.1
+  maxHitCount: 2
   bloodPreb: {fileID: 5675097730486047039, guid: 34ae9c37f6b33be479c4abbdf54a8ecc, type: 3}
   groundMask:
     serializedVersion: 2
@@ -1342,6 +1343,7 @@ MonoBehaviour:
   runSpeed: 5
   walkSpeed: 2
   _NetMoveSpeed: 0
+  _hitCount: 0
   _NetTurn: 0
   _IsDead:
     _value: 0

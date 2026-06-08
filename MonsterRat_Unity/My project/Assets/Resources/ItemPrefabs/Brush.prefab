@@ -107,6 +107,7 @@ GameObject:
   - component: {fileID: 8673149162984112483}
   - component: {fileID: 3814800271259724724}
   - component: {fileID: 39013055036865857}
+  - component: {fileID: -3701801282824440128}
   m_Layer: 19
   m_Name: Brush
   m_TagString: Item
@@ -219,6 +220,7 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 8673149162984112483}
   - {fileID: 3814800271259724724}
+  - {fileID: -3701801282824440128}
   ForceRemoteRenderTimeframe: 0
 --- !u!54 &8429595753893559211
 Rigidbody:
@@ -307,3 +309,15 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.26764768, y: 0.1473787, z: 1.0978221}
   m_Center: {x: 0.00020991894, y: 0.050374158, z: -0.032392472}
+--- !u!114 &-3701801282824440128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1784980758127768737}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93b347bfef33e0f4684dfadf34898a0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ColliderSyncDebugger

@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 9201320525072132159}
   - component: {fileID: 8861677868716310995}
   - component: {fileID: 8414899796363647728}
+  - component: {fileID: 6832639917056255957}
   m_Layer: 19
   m_Name: NewGasMask
   m_TagString: Item
@@ -129,6 +130,7 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 9201320525072132159}
   - {fileID: 8861677868716310995}
+  - {fileID: 6832639917056255957}
   ForceRemoteRenderTimeframe: 0
 --- !u!54 &7086762408331513360
 Rigidbody:
@@ -216,6 +218,18 @@ CapsuleCollider:
   m_Height: 0.74
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0.03}
+--- !u!114 &6832639917056255957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2584347321128889728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93b347bfef33e0f4684dfadf34898a0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ColliderSyncDebugger
 --- !u!1 &8976346594675457459
 GameObject:
   m_ObjectHideFlags: 0

@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 2663099614520175860}
   - component: {fileID: -6914465544169491485}
   - component: {fileID: 7233830160805010330}
+  - component: {fileID: -7779674352954113479}
   m_Layer: 19
   m_Name: Gun
   m_TagString: Item
@@ -115,8 +116,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.1951868, y: 0.22959761, z: 1.1535821}
-  m_Center: {x: -0.0031844378, y: 0.09041361, z: -0.17773485}
+  m_Size: {x: 0.1951868, y: 0.47767967, z: 1.1535821}
+  m_Center: {x: -0.0031844378, y: -0.03362742, z: -0.17773485}
 --- !u!114 &-491404420447164129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -148,6 +149,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 7233830160805010330}
+  - {fileID: -7779674352954113479}
   ForceRemoteRenderTimeframe: 0
 --- !u!54 &-6914465544169491485
 Rigidbody:
@@ -199,6 +201,18 @@ MonoBehaviour:
     Position: 0.01
     Rotation: 0.01
     Scale: 0.01
+--- !u!114 &-7779674352954113479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6497019878762106593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93b347bfef33e0f4684dfadf34898a0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ColliderSyncDebugger
 --- !u!1001 &3055695029084880102
 PrefabInstance:
   m_ObjectHideFlags: 0

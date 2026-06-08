@@ -1,5 +1,6 @@
 using UnityEngine;
 using Fusion;
+using UnityEngine.SceneManagement;
 
 public class GameRoomManager : NetworkBehaviour, IPlayerJoined, IPlayerLeft
 {
@@ -11,9 +12,11 @@ public class GameRoomManager : NetworkBehaviour, IPlayerJoined, IPlayerLeft
 
     public override void Spawned()
     {
+        if (SceneManager.GetActiveScene().name == "ZZin_Main_Lobby")
+            return;
+
         if (Runner.IsServer)
         {
-            Debug.Log("씬 로드 완료! 이미 접속해 있는 플레이어들의 캐릭터를 생성합니다.");
             foreach (PlayerRef player in Runner.ActivePlayers)
             {
                 SpawnPlayer(player);
@@ -23,9 +26,11 @@ public class GameRoomManager : NetworkBehaviour, IPlayerJoined, IPlayerLeft
 
     public void PlayerJoined(PlayerRef player)
     {
+        if (SceneManager.GetActiveScene().name == "ZZin_Main_Lobby")
+            return;
+
         if (Runner.IsServer)
         {
-            Debug.Log($"새로운 플레이어({player.PlayerId}) 접속! 캐릭터를 생성합니다.");
             SpawnPlayer(player);
         }
     }

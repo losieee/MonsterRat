@@ -106,6 +106,7 @@ GameObject:
   - component: {fileID: 7011479191485463149}
   - component: {fileID: 1006264156571861270}
   - component: {fileID: 5573014055298777812}
+  - component: {fileID: -1569661652813911693}
   m_Layer: 19
   m_Name: ShotGun
   m_TagString: Item
@@ -238,6 +239,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 5573014055298777812}
+  - {fileID: -1569661652813911693}
   ForceRemoteRenderTimeframe: 0
 --- !u!54 &1006264156571861270
 Rigidbody:
@@ -289,6 +291,18 @@ MonoBehaviour:
     Position: 0.01
     Rotation: 0.01
     Scale: 0.01
+--- !u!114 &-1569661652813911693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 473248619226535843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93b347bfef33e0f4684dfadf34898a0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ColliderSyncDebugger
 --- !u!1 &4352138286053831171
 GameObject:
   m_ObjectHideFlags: 0

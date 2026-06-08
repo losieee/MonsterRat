@@ -33,6 +33,9 @@ public class SpannerMiniGameAimLab : MonoBehaviour
 
     public void StartMiniGame(GasValveSync valve, PhotonSpanner photonSpanner)
     {
+        if (photonSpanner == null || !photonSpanner.HasInputAuthority)
+            return;
+
         if (IsPlaying) return;
 
         ClearMiniGame();

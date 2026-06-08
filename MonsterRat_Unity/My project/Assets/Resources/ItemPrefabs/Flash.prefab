@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 7547482030630397678}
   - component: {fileID: 3072264234153428487}
   - component: {fileID: 8863418458493345729}
+  - component: {fileID: 3494099278173986252}
   m_Layer: 19
   m_Name: Flash
   m_TagString: Item
@@ -147,6 +148,7 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 8863418458493345729}
+  - {fileID: 3494099278173986252}
   ForceRemoteRenderTimeframe: 0
 --- !u!54 &3072264234153428487
 Rigidbody:
@@ -198,3 +200,15 @@ MonoBehaviour:
     Position: 0.01
     Rotation: 0.01
     Scale: 0.01
+--- !u!114 &3494099278173986252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6538605001483171974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93b347bfef33e0f4684dfadf34898a0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ColliderSyncDebugger

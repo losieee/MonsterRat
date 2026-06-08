@@ -234,6 +234,7 @@ public class LobbyManager : MonoBehaviour, INetworkRunnerCallbacks
         else
         {
             Debug.LogError($"방 입장 실패: {result.ShutdownReason}");
+            return;
         }
     }
 

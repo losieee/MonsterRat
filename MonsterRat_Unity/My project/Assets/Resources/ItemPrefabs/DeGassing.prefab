@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 8651831799157369711}
   - component: {fileID: 6437612646721782243}
   - component: {fileID: 2946574639012761177}
+  - component: {fileID: 8085388570009108393}
   m_Layer: 19
   m_Name: DeGassing
   m_TagString: Item
@@ -157,6 +158,7 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 307737043142770034}
   - {fileID: 8651831799157369711}
+  - {fileID: 8085388570009108393}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &307737043142770034
 MonoBehaviour:
@@ -239,6 +241,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5718031, y: 0.31173873, z: 0.16}
   m_Center: {x: -0.57796216, y: -0.33166778, z: 0}
+--- !u!114 &8085388570009108393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4320711194446946055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93b347bfef33e0f4684dfadf34898a0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ColliderSyncDebugger
 --- !u!1 &8711406488099667835
 GameObject:
   m_ObjectHideFlags: 0

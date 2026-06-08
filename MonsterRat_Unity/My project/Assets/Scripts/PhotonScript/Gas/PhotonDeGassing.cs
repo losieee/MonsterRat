@@ -20,6 +20,8 @@ public class PhotonDeGassing : InvenBase
 
     public override void Tick()
     {
+        if (!HasInputAuthority) return;
+
         if (SlimUI.ModernMenu.UISettingsManager.isMenuOpen || PhotonPlayerUIState.isGlobalStoreOpen)
             return;
 
@@ -31,14 +33,15 @@ public class PhotonDeGassing : InvenBase
         if (Input.GetMouseButton(0))
         {
             Ray ray = new Ray(interactor.cam.position, interactor.cam.forward);
-            Debug.DrawRay(ray.origin, ray.direction * distance, Color.cyan, 0.5f);
 
             if (Physics.Raycast(ray, out RaycastHit hit, distance, gasLayerMask, QueryTriggerInteraction.Collide))
             {
                 SmallGasObject targetGas = hit.collider.GetComponentInParent<SmallGasObject>();
 
                 if (targetGas != null)
+                {
                     targetGas.SuckGas(Time.deltaTime * shrinkSpeed);
+                }
             }
 
             if (Physics.Raycast(ray, out RaycastHit pipeHit, distance, pipeGasLayerMask, QueryTriggerInteraction.Collide))
@@ -80,6 +83,34 @@ public class PhotonDeGassing : InvenBase
         }
     }
 
+    public override void OnDeselect()
+    {
+        if (!HasInputAuthority) return;
+
+        isHoldingSound = false;
+        StopDegassingLocalState();
+        Rpc_StopGasCleanerSound();
+    }
+
+    private void OnDisable()
+    {
+        StopDegassingLocalState();
+
+        if (source != null && source.isPlaying)
+            source.Stop();
+    }
+
+    private void StopDegassingLocalState()
+    {
+        isHoldingSound = false;
+
+        if (currentGas != null)
+        {
+            currentGas.PlayGas();
+            currentGas = null;
+        }
+    }
+
     [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
     public void Rpc_StartGasCleanerSound()
     {
@@ -97,15 +128,11 @@ public class PhotonDeGassing : InvenBase
             fadeCoroutine = null;
         }
 
-        source.volume = effectVolume;
-
-        if (source.clip != degassingClip)
-            source.clip = degassingClip;
-
+        source.Stop();
+        source.clip = degassingClip;
         source.loop = true;
-
-        if (!source.isPlaying)
-            source.Play();
+        source.volume = effectVolume;
+        source.Play();
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
@@ -138,9 +165,7 @@ public class PhotonDeGassing : InvenBase
             yield return null;
         }
 
-        if (!isHoldingSound)
-            source.Stop();
-
+        source.Stop();
         source.volume = startVolume;
         fadeCoroutine = null;
     }
