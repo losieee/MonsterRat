@@ -9,7 +9,9 @@ public class DestroyController : NetworkBehaviour
 
     [Header("Settings")]
     public float deleteDelay = 2f;   
-    public float cooldown = 3f;      
+    public float cooldown = 3f;
+    public AudioSource source;
+    public AudioClip fireSound;
 
     public HashSet<NetworkObject> deleteBoxes = new HashSet<NetworkObject>();
 
@@ -52,12 +54,42 @@ public class DestroyController : NetworkBehaviour
         {
             if (netObj != null && netObj.IsValid)
             {
-                Runner.Despawn(netObj);  
+                Runner.Despawn(netObj);
             }
         }
         deleteBoxes.Clear();
 
+        Rpc_StartFireSound();
+
         yield return new WaitForSeconds(cooldown);
+
+        Rpc_StopFireSound();
+
         IsDeleting = false;
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void Rpc_StartFireSound()
+    {
+        if (source == null || fireSound == null) return;
+
+        float effectVolume = 1f;
+
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+            effectVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+
+        source.clip = fireSound;
+        source.loop = true;
+        source.volume = 0.5f * effectVolume;
+        source.Play();
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void Rpc_StopFireSound()
+    {
+        if (source == null) return;
+
+        source.Stop();
+        source.loop = false;
     }
 }

@@ -8,6 +8,9 @@ public class FlashController : InvenBase
     public GameObject flash;
     public GameObject cone;
 
+    public AudioSource source;
+    public AudioClip flashSound;
+
     // 손전등이 켜졌나 꺼졌나
     [Networked] public bool IsOn { get; set; }
     // 손전등 밝기
@@ -34,7 +37,25 @@ public class FlashController : InvenBase
         if (Input.GetKeyDown(KeyCode.T))
         {
             RPC_ToggleFlash();
+            Rpc_PlayMopSound();
         }
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.All)]
+    public void Rpc_PlayMopSound()
+    {
+        if (source == null || flashSound == null)
+            return;
+
+        float effectVolume = 1f;
+
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+            effectVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+
+        float baseVolume = HasInputAuthority ? 0.85f : 1f;
+        float finalVolume = baseVolume * effectVolume;
+
+        source.PlayOneShot(flashSound, finalVolume);
     }
 
     public override void Render()

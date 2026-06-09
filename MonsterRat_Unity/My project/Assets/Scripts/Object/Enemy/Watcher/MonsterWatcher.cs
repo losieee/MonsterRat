@@ -8,6 +8,9 @@ public class MonsterWatcher : NetworkBehaviour
 {
     public float watcherDamage = 8f;
 
+    public AudioSource source;
+    public AudioClip watcherSound;
+
     [Networked] public bool canAttack { get; set; }
     [Networked] public int watcherCount { get; set; }       // 왓쳐를 보고있는 플레이어
     private HashSet<PlayerRef> watchingPlayers = new HashSet<PlayerRef>();
@@ -16,11 +19,35 @@ public class MonsterWatcher : NetworkBehaviour
 
     public override void Spawned()
     {
+        PhotonPlayerUIState.Local?.ShowWatcherWarning();
+
         if (Object.HasStateAuthority)
         {
             canAttack = false;
             StartCoroutine(Init());
         }
+    }
+
+    public override void Despawned(NetworkRunner runner, bool hasState)
+    {
+        PhotonPlayerUIState.Local?.HideWatcherWarning();
+    }
+
+    private void Update()
+    {
+        UpdateWatcherVolume();
+    }
+
+    private void UpdateWatcherVolume()
+    {
+        if (source == null) return;
+
+        float effectVolume = 1f;
+
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+            effectVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+
+        source.volume = 0.5f * effectVolume;
     }
 
     IEnumerator Init()

@@ -3,6 +3,7 @@ using Fusion;
 using System;
 using TMPro;
 using UnityEngine.UI;
+using System.Collections;
 
 public class PhotonPlayerUIState : NetworkBehaviour
 {
@@ -12,6 +13,8 @@ public class PhotonPlayerUIState : NetworkBehaviour
     public GameObject aimDot;
     public GameObject clearGauge;
     public GameObject pollutionGauge;
+    public TMP_Text watcherWarning;
+    public TMP_Text completeBuy;
 
     [Header("상점 Select")]
     public Sprite selectNormal;
@@ -33,6 +36,28 @@ public class PhotonPlayerUIState : NetworkBehaviour
     private PhotonToolSpawner currentStore;
 
     private int selectedItemIndex = -1;
+
+    public static PhotonPlayerUIState Local { get; private set; }
+
+    private Coroutine watcherWarningRoutine;
+    private int watcherWarningCount = 0;
+
+    public override void Spawned()
+    {
+        if (HasInputAuthority)
+        {
+            Local = this;
+
+            if (watcherWarning != null)
+            {
+                watcherWarning.gameObject.SetActive(false);
+                SetWatcherWarningAlpha(0f);
+            }
+
+            if (completeBuy != null)
+                completeBuy.gameObject.SetActive(false);
+        }
+    }
 
     void Update()
     {
@@ -101,6 +126,9 @@ public class PhotonPlayerUIState : NetworkBehaviour
 
     public void OnClickBuyItem(int itemIndex)
     {
+        if (completeBuy != null)
+            completeBuy.gameObject.SetActive(false);
+
         selectedItemIndex = itemIndex;
 
         ItemData itemData = ItemDatabase.Instance.GetItemByIndex(itemIndex);
@@ -138,6 +166,9 @@ public class PhotonPlayerUIState : NetworkBehaviour
             WorldLoadManager.instance.RPC_DeductGold(itemData.itemPrice);
             NetworkObject StoreNetObj = currentStore.GetComponent<NetworkObject>();
             RPC_RequestSpawnToHost(StoreNetObj, selectedItemIndex);
+
+            if (completeBuy != null)
+                completeBuy.gameObject.SetActive(true);
         }
         if (WorldLoadManager.instance == null)
         {
@@ -188,6 +219,9 @@ public class PhotonPlayerUIState : NetworkBehaviour
         uiOpen = false;
         isGlobalStoreOpen = false;
 
+        if (completeBuy != null)
+            completeBuy.gameObject.SetActive(false);
+
         selectIMG.sprite = selectNormal;
         selectInfo.text = "아이템을 선택하세요.";
         selectName.text = " ";
@@ -201,5 +235,60 @@ public class PhotonPlayerUIState : NetworkBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         OnStoreClosed?.Invoke();
+    }
+
+    public void ShowWatcherWarning()
+    {
+        watcherWarningCount++;
+
+        if (watcherWarningRoutine != null)
+            StopCoroutine(watcherWarningRoutine);
+
+        watcherWarningRoutine = StartCoroutine(FadeWatcherWarning(1f));
+    }
+
+    public void HideWatcherWarning()
+    {
+        watcherWarningCount = Mathf.Max(0, watcherWarningCount - 1);
+
+        if (watcherWarningCount > 0)
+            return;
+
+        if (watcherWarningRoutine != null)
+            StopCoroutine(watcherWarningRoutine);
+
+        watcherWarningRoutine = StartCoroutine(FadeWatcherWarning(0f));
+    }
+
+    IEnumerator FadeWatcherWarning(float targetAlpha)
+    {
+        if (watcherWarning == null)
+            yield break;
+
+        watcherWarning.gameObject.SetActive(true);
+
+        float startAlpha = watcherWarning.color.a;
+        float time = 0f;
+        float duration = 1.2f;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float alpha = Mathf.Lerp(startAlpha, targetAlpha, time / duration);
+            SetWatcherWarningAlpha(alpha);
+            yield return null;
+        }
+
+        SetWatcherWarningAlpha(targetAlpha);
+
+        if (targetAlpha <= 0f)
+            watcherWarning.gameObject.SetActive(false);
+    }
+
+    void SetWatcherWarningAlpha(float alpha)
+    {
+        Color c = watcherWarning.color;
+        c.a = alpha;
+        watcherWarning.color = c;
     }
 }

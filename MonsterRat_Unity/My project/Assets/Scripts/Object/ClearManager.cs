@@ -275,6 +275,7 @@ public class ClearManager : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.F2)) SpawnBoxHead();
         if (Input.GetKeyDown(KeyCode.F3)) SpawnRatOnly();
         if (Input.GetKeyDown(KeyCode.F4)) PollutionSpawner.Instance.SpawnGas();
+        if (Input.GetKeyDown(KeyCode.F4)) SpawnLegless();
         if (Input.GetKeyDown(KeyCode.L)) SpawnRoachOnly();
     }
 

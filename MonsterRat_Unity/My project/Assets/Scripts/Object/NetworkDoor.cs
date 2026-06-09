@@ -8,6 +8,9 @@ public class NetworkDoor : NetworkBehaviour
     // 박진웅: 이게 저희가 탈출할때 쓰는 스크립트입니다.
     [SerializeField] private SafeZoneTrigger safeZone;
 
+    public AudioSource source;
+    public AudioClip clip;
+
     public void TryOpenDoor()
     {
         if (HasStateAuthority)
@@ -37,5 +40,29 @@ public class NetworkDoor : NetworkBehaviour
     {
         if (anim == null) return;
         anim.SetTrigger("ClearDoorOpen");
+        PlayDoorSoundOnce();
+    }
+
+    private void PlayDoorSoundOnce()
+    {
+        if (source == null || clip == null) return;
+
+        UpdateOpenDoorVolume();
+
+        source.clip = clip;
+        source.time = 0f;
+        source.Play();
+    }
+
+    private void UpdateOpenDoorVolume()
+    {
+        if (source == null) return;
+
+        float effectVolume = 1f;
+
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+            effectVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+
+        source.volume = effectVolume;
     }
 }

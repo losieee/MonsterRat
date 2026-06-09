@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class DeleteObject : MonoBehaviour
 {
     Animator anim;
     public HashSet<GameObject> deleteBoxes = new HashSet<GameObject>();
+
+    public AudioSource source;
+    public AudioClip fireSound;
 
     bool isDeleting = false;
 
@@ -40,7 +42,36 @@ public class DeleteObject : MonoBehaviour
 
         deleteBoxes.Clear();
 
+        PlayFireSound();
+
         yield return new WaitForSeconds(3);
+
+        StopFireSound();
+
         isDeleting = false;
+    }
+
+    void PlayFireSound()
+    {
+        if (source == null || fireSound == null) return;
+
+        float effectVolume = 1f;
+
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+            effectVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+
+        source.clip = fireSound;
+        source.loop = true;
+        source.volume = 0.5f * effectVolume;
+        source.time = 0f;
+        source.Play();
+    }
+
+    void StopFireSound()
+    {
+        if (source == null) return;
+
+        source.Stop();
+        source.loop = false;
     }
 }

@@ -48,7 +48,11 @@ public class MonsterLegless : NetworkBehaviour
     [SerializeField] private string isMovingParam = "IsMoving";
     [SerializeField] private float movingThreshold = 0.05f;
     [SerializeField] private float animDampSpeed = 10f;
-    
+
+    [Header("사운드")]
+    public AudioSource source;
+    public AudioClip leglessSound;
+
     [Networked] private MonsterState NetState { get; set; }             // 현재 몬스터 상태
     [Networked] private NetworkBool HasDetectedPlayer { get; set; }     // 플레이어를 포착한적이 있는지
     [Networked] private NetworkBool IsBusy { get; set; }                // 현재 무슨 동작을 하고있는지
@@ -123,6 +127,18 @@ public class MonsterLegless : NetworkBehaviour
         }
     }
 
+    private void UpdateLeglessVolume()
+    {
+        if (source == null) return;
+
+        float effectVolume = 1f;
+
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+            effectVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+
+        source.volume = 0.5f * effectVolume;
+    }
+
     // 몬스터 로직 시작
     private void BeginMonsterLogic()
     {
@@ -152,6 +168,7 @@ public class MonsterLegless : NetworkBehaviour
             TickAuthority();
 
         UpdateAnimationVisual();
+        UpdateLeglessVolume();
     }
 
     // 플레이어 추적 / 이동 애니메이션 네트워크 값 갱신

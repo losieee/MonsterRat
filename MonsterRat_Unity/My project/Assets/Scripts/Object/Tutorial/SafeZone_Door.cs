@@ -9,7 +9,10 @@ public class SafeZone_Door : MonoBehaviour
     public bool canWork = false;
     public GameObject btnOutLine;
     public GameObject clearDoorOutLine;
-
+    public AudioSource source;
+    public AudioClip clip;
+    public AudioClip clear;
+        
     bool canOpen = true;    
 
     void Start()
@@ -24,6 +27,8 @@ public class SafeZone_Door : MonoBehaviour
         canOpen = false;
         anim.SetTrigger("DoorOpen");
 
+        PlayDoorSound();
+
         StartCoroutine(WaitCool(3f));
         btnOutLine.SetActive(false);
     }
@@ -37,6 +42,9 @@ public class SafeZone_Door : MonoBehaviour
     public void OpenClearDoor()
     {
         anim.SetTrigger("ClearDoorOpen");
+
+        PlayClearSound();
+
         clearDoorOutLine.SetActive(false);
         StartCoroutine(ClearTutorial());
     }
@@ -51,5 +59,37 @@ public class SafeZone_Door : MonoBehaviour
         Cursor.visible = true;
 
         SceneManager.LoadScene("ZZin_Main_Lobby");
+    }
+
+    void PlayDoorSound()
+    {
+        if (source == null || clip == null) return;
+
+        float effectVolume = 1f;
+
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+            effectVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+
+        source.clip = clip;
+        source.loop = false;
+        source.volume = 0.5f * effectVolume;
+        source.time = 0f;
+        source.Play();
+    }
+
+    void PlayClearSound()
+    {
+        if (source == null || clear == null) return;
+
+        float effectVolume = 1f;
+
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+            effectVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+
+        source.clip = clear;
+        source.loop = false;
+        source.volume = effectVolume;
+        source.time = 0f;
+        source.Play();
     }
 }
