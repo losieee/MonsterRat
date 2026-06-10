@@ -95,6 +95,7 @@ public class ClearManager : NetworkBehaviour
     private RePollutionDebuffType currentDebuff = RePollutionDebuffType.None;
 
     private bool debuffInitialized = false;
+    private bool ignoreFirstStepAfterSetup = true;
 
     // 스테이지 시작 전 준비가 되었는가 (스테이지 초기화가 완료 되었는가)
     private bool isStageReady = false;
@@ -246,6 +247,7 @@ public class ClearManager : NetworkBehaviour
         HasInitializedTargets = false;
         clearedAllGas = false;
         isStageReady = false;
+        ignoreFirstStepAfterSetup = true;
     }
 
     private void Update()
@@ -255,6 +257,22 @@ public class ClearManager : NetworkBehaviour
 
         if (isStageReady && !isInitializingTargets)
         {
+            if (ignoreFirstStepAfterSetup)
+            {
+                ignoreFirstStepAfterSetup = false;
+
+                int interval = GetStepInterval();
+                int currentStep = Mathf.FloorToInt(ClearPercent / (float)interval) * interval;
+                LastStep = Mathf.Clamp(currentStep, 0, 100);
+
+                return;
+            }
+
+            if (ClearPercent <= 0 && LastStep >= 100)
+            {
+                LastStep = 0;
+            }
+
             CheckStep(ClearRatio01);
 
             if (!clearedAllGas && ClearPercent >= 100)
@@ -494,13 +512,14 @@ public class ClearManager : NetworkBehaviour
     {
         if (!HasStateAuthority) return;
 
-        RemainingTotal = Mathf.Clamp(RemainingTotal, 0f, BaselineTotal);
+        RemainingTotal = BaselineTotal;
 
         isInitializingTargets = false;
-        isStageReady = true;
         HasInitializedTargets = true;
 
         LastStep = 0;
+        isStageReady = true;
+        ignoreFirstStepAfterSetup = false;
     }
 
     // 플레이어 검색

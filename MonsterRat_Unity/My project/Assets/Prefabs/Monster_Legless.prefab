@@ -78,7 +78,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -142,6 +142,7 @@ MonoBehaviour:
   animDampSpeed: 10
   source: {fileID: 3456912790863586501}
   leglessSound: {fileID: 8300000, guid: 77a14ed2dca60404993fa90575022e46, type: 3}
+  killTouchTime: 0.2
 --- !u!114 &1561097895004343636
 MonoBehaviour:
   m_ObjectHideFlags: 0

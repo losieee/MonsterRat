@@ -4,6 +4,8 @@ using Fusion.Sockets;
 using System.Collections.Generic;
 using System;
 using UnityEngine.SceneManagement;
+using UnityEngine.Analytics;
+using System.Collections;
 
 public struct MyNetworkInput : INetworkInput
 {
@@ -15,6 +17,8 @@ public struct MyNetworkInput : INetworkInput
 
 public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
 {
+    public static PlayerController LocalPlayer;
+
     [Header("속도 설정")]
     public float moveSpeed = 3.0f;
     public float runSpeed = 6.0f;
@@ -58,6 +62,15 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
 
     [Networked] public float NetPitch { get; set; }
 
+    // 플레이어 사망
+    public Transform spectatePoint;
+    public GameObject gameOverUI;
+    public float restartDelay = 3f;
+    [Networked] public NetworkBool IsDead { get; set; }
+
+    private bool isSpectating;
+    private Transform spectateTarget;
+
     public override void Spawned()
     {
         rb = GetComponent<Rigidbody>();
@@ -67,7 +80,10 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
 
         if (HasInputAuthority)
         {
+            LocalPlayer = this;
+
             myCamObj.SetActive(true);
+            gameOverUI.SetActive(false);
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             Runner.AddCallbacks(this);
@@ -123,6 +139,17 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
     {
         if (!HasInputAuthority) return;
 
+        if (isSpectating)
+        {
+            if (spectateTarget != null && myCamObj != null)
+            {
+                myCamObj.transform.position = spectateTarget.position;
+                myCamObj.transform.rotation = spectateTarget.rotation;
+            }
+
+            return;
+        }
+
         bool isMenuRealOpen = SlimUI.ModernMenu.UISettingsManager.isMenuOpen && SlimUI.ModernMenu.UISettingsManager.Instance != null;
         if (isMenuRealOpen || PhotonPlayerUIState.isGlobalStoreOpen)
         {
@@ -175,6 +202,116 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
         }
     }
 
+    public void Die()
+    {
+        if (!HasStateAuthority) return;
+        if (IsDead) return;
+
+        IsDead = true;
+
+        RPC_PlayDeadAnimation();
+
+        StartCoroutine(DeadRoutine());
+
+        CheckAllPlayersDead();
+    }
+
+    IEnumerator DeadRoutine()
+    {
+        yield return new WaitForSeconds(2f);
+
+        RPC_OnDead();
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+    private void RPC_OnDead()
+    {
+        StartSpectateOtherPlayer();
+    }
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_PlayDeadAnimation()
+    {
+        if (animator != null)
+        {
+            animator.SetTrigger("IsDead");
+        }
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+        }
+    }
+
+    void CheckAllPlayersDead()
+    {
+        if (!HasStateAuthority) return;
+
+        PlayerController[] players = FindObjectsOfType<PlayerController>();
+
+        foreach (PlayerController p in players)
+        {
+            if (!p.IsDead)
+                return;
+        }
+
+        StartCoroutine(RestartCurrentSceneRoutine());
+    }
+
+    void StartSpectateOtherPlayer()
+    {
+        isSpectating = true;
+        GameInputLock.Lock();
+
+        PlayerController[] players = FindObjectsOfType<PlayerController>();
+
+        foreach (PlayerController p in players)
+        {
+            if (p == this) continue;
+            if (p.IsDead) continue;
+
+            spectateTarget = p.flashPivot;
+            break;
+        }
+
+        if (spectateTarget == null)
+        {
+            if (gameOverUI != null)
+                gameOverUI.SetActive(true);
+
+            if (HasStateAuthority)
+                StartCoroutine(RestartCurrentSceneRoutine());
+        }
+    }
+
+    IEnumerator RestartCurrentSceneRoutine()
+    {
+        yield return new WaitForSeconds(restartDelay);
+
+        if (Runner == null) yield break;
+
+        if (HasStateAuthority)
+        {
+            if (PollutionSpawner.Instance != null)
+            {
+                PollutionSpawner.Instance.DespawnAllCleaningObjects();
+            }
+
+            if (ClearManager.Instance != null)
+            {
+                ClearManager.Instance.ResetProgress();
+            }
+        }
+
+        yield return null;
+
+        int sceneIndex = SceneManager.GetActiveScene().buildIndex;
+
+        if (sceneIndex >= 0)
+        {
+            Runner.LoadScene(SceneRef.FromIndex(sceneIndex));
+        }
+    }
+
     void LateUpdate()
     {
         if (!HasInputAuthority)
@@ -208,7 +345,7 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
 
     public override void FixedUpdateNetwork()
     {
-        if (GameInputLock.IsLocked) return;
+        if (GameInputLock.IsLocked || IsDead) return;
 
         if (GetInput(out MyNetworkInput input))
         {

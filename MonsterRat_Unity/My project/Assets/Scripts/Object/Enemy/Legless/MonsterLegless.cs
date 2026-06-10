@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using Fusion;
 using UnityEngine;
 using UnityEngine.AI;
@@ -71,6 +72,10 @@ public class MonsterLegless : NetworkBehaviour
 
     // 프록시 화면에서 bool 전환이 너무 딱딱해 보이는 걸 조금 완화
     private float movingBlendVisual;
+
+    private readonly Dictionary<PlayerController, float> touchTimers = new Dictionary<PlayerController, float>();
+
+    [SerializeField] private float killTouchTime = 0.2f;
 
     // RPC - 누구든 호출 가능한 함수, 실행은 몬스터에서만 실행 됨
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
@@ -639,5 +644,36 @@ public class MonsterLegless : NetworkBehaviour
 
         bool visualMoving = movingBlendVisual > 0.5f;
         anim.SetBool(isMovingParam, visualMoving);
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (!HasStateAuthority) return;
+
+        PlayerController player = other.GetComponentInParent<PlayerController>();
+        if (player == null) return;
+        if (player.IsDead) return;
+
+        if (!touchTimers.ContainsKey(player))
+            touchTimers[player] = 0f;
+
+        touchTimers[player] += Time.deltaTime;
+
+        if (touchTimers[player] >= killTouchTime)
+        {
+            player.Die();
+            touchTimers.Remove(player);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (!HasStateAuthority) return;
+
+        PlayerController player = other.GetComponentInParent<PlayerController>();
+        if (player == null) return;
+
+        if (touchTimers.ContainsKey(player))
+            touchTimers.Remove(player);
     }
 }

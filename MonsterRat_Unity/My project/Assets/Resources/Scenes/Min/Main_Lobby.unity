@@ -1396,6 +1396,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f28b6bc4afee7347bcdbbe22e7d2efd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  clearType: 0
   weight: 1
 --- !u!65 &31605748
 BoxCollider:
@@ -9897,6 +9898,9 @@ MonoBehaviour:
   canWork: 0
   btnOutLine: {fileID: 0}
   clearDoorOutLine: {fileID: 2056379598}
+  source: {fileID: 0}
+  clip: {fileID: 0}
+  clear: {fileID: 0}
 --- !u!95 &253191806
 Animator:
   serializedVersion: 7
@@ -14708,6 +14712,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f28b6bc4afee7347bcdbbe22e7d2efd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  clearType: 0
   weight: 1
 --- !u!54 &380802912
 Rigidbody:
@@ -25493,6 +25498,10 @@ MonoBehaviour:
   roomnameInput: {fileID: 2140823008}
   roomlistContent: {fileID: 783713465}
   roomItemPrefab: {fileID: 6081980839131826816, guid: 82c2ecfa74f435d40ba5d816dd5a2177, type: 3}
+  SaveSlotPanel: {fileID: 0}
+  slotButtons: []
+  slotTexts: []
+  deleteButtons: []
 --- !u!4 &552061921
 Transform:
   m_ObjectHideFlags: 0
@@ -64405,6 +64414,9 @@ MonoBehaviour:
   canWork: 0
   btnOutLine: {fileID: 615052892}
   clearDoorOutLine: {fileID: 0}
+  source: {fileID: 0}
+  clip: {fileID: 0}
+  clear: {fileID: 0}
 --- !u!111 &1509964569
 Animation:
   m_ObjectHideFlags: 0
@@ -100288,6 +100300,7 @@ MonoBehaviour:
   exitMenu: {fileID: 352803725096631889}
   loginpanel: {fileID: 1070532720}
   CreateRoomPanel: {fileID: 1515996187}
+  saveSlotPanel: {fileID: 0}
   theme: 0
   themeController: {fileID: 11400000, guid: e00c7d2bc58a2424b8dc09ecdafdb067, type: 2}
   mainCanvas: {fileID: 353375068684661133}
@@ -104473,9 +104486,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settingsPanel: {fileID: 353311197547844463}
+  useLocalPlayerCheck: 0
+  isLocalPlayer: 1
+  isTutorialPlayer: 0
+  runner: {fileID: 0}
+  state: {fileID: 0}
   canUseEscKey: 0
   platform: 0
   fullscreentext: {fileID: 352552583228059353}
+  resolutionDropdown: {fileID: 0}
   ambientocclusiontext: {fileID: 353516329680503959}
   shadowofftextLINE: {fileID: 352451397829240283}
   shadowlowtextLINE: {fileID: 352790100208007095}
@@ -104496,8 +104515,12 @@ MonoBehaviour:
   difficultynormaltextLINE: {fileID: 353259667395114921}
   difficultyhardcoretext: {fileID: 352565566367613705}
   difficultyhardcoretextLINE: {fileID: 353520915158118967}
+  exitPanel: {fileID: 0}
   invertmousetext: {fileID: 352737171056464963}
-  musicSlider: {fileID: 352423760300763019}
+  bgmSource: {fileID: 415971624449155397}
+  sfxSource: {fileID: 0}
+  musicSlider: {fileID: 394417835923128905}
+  effectSlider: {fileID: 0}
   sensitivityXSlider: {fileID: 352538888976424709}
   sensitivityYSlider: {fileID: 352612652143196073}
   mouseSmoothSlider: {fileID: 353510286480241423}
@@ -107475,6 +107498,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad149d53679afc04782ee02fa3e008d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useMusic: 1
 --- !u!114 &393907144711483429
 MonoBehaviour:
   m_ObjectHideFlags: 0

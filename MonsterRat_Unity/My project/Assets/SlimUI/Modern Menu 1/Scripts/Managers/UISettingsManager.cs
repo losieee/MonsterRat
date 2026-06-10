@@ -123,7 +123,10 @@ namespace SlimUI.ModernMenu
 
         public void Update()
         {
-            if (GameInputLock.IsLocked) return;
+            bool localPlayerDead = PlayerController.LocalPlayer != null && PlayerController.LocalPlayer.IsDead;
+
+            if (GameInputLock.IsLocked && !localPlayerDead)
+                return;
 
             if (canUseEscKey && Input.GetKeyDown(KeyCode.Escape))
             {
@@ -336,6 +339,24 @@ namespace SlimUI.ModernMenu
             SaveSettings();
         }
 
+        public async void LeaveRoom()
+        {
+            if (runner == null)
+                runner = FindObjectOfType<NetworkRunner>();
+
+            if (runner != null)
+            {
+                await runner.Shutdown();
+                Destroy(runner.gameObject);
+                runner = null;
+            }
+
+            if (settingsPanel != null) settingsPanel.SetActive(false);
+
+            isMenuOpen = false;
+            await System.Threading.Tasks.Task.Delay(200);
+            SceneManager.LoadScene("ZZin_Main_Lobby");
+        }
         public void vsync()
         {
             currentSettings.vSyncCount = currentSettings.vSyncCount == 0 ? 1 : 0;
@@ -426,6 +447,6 @@ namespace SlimUI.ModernMenu
         public float YSensitivity => currentSettings != null ? currentSettings.ySensitivity : 1f;
         public float MouseSmoothing => currentSettings != null ? currentSettings.mouseSmoothing : 0f;
         public float EffectVolume => currentSettings != null ? currentSettings.effectVolume : 1f;
-        public float MusicVolume => currentSettings != null ? currentSettings.musicVolume : 1f;
+        public float MusicVolume => currentSettings != null ? currentSettings.musicVolume : 0.5f;
     }
 }

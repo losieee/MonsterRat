@@ -21267,6 +21267,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1328840769970059959, guid: bf926fc706056f347933a16249cd701a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3074478739252330358, guid: bf926fc706056f347933a16249cd701a, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -21342,7 +21346,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7059470410700060847, guid: bf926fc706056f347933a16249cd701a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 0}
   m_SourcePrefab: {fileID: 100100000, guid: bf926fc706056f347933a16249cd701a, type: 3}
 --- !u!114 &1297624820 stripped
 MonoBehaviour:

@@ -22,7 +22,7 @@ namespace SlimUI.ModernMenu{
 
             if (useMusic)
             {
-                audioSource.volume = PlayerPrefs.GetFloat("MusicVolume", 1f);
+                audioSource.volume = PlayerPrefs.GetFloat("MusicVolume", 0.5f);
             }
             else
             {
