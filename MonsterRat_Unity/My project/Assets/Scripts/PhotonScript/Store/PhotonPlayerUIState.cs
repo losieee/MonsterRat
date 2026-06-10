@@ -4,6 +4,7 @@ using System;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.Analytics;
 
 public class PhotonPlayerUIState : NetworkBehaviour
 {
@@ -44,19 +45,22 @@ public class PhotonPlayerUIState : NetworkBehaviour
 
     public override void Spawned()
     {
-        if (HasInputAuthority)
+        if (watcherWarning != null)
         {
-            Local = this;
-
-            if (watcherWarning != null)
-            {
-                watcherWarning.gameObject.SetActive(false);
-                SetWatcherWarningAlpha(0f);
-            }
-
-            if (completeBuy != null)
-                completeBuy.gameObject.SetActive(false);
+            watcherWarning.gameObject.SetActive(false);
+            SetWatcherWarningAlpha(0f);
         }
+
+        if (completeBuy != null)
+            completeBuy.gameObject.SetActive(false);
+
+        if (storePanel != null)
+            storePanel.SetActive(false);
+
+        if (!HasInputAuthority)
+            return;
+
+        Local = this;
     }
 
     void Update()

@@ -78,12 +78,15 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
         footstepAudioSource = GetComponent<AudioSource>();
         footStepType = GetComponent<PlayerFootStepType>();
 
+        if (gameOverUI != null)
+            gameOverUI.SetActive(false);
+
         if (HasInputAuthority)
         {
             LocalPlayer = this;
 
             myCamObj.SetActive(true);
-            gameOverUI.SetActive(false);
+
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
             Runner.AddCallbacks(this);
@@ -259,6 +262,8 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
 
     void StartSpectateOtherPlayer()
     {
+        if (!HasInputAuthority) return;
+
         isSpectating = true;
         GameInputLock.Lock();
 
@@ -345,7 +350,9 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
 
     public override void FixedUpdateNetwork()
     {
-        if (GameInputLock.IsLocked || IsDead) return;
+        if (IsDead) return;
+
+        if (HasInputAuthority && GameInputLock.IsLocked) return;
 
         if (GetInput(out MyNetworkInput input))
         {
