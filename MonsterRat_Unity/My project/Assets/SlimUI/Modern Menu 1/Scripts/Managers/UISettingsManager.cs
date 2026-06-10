@@ -242,18 +242,21 @@ namespace SlimUI.ModernMenu
             {
                 Slider slider = sensitivityXSlider.GetComponent<Slider>();
                 if (slider != null) currentSettings.xSensitivity = slider.value;
+                PlayerPrefs.SetFloat("XSensitivity", currentSettings.xSensitivity);
             }
 
             if (sensitivityYSlider != null)
             {
                 Slider slider = sensitivityYSlider.GetComponent<Slider>();
                 if (slider != null) currentSettings.ySensitivity = slider.value;
+                PlayerPrefs.SetFloat("YSensitivity", currentSettings.ySensitivity);
             }
 
             if (mouseSmoothSlider != null)
             {
                 Slider slider = mouseSmoothSlider.GetComponent<Slider>();
                 if (slider != null) currentSettings.mouseSmoothing = slider.value;
+                PlayerPrefs.SetFloat("MouseSmoothing", currentSettings.mouseSmoothing);
             }
 
             if (currentSettings != null)
@@ -262,6 +265,8 @@ namespace SlimUI.ModernMenu
                 PlayerPrefs.SetString("MasterGameSettings", jsonString);
                 PlayerPrefs.Save();
             }
+
+           // PlayerPrefs.Save();
         }
 
         private void ApplySettingsToUIAndEngine()
@@ -336,6 +341,18 @@ namespace SlimUI.ModernMenu
         {
             Screen.fullScreen = !Screen.fullScreen;
             if (fullscreentext) fullscreentext.GetComponent<TMP_Text>().text = Screen.fullScreen ? "on" : "off";
+            SaveSettings();
+        }
+
+        public void MusicSlider()
+        {
+            if (isInitializing) return;
+            SaveSettings();
+        }
+
+        public void EffectSlider()
+        {
+            if (isInitializing) return;
             SaveSettings();
         }
 
