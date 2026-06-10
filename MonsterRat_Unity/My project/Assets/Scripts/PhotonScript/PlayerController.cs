@@ -221,7 +221,7 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
 
     IEnumerator DeadRoutine()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(0.5f);
 
         RPC_OnDead();
     }
@@ -229,7 +229,7 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
     [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
     private void RPC_OnDead()
     {
-        StartSpectateOtherPlayer();
+        StartCoroutine(DeadSelfViewThenSpectateRoutine());
     }
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_PlayDeadAnimation()
@@ -243,6 +243,55 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
         {
             rb.linearVelocity = Vector3.zero;
         }
+    }
+
+    IEnumerator MoveCameraToTarget(Transform target, float duration)
+    {
+        if (target == null || myCamObj == null)
+            yield break;
+
+        Vector3 startPos = myCamObj.transform.position;
+        Quaternion startRot = myCamObj.transform.rotation;
+
+        float time = 0f;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+
+            float t = Mathf.Clamp01(time / duration);
+
+            // 부드럽게 감속
+            t = Mathf.SmoothStep(0f, 1f, t);
+
+            myCamObj.transform.position =
+                Vector3.Lerp(startPos, target.position, t);
+
+            myCamObj.transform.rotation =
+                Quaternion.Slerp(startRot, target.rotation, t);
+
+            yield return null;
+        }
+
+        myCamObj.transform.position = target.position;
+        myCamObj.transform.rotation = target.rotation;
+    }
+
+    IEnumerator DeadSelfViewThenSpectateRoutine()
+    {
+        if (!HasInputAuthority) yield break;
+
+        isSpectating = true;
+        GameInputLock.Lock();
+
+        // 5초 동안 내 시체 쪽 spectatePoint 이동
+        yield return StartCoroutine(MoveCameraToTarget(spectatePoint, 1.5f));
+        spectateTarget = spectatePoint;
+
+        yield return new WaitForSeconds(5f);
+
+        // 그 다음 원래 관전 로직
+        StartSpectateOtherPlayer();
     }
 
     void CheckAllPlayersDead()

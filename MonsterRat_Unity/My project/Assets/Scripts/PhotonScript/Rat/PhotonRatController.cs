@@ -27,6 +27,14 @@ public class PhotonRatController : NetworkBehaviour
     public float walkRange = 1.2f;      // 이 거리 안으로 들어오면 걷는 애니메이션
     public float runSpeed = 3.5f;       // 멀리 있을 때
     public float walkSpeed = 1.6f;      // 가까이 있을 때
+
+    [Header("Sound")]
+    public AudioSource source;
+    public AudioClip ratSound;
+    public float ratSoundInterval = 5f;
+
+    private float ratSoundTimer;
+
     [Networked] public float NetMoveSpeed { get; set; }
     [Networked] public int hitCount { get; set; }
 
@@ -200,6 +208,22 @@ public class PhotonRatController : NetworkBehaviour
         }
     }
 
+    void Update()
+    {
+        UpdateRatVolume();
+
+        if (IsDead) return;
+        if (source == null || ratSound == null) return;
+
+        ratSoundTimer -= Time.deltaTime;
+
+        if (ratSoundTimer <= 0f)
+        {
+            source.PlayOneShot(ratSound);
+            ratSoundTimer = ratSoundInterval;
+        }
+    }
+
     // Render로 호스트 클라 모두 동시 실행
     public override void Render()
     {
@@ -208,6 +232,18 @@ public class PhotonRatController : NetworkBehaviour
             animator.SetFloat(moveSpeedParam, NetMoveSpeed, 0.1f, Time.deltaTime);
             animator.SetFloat(turnParam, NetTurn, 0.1f, Time.deltaTime);
         }
+    }
+
+    private void UpdateRatVolume()
+    {
+        if (source == null) return;
+
+        float effectVolume = 1f;
+
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+            effectVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+
+        source.volume = effectVolume;
     }
 
     [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
@@ -250,6 +286,12 @@ public class PhotonRatController : NetworkBehaviour
             if (animator != null)
             {
                 animator.SetTrigger(deadTrigger);
+            }
+
+            if (source != null && ratSound != null)
+            {
+                UpdateRatVolume();
+                source.PlayOneShot(ratSound);
             }
 
             if (agent != null)
