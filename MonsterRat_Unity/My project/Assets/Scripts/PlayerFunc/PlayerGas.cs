@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class PlayerGas : NetworkBehaviour
 {
-    public float pollution = 0f;
+    [Networked] public float pollution { get; set; }
+
     public float maxPollution = 100f;
     public float checkInterval = 0.2f;
     public float sampleHeightOffset = 0.8f;
@@ -30,7 +31,6 @@ public class PlayerGas : NetworkBehaviour
 
     private void Awake()
     {
-        networkObject = GetComponentInParent<NetworkObject>();
         gasMask = GetComponentInParent<PhotonGasMaskController>();
         newGasMask = GetComponentInParent<PhotonNewGasMaskController>();
         fullGaugeBlind = GetComponentInParent<FullGaugeBlind>();
@@ -45,7 +45,10 @@ public class PlayerGas : NetworkBehaviour
 
     private void Update()
     {
-        if (!CanProcessGas())
+        if (!Object || !Object.IsValid)
+            return;
+
+        if (!HasInputAuthority)
             return;
 
         refreshTimer -= Time.deltaTime;
@@ -79,7 +82,7 @@ public class PlayerGas : NetworkBehaviour
                     if (newGasMask != null && newGasMask.UseMask)
                         break;
 
-                    AddExposure(zone.exposurePerSec * checkInterval);
+                    RPC_AddExposure(zone.exposurePerSec * checkInterval);
                     break;
                 }
             }
