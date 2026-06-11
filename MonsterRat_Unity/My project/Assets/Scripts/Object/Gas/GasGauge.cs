@@ -6,7 +6,9 @@ public class GasGauge : MonoBehaviour
 {
     public Image fillImage;
     public Image pollutionEffect;
+
     private PlayerGas player;
+
     public float alphaSmoothSpeed = 5f;
 
     void Update()
@@ -26,7 +28,13 @@ public class GasGauge : MonoBehaviour
         if (pollutionEffect == null) return;
 
         Color c = pollutionEffect.color;
-        float targetAlpha = Mathf.Lerp(0f, 0.8f, normalized);
+
+        float targetAlpha = 0f;
+
+        // 오염 효과 유지
+        if (normalized >= 0.25f)
+            targetAlpha = 0.5f;
+
         c.a = Mathf.Lerp(c.a, targetAlpha, Time.deltaTime * alphaSmoothSpeed);
         pollutionEffect.color = c;
     }

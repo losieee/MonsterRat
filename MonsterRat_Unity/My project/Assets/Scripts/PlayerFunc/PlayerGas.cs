@@ -1,7 +1,7 @@
 using Fusion;
 using UnityEngine;
 
-public class PlayerGas : MonoBehaviour
+public class PlayerGas : NetworkBehaviour
 {
     public float pollution = 0f;
     public float maxPollution = 100f;
@@ -24,7 +24,9 @@ public class PlayerGas : MonoBehaviour
     private FullGaugeSlow fullGaugeSlow;
     private FullGaugeHeadShake fullHeadShake;
 
-    private bool isEffectRunning = false;
+    private bool shakeActive = false;
+    private bool blindActive = false;
+    private bool slowActive = false;
 
     private void Awake()
     {
@@ -53,82 +55,110 @@ public class PlayerGas : MonoBehaviour
             refreshTimer = refreshZoneInterval;
         }
 
-        if (gasZones == null || gasZones.Length == 0)
-            return;
-
-        timer -= Time.deltaTime;
-        if (timer > 0f) return;
-        timer = checkInterval;
-
-        Vector3 pos = transform.position + Vector3.up * sampleHeightOffset;
-
-        for (int i = 0; i < gasZones.Length; i++)
+        if (gasZones != null && gasZones.Length > 0)
         {
-            GasZone zone = gasZones[i];
-            if (zone == null) continue;
+            timer -= Time.deltaTime;
 
-            if (!zone.Contains(pos)) continue;
-            if (!zone.IsDangerousAt(pos)) continue;
+            if (timer <= 0f)
+            {
+                timer = checkInterval;
 
-            if (gasMask != null && gasMask.UseMask)
-                break;
+                Vector3 pos = transform.position + Vector3.up * sampleHeightOffset;
 
-            if (newGasMask != null && newGasMask.UseMask)
-                break;
+                for (int i = 0; i < gasZones.Length; i++)
+                {
+                    GasZone zone = gasZones[i];
+                    if (zone == null) continue;
 
-            AddExposure(zone.exposurePerSec * checkInterval);
-            break;
+                    if (!zone.Contains(pos)) continue;
+                    if (!zone.IsDangerousAt(pos)) continue;
+
+                    if (gasMask != null && gasMask.UseMask)
+                        break;
+
+                    if (newGasMask != null && newGasMask.UseMask)
+                        break;
+
+                    AddExposure(zone.exposurePerSec * checkInterval);
+                    break;
+                }
+            }
         }
 
-        CheckFullPollution();
+        CheckPollutionStages();
     }
 
-    // 게이지 다 찾는지 확인
-    void CheckFullPollution()
+    private void CheckPollutionStages()
     {
-        if (isEffectRunning)
-            return;
+        float normalized = GetNormalized();
 
-        if (pollution < maxPollution)
-            return;
-
-        isEffectRunning = true;
-
-        int randomEffect = Random.Range(0, 3);
-        // 0 = 실명
-        // 1 = 둔화
-        // 2 = 멀미
-
-        if (randomEffect == 0)
+        // 50% 이상: 멀미
+        if (normalized >= 0.5f)
         {
-            if (fullGaugeBlind != null)
-                fullGaugeBlind.StartBlind(OnEffectFinished);
-            else
-                OnEffectFinished();
-        }
-        else if (randomEffect == 1)
-        {
-            if (fullGaugeSlow != null)
-                fullGaugeSlow.StartSlow(OnEffectFinished);
-            else
-                OnEffectFinished();
+            if (!shakeActive)
+            {
+                shakeActive = true;
+
+                if (fullHeadShake != null)
+                    fullHeadShake.StartShake(null);
+            }
         }
         else
         {
-            if (fullHeadShake != null)
-                fullHeadShake.StartShake(OnEffectFinished);
-            else
-                OnEffectFinished();
+            if (shakeActive)
+            {
+                shakeActive = false;
+
+                if (fullHeadShake != null)
+                    fullHeadShake.StopShake();
+            }
+        }
+
+        // 75% 이상: 실명
+        if (normalized >= 0.75f)
+        {
+            if (!blindActive)
+            {
+                blindActive = true;
+
+                if (fullGaugeBlind != null)
+                    fullGaugeBlind.StartBlind(null);
+            }
+        }
+        else
+        {
+            if (blindActive)
+            {
+                blindActive = false;
+
+                if (fullGaugeBlind != null)
+                    fullGaugeBlind.StopBlind();
+            }
+        }
+
+        // 100% 이상: 둔화
+        if (normalized >= 1f)
+        {
+            if (!slowActive)
+            {
+                slowActive = true;
+
+                if (fullGaugeSlow != null)
+                    fullGaugeSlow.StartSlow(null);
+            }
+        }
+        else
+        {
+            if (slowActive)
+            {
+                slowActive = false;
+
+                if (fullGaugeSlow != null)
+                    fullGaugeSlow.StopSlow();
+            }
         }
     }
 
-    void OnEffectFinished()
-    {
-        pollution = 0f;
-        isEffectRunning = false;
-    }
-
-    // 가스 확인 
     public void RefreshGasZones()
     {
         gasZones = FindObjectsOfType<GasZone>(true);
@@ -152,5 +182,11 @@ public class PlayerGas : MonoBehaviour
     {
         if (maxPollution <= 0f) return 0f;
         return pollution / maxPollution;
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.InputAuthority)]
+    public void RPC_AddExposure(float amount)
+    {
+        AddExposure(amount);
     }
 }

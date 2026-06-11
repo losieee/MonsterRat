@@ -7,12 +7,11 @@ public class FullGaugeBlind : MonoBehaviour
     public Camera targetCamera;
 
     [Header("Blind Setting")]
-    public float blindFadeInDuration = 2f;          // 서서히 어두워짐
-    public float blindDuration = 10f;               // 실명 유지 시간
-    public float visibleDistance = 1.5f;            // 어디까지 보일지
-    public float fogStartDistance = 0.2f;           // 어두워지기 시작할 지점
-    public float recoverDuration = 3f;              // 기존 시야 찾기까지 시간
-    public float recoverEndDistance = 80f;          // 어디까지 넓힐건지
+    public float blindFadeInDuration = 2f;
+    public float visibleDistance = 1.5f;
+    public float fogStartDistance = 0.2f;
+    public float recoverDuration = 3f;
+    public float recoverEndDistance = 80f;
 
     bool originalFog;
     Color originalFogColor;
@@ -20,6 +19,9 @@ public class FullGaugeBlind : MonoBehaviour
     float originalFogStart;
     float originalFogEnd;
     float originalFogDensity;
+
+    bool savedOriginal = false;
+    bool isBlindActive = false;
 
     Coroutine blindRoutine;
 
@@ -31,40 +33,28 @@ public class FullGaugeBlind : MonoBehaviour
 
     public void StartBlind(Action onFinished = null)
     {
+        if (isBlindActive)
+            return;
+
+        isBlindActive = true;
+
         if (blindRoutine != null)
             StopCoroutine(blindRoutine);
 
-        blindRoutine = StartCoroutine(BlindCoroutine(onFinished));
+        blindRoutine = StartCoroutine(BlindInCoroutine());
     }
 
-    IEnumerator BlindCoroutine(Action onFinished)
+    IEnumerator BlindInCoroutine()
     {
-        // 기존 안개 값 저장
-        originalFog = RenderSettings.fog;
-        originalFogColor = RenderSettings.fogColor;
-        originalFogMode = RenderSettings.fogMode;
-        originalFogStart = RenderSettings.fogStartDistance;
-        originalFogEnd = RenderSettings.fogEndDistance;
-        originalFogDensity = RenderSettings.fogDensity;
+        SaveOriginalFog();
 
-        // 실명 효과를 위해 Fog 켜기
         RenderSettings.fog = true;
         RenderSettings.fogColor = Color.black;
         RenderSettings.fogMode = FogMode.Linear;
 
-        // 시작 지점 설정
-        // 원래 Fog가 켜져 있었다면 원래 값에서 시작
-        // 원래 Fog가 꺼져 있었다면 넓은 시야 상태에서 시작
         float startFogStart = originalFog ? originalFogStart : recoverEndDistance * 0.8f;
         float startFogEnd = originalFog ? originalFogEnd : recoverEndDistance;
 
-        float targetFogStart = fogStartDistance;
-        float targetFogEnd = visibleDistance;
-
-        RenderSettings.fogStartDistance = startFogStart;
-        RenderSettings.fogEndDistance = startFogEnd;
-
-        // 서서히 실명
         float time = 0f;
 
         while (time < blindFadeInDuration)
@@ -74,27 +64,40 @@ public class FullGaugeBlind : MonoBehaviour
             float t = time / blindFadeInDuration;
             t = Mathf.SmoothStep(0f, 1f, t);
 
-            RenderSettings.fogStartDistance = Mathf.Lerp(startFogStart, targetFogStart, t);
-            RenderSettings.fogEndDistance = Mathf.Lerp(startFogEnd, targetFogEnd, t);
+            RenderSettings.fogStartDistance = Mathf.Lerp(startFogStart, fogStartDistance, t);
+            RenderSettings.fogEndDistance = Mathf.Lerp(startFogEnd, visibleDistance, t);
 
             yield return null;
         }
 
-        // 실명 상태 고정
         RenderSettings.fogStartDistance = fogStartDistance;
         RenderSettings.fogEndDistance = visibleDistance;
 
-        // 실명 상태 유지
-        yield return new WaitForSeconds(blindDuration);
+        blindRoutine = null;
+    }
 
-        // 서서히 시야 회복
-        time = 0f;
+    public void StopBlind()
+    {
+        if (!isBlindActive)
+            return;
 
-        float recoverStartFogStart = fogStartDistance;
-        float recoverStartFogEnd = visibleDistance;
+        isBlindActive = false;
 
-        float recoverTargetFogStart = originalFog ? originalFogStart : recoverEndDistance * 0.8f;
-        float recoverTargetFogEnd = originalFog ? originalFogEnd : recoverEndDistance;
+        if (blindRoutine != null)
+            StopCoroutine(blindRoutine);
+
+        blindRoutine = StartCoroutine(BlindOutCoroutine());
+    }
+
+    IEnumerator BlindOutCoroutine()
+    {
+        float time = 0f;
+
+        float startFogStart = RenderSettings.fogStartDistance;
+        float startFogEnd = RenderSettings.fogEndDistance;
+
+        float targetFogStart = originalFog ? originalFogStart : recoverEndDistance * 0.8f;
+        float targetFogEnd = originalFog ? originalFogEnd : recoverEndDistance;
 
         while (time < recoverDuration)
         {
@@ -103,22 +106,40 @@ public class FullGaugeBlind : MonoBehaviour
             float t = time / recoverDuration;
             t = Mathf.SmoothStep(0f, 1f, t);
 
-            RenderSettings.fogStartDistance = Mathf.Lerp(recoverStartFogStart, recoverTargetFogStart, t);
-            RenderSettings.fogEndDistance = Mathf.Lerp(recoverStartFogEnd, recoverTargetFogEnd, t);
+            RenderSettings.fogStartDistance = Mathf.Lerp(startFogStart, targetFogStart, t);
+            RenderSettings.fogEndDistance = Mathf.Lerp(startFogEnd, targetFogEnd, t);
 
             yield return null;
         }
 
-        // 원래 안개 값 복구
+        RestoreOriginalFog();
+
+        savedOriginal = false;
+        blindRoutine = null;
+    }
+
+    void SaveOriginalFog()
+    {
+        if (savedOriginal)
+            return;
+
+        originalFog = RenderSettings.fog;
+        originalFogColor = RenderSettings.fogColor;
+        originalFogMode = RenderSettings.fogMode;
+        originalFogStart = RenderSettings.fogStartDistance;
+        originalFogEnd = RenderSettings.fogEndDistance;
+        originalFogDensity = RenderSettings.fogDensity;
+
+        savedOriginal = true;
+    }
+
+    void RestoreOriginalFog()
+    {
         RenderSettings.fog = originalFog;
         RenderSettings.fogColor = originalFogColor;
         RenderSettings.fogMode = originalFogMode;
         RenderSettings.fogStartDistance = originalFogStart;
         RenderSettings.fogEndDistance = originalFogEnd;
         RenderSettings.fogDensity = originalFogDensity;
-
-        blindRoutine = null;
-
-        onFinished?.Invoke();
     }
 }

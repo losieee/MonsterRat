@@ -71,15 +71,16 @@ public class SpannerMiniGame : MonoBehaviour
 
     public void StartMiniGame(GasValveSync valve, PhotonSpanner spanner)
     {
-        if (ownerSpanner == null || !ownerSpanner.HasInputAuthority)
+        if (spanner == null || !spanner.HasInputAuthority)
             return;
 
         if (isPlaying) return;
 
-        aimDot.SetActive(false);
-
         targetValve = valve;
         ownerSpanner = spanner;
+
+        if (aimDot != null)
+            aimDot.SetActive(false);
 
         isPlaying = true;
         currentSuccessCount = 0;

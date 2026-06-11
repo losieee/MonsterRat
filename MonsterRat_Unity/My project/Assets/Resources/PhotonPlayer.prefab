@@ -14341,6 +14341,7 @@ MonoBehaviour:
   - {fileID: 2335744159757916608}
   - {fileID: 1586983518938147771}
   - {fileID: 8684198720636296796}
+  - {fileID: 9006926379895828441}
   - {fileID: 6803444661598496178}
   - {fileID: 337701205212234630}
   - {fileID: 4127117641017231365}
@@ -14904,7 +14905,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FullGaugeBlind
   targetCamera: {fileID: 6059536017928890074}
   blindFadeInDuration: 2
-  blindDuration: 10
   visibleDistance: 3
   fogStartDistance: 1.5
   recoverDuration: 3
@@ -14921,7 +14921,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fba320df31808504691ef7f768eb2e56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FullGaugeSlow
-  slowDuration: 10
   slowMultiplier: 0.8
 --- !u!114 &8943479002848974585
 MonoBehaviour:
@@ -14935,9 +14934,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 428da7ec47284e643af5d88fcca00a66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FullGaugeHeadShake
-  cameraTransform: {fileID: 8113566506925565300}
   fadeInDuration: 0.5
-  holdDuration: 8.5
   fadeOutDuration: 1
   rotationAmount: 2.5
   positionAmount: 0.04
@@ -14998,6 +14995,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5ffbd1d460bc6048bec7d897b10a7fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AntidoteControl
+  distance: 3
 --- !u!1 &8342933584836251165
 GameObject:
   m_ObjectHideFlags: 0

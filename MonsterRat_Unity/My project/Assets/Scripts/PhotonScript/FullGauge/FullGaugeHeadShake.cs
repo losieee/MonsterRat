@@ -4,26 +4,23 @@ using UnityEngine;
 
 public class FullGaugeHeadShake : MonoBehaviour
 {
-    [Header("Target")]
-    public Transform cameraTransform;
-
     [Header("Shake Setting")]
-    public float fadeInDuration = 2f;           // 진입 시간
-    public float holdDuration = 6f;
-    public float fadeOutDuration = 2f;          // 마감 시간
+    public float fadeInDuration = 2f;
+    public float fadeOutDuration = 2f;
 
-    public float rotationAmount = 2f;           // 카메라 흔들림
-    public float positionAmount = 0.03f;        // 카메라 흔들리는 중심 움직임
-    public float shakeSpeed = 8f;               // 움직임 속도
-    public float zoomOutAmount = 15f;           // 기본이 60이면 +15 까지 줌인했다 줄어듬
-    public float zoomSpeed = 2f;                // 줌 속도
+    public float rotationAmount = 2f;
+    public float positionAmount = 0.03f;
+    public float shakeSpeed = 8f;
+    public float zoomOutAmount = 15f;
+    public float zoomSpeed = 2f;
 
     Coroutine shakeRoutine;
-
-    Quaternion originalLocalRotation;
-    Vector3 originalLocalPosition;
+    Coroutine stopRoutine;
 
     PlayerController playerController;
+
+    bool isShakeActive = false;
+    float currentIntensity = 0f;
 
     void Awake()
     {
@@ -32,73 +29,108 @@ public class FullGaugeHeadShake : MonoBehaviour
 
     public void StartShake(Action onFinished = null)
     {
+        if (isShakeActive)
+            return;
+
+        if (playerController == null)
+            return;
+
+        isShakeActive = true;
+
+        if (stopRoutine != null)
+            StopCoroutine(stopRoutine);
+
         if (shakeRoutine != null)
             StopCoroutine(shakeRoutine);
 
-        shakeRoutine = StartCoroutine(ShakeCoroutine(onFinished));
+        shakeRoutine = StartCoroutine(ShakeCoroutine());
     }
 
-    IEnumerator ShakeCoroutine(Action onFinished)
+    IEnumerator ShakeCoroutine()
     {
-        if (playerController == null)
-            yield break;
-
-        float totalDuration = fadeInDuration + holdDuration + fadeOutDuration;
         float time = 0f;
 
-        while (time < totalDuration)
+        while (time < fadeInDuration)
         {
             time += Time.deltaTime;
 
-            float intensity = GetIntensity(time);
+            float t = time / fadeInDuration;
+            currentIntensity = Mathf.SmoothStep(0f, 1f, t);
 
-            // 회전
-            float xRot = Mathf.Sin(Time.time * shakeSpeed) * rotationAmount * intensity;
-            float zRot = Mathf.Cos(Time.time * shakeSpeed * 0.7f) * rotationAmount * intensity;
-
-            // 위치
-            float xPos = Mathf.Sin(Time.time * shakeSpeed * 0.8f) * positionAmount * intensity;
-            float yPos = Mathf.Cos(Time.time * shakeSpeed * 0.6f) * positionAmount * intensity;
-
-            // 줌인
-            float zoomWave = Mathf.Sin(Time.time * zoomSpeed) * 0.5f + 0.5f;
-            float fovOffset = zoomWave * zoomOutAmount * intensity;
-
-            playerController.cameraEffectEuler = new Vector3(xRot, 0f, zRot);
-            playerController.cameraEffectPosition = new Vector3(xPos, yPos, 0f);
-            playerController.cameraEffectFovOffset = fovOffset;
+            ApplyShake(currentIntensity);
 
             yield return null;
         }
+
+        currentIntensity = 1f;
+
+        while (isShakeActive)
+        {
+            ApplyShake(currentIntensity);
+            yield return null;
+        }
+
+        shakeRoutine = null;
+    }
+
+    public void StopShake()
+    {
+        if (!isShakeActive)
+            return;
+
+        isShakeActive = false;
+
+        if (shakeRoutine != null)
+            StopCoroutine(shakeRoutine);
+
+        if (stopRoutine != null)
+            StopCoroutine(stopRoutine);
+
+        stopRoutine = StartCoroutine(StopShakeCoroutine());
+    }
+
+    IEnumerator StopShakeCoroutine()
+    {
+        float startIntensity = currentIntensity;
+        float time = 0f;
+
+        while (time < fadeOutDuration)
+        {
+            time += Time.deltaTime;
+
+            float t = time / fadeOutDuration;
+            currentIntensity = Mathf.Lerp(startIntensity, 0f, Mathf.SmoothStep(0f, 1f, t));
+
+            ApplyShake(currentIntensity);
+
+            yield return null;
+        }
+
+        currentIntensity = 0f;
 
         playerController.cameraEffectEuler = Vector3.zero;
         playerController.cameraEffectPosition = Vector3.zero;
         playerController.cameraEffectFovOffset = 0f;
 
-        shakeRoutine = null;
-
-        onFinished?.Invoke();
+        stopRoutine = null;
     }
 
-    float GetIntensity(float time)
+    void ApplyShake(float intensity)
     {
-        // 서서히 시작
-        if (time < fadeInDuration)
-        {
-            float t = time / fadeInDuration;
-            return Mathf.SmoothStep(0f, 1f, t);
-        }
+        if (playerController == null)
+            return;
 
-        // 유지
-        if (time < fadeInDuration + holdDuration)
-        {
-            return 1f;
-        }
+        float xRot = Mathf.Sin(Time.time * shakeSpeed) * rotationAmount * intensity;
+        float zRot = Mathf.Cos(Time.time * shakeSpeed * 0.7f) * rotationAmount * intensity;
 
-        // 서서히 종료
-        float fadeOutTime = time - fadeInDuration - holdDuration;
-        float fadeOutT = fadeOutTime / fadeOutDuration;
+        float xPos = Mathf.Sin(Time.time * shakeSpeed * 0.8f) * positionAmount * intensity;
+        float yPos = Mathf.Cos(Time.time * shakeSpeed * 0.6f) * positionAmount * intensity;
 
-        return Mathf.SmoothStep(1f, 0f, fadeOutT);
+        float zoomWave = Mathf.Sin(Time.time * zoomSpeed) * 0.5f + 0.5f;
+        float fovOffset = zoomWave * zoomOutAmount * intensity;
+
+        playerController.cameraEffectEuler = new Vector3(xRot, 0f, zRot);
+        playerController.cameraEffectPosition = new Vector3(xPos, yPos, 0f);
+        playerController.cameraEffectFovOffset = fovOffset;
     }
 }

@@ -1,21 +1,18 @@
 using System;
-using System.Collections;
 using UnityEngine;
 
 public class FullGaugeSlow : MonoBehaviour
 {
     [Header("Slow Setting")]
-    public float slowDuration = 10f;
-
     [Range(0f, 1f)]
-    public float slowMultiplier = 0.8f;         // 20% 감소
+    public float slowMultiplier = 0.8f;
 
     PlayerController playerController;
 
     float originalMoveSpeed;
     float originalRunSpeed;
 
-    Coroutine slowRoutine;
+    bool isSlowActive = false;
 
     void Awake()
     {
@@ -24,33 +21,32 @@ public class FullGaugeSlow : MonoBehaviour
 
     public void StartSlow(Action onFinished = null)
     {
-        if (slowRoutine != null)
-            StopCoroutine(slowRoutine);
+        if (isSlowActive)
+            return;
 
-        slowRoutine = StartCoroutine(SlowCoroutine(onFinished));
-    }
-
-    IEnumerator SlowCoroutine(Action onFinished)
-    {
         if (playerController == null)
-            yield break;
+            return;
 
-        // 원래 속도 저장
+        isSlowActive = true;
+
         originalMoveSpeed = playerController.moveSpeed;
         originalRunSpeed = playerController.runSpeed;
 
-        // 이동속도 20% 감소
         playerController.moveSpeed = originalMoveSpeed * slowMultiplier;
         playerController.runSpeed = originalRunSpeed * slowMultiplier;
+    }
 
-        yield return new WaitForSeconds(slowDuration);
+    public void StopSlow()
+    {
+        if (!isSlowActive)
+            return;
 
-        // 원래 속도 복구
+        if (playerController == null)
+            return;
+
+        isSlowActive = false;
+
         playerController.moveSpeed = originalMoveSpeed;
         playerController.runSpeed = originalRunSpeed;
-
-        slowRoutine = null;
-
-        onFinished?.Invoke();
     }
 }

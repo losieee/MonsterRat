@@ -49,17 +49,33 @@ public class PhotonSpanner : InvenBase
                 if (normalPlaying || aimLabPlaying)
                     return;
 
-                int randomGame = Random.Range(0, 2);
+                bool hasNormal = spannerMiniGame != null;
+                bool hasAimLab = spannerMiniGameAimLab != null;
 
-                if (randomGame == 0)
+                if (hasNormal && hasAimLab)
                 {
-                    if (spannerMiniGame != null)
+                    int randomGame = Random.Range(0, 2);
+
+                    Debug.Log("선택된 미니게임: " + randomGame);
+
+                    if (randomGame == 0)
                         spannerMiniGame.StartMiniGame(valve, this);
+                    else
+                        spannerMiniGameAimLab.StartMiniGame(valve, this);
+                }
+                else if (hasNormal)
+                {
+                    Debug.Log("일반 미니게임만 연결됨");
+                    spannerMiniGame.StartMiniGame(valve, this);
+                }
+                else if (hasAimLab)
+                {
+                    Debug.Log("AimLab 미니게임만 연결됨");
+                    spannerMiniGameAimLab.StartMiniGame(valve, this);
                 }
                 else
                 {
-                    if (spannerMiniGameAimLab != null)
-                        spannerMiniGameAimLab.StartMiniGame(valve, this);
+                    Debug.LogWarning("스패너 미니게임이 둘 다 연결되지 않음");
                 }
             }
         }
