@@ -5545,12 +5545,12 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 559106876997983348}
   - {fileID: 504679222869034473}
   - {fileID: 3613280131210949043}
   - {fileID: 4990804044973358426}
   - {fileID: 236812660491309258}
   - {fileID: 2433924776576243885}
-  - {fileID: 559106876997983348}
   - {fileID: 6112988109762125306}
   - {fileID: 9205317408614634021}
   - {fileID: 4593934210170657887}
@@ -7327,7 +7327,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.3443396, g: 0.9551254, b: 1, a: 1}
+  m_Color: {r: 0.3443396, g: 0.9551254, b: 1, a: 0.9019608}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -14712,7 +14712,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f19b0e05a249cf94c94faa1a342f8f41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerGas
-  pollution: 0
+  _pollution: 0
   maxPollution: 100
   checkInterval: 0.2
   sampleHeightOffset: 0.8
