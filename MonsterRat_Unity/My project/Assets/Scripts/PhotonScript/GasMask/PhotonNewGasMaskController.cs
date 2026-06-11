@@ -15,6 +15,8 @@ public class PhotonNewGasMaskController : InvenBase
     [Networked] private TickTimer gasIgnoreTimer { get; set; }
     [Networked] private TickTimer reuseTimer { get; set; }
 
+    private bool isSpawned = false;
+
     // 지금 방독면을 사용 중인가
     public bool UseMask
     {
@@ -33,6 +35,11 @@ public class PhotonNewGasMaskController : InvenBase
             if (Runner == null) return false;
             return !reuseTimer.ExpiredOrNotRunning(Runner);
         }
+    }
+
+    public override void Spawned()
+    {
+        isSpawned = true;
     }
 
     private void Awake()
@@ -79,6 +86,9 @@ public class PhotonNewGasMaskController : InvenBase
 
     private void Update()
     {
+        if (!isSpawned)
+            return;
+
         if (!HasInputAuthority)
         {
             HideGasMaskUI();

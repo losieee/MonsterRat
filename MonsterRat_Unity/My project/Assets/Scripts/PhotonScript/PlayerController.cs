@@ -70,9 +70,12 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
 
     private bool isSpectating;
     private Transform spectateTarget;
+    private bool isSpawned = false;
 
     public override void Spawned()
     {
+        isSpawned = true;
+
         rb = GetComponent<Rigidbody>();
         animator = GetComponentInChildren<Animator>();
         footstepAudioSource = GetComponent<AudioSource>();
@@ -368,6 +371,9 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
 
     void LateUpdate()
     {
+        if (!isSpawned)
+            return;
+
         if (!HasInputAuthority)
         {
             flashPivot.localRotation = Quaternion.Euler(NetPitch, 0f, 0f);
