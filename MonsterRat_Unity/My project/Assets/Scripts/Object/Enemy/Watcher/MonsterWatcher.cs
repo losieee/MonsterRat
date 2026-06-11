@@ -19,7 +19,7 @@ public class MonsterWatcher : NetworkBehaviour
 
     public override void Spawned()
     {
-        PhotonPlayerUIState.Local?.ShowWatcherWarning();
+        ShowWarningToLocalPlayer();
 
         if (Object.HasStateAuthority)
         {
@@ -30,7 +30,35 @@ public class MonsterWatcher : NetworkBehaviour
 
     public override void Despawned(NetworkRunner runner, bool hasState)
     {
-        PhotonPlayerUIState.Local?.HideWatcherWarning();
+        HideWarningFromLocalPlayer();
+    }
+
+    void ShowWarningToLocalPlayer()
+    {
+        PhotonPlayerUIState[] uiStates = FindObjectsOfType<PhotonPlayerUIState>();
+
+        foreach (var ui in uiStates)
+        {
+            if (ui != null && ui.HasInputAuthority)
+            {
+                ui.ShowWatcherWarning();
+                return;
+            }
+        }
+    }
+
+    void HideWarningFromLocalPlayer()
+    {
+        PhotonPlayerUIState[] uiStates = FindObjectsOfType<PhotonPlayerUIState>();
+
+        foreach (var ui in uiStates)
+        {
+            if (ui != null && ui.HasInputAuthority)
+            {
+                ui.HideWatcherWarning();
+                return;
+            }
+        }
     }
 
     private void Update()
@@ -96,7 +124,7 @@ public class MonsterWatcher : NetworkBehaviour
             HandOverDamage receiver = target.GetComponent<HandOverDamage>();
             if (receiver != null)
             {
-                receiver.Rpc_TakeWatcherHit(watcherDamage * Runner.DeltaTime);
+                receiver.TakeWatcherHitFromStateAuthority(watcherDamage * Runner.DeltaTime);
             }
         }
     }

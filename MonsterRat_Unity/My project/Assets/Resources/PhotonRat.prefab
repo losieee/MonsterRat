@@ -651,8 +651,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 1, z: 2.0374775}
+  m_Center: {x: 0, y: 0, z: 0.51873904}
 --- !u!114 &3402594453968346714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1327,10 +1327,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhotonRatController
   playerTag: Player
-  stopDistance: 0.4
+  stopDistance: 0.1
   repathInterval: 0.3
   hitbox: {fileID: 3361789315333049335}
-  attackDistance: 0.4
+  attackDistance: 0.1
   hitboxActiveTime: 0.1
   attackCooldown: 1
   attackDamage: 15

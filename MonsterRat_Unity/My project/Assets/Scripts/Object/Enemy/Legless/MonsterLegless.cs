@@ -182,6 +182,27 @@ public class MonsterLegless : NetworkBehaviour
         if (agent == null || !agent.enabled || !agent.isOnNavMesh)
             return;
 
+        if (currentTarget != null)
+        {
+            PlayerController pc = currentTarget.GetComponent<PlayerController>();
+
+            if (pc != null && pc.IsDead)
+            {
+                currentTarget = null;
+                HasDetectedPlayer = false;
+                IsBusy = false;
+                overrideInvestigation = false;
+                investigatingFootstep = false;
+                resumeChaseAfterInvestigation = false;
+
+                agent.ResetPath();
+                agent.isStopped = false;
+
+                StartRoaming();
+                return;
+            }
+        }
+
         if (currentTarget == null && HasDetectedPlayer)
         {
             HasDetectedPlayer = false;
@@ -380,6 +401,10 @@ public class MonsterLegless : NetworkBehaviour
         foreach (GameObject go in players)
         {
             if (go == null) continue;
+
+            PlayerController pc = go.GetComponent<PlayerController>();
+            if (pc != null && pc.IsDead)
+                continue;
 
             Transform target = go.transform;
 
@@ -663,6 +688,18 @@ public class MonsterLegless : NetworkBehaviour
         {
             player.Die();
             touchTimers.Remove(player);
+
+            if (currentTarget == player.transform)
+            {
+                currentTarget = null;
+                HasDetectedPlayer = false;
+                IsBusy = false;
+
+                agent.ResetPath();
+                agent.isStopped = false;
+
+                StartRoaming();
+            }
         }
     }
 

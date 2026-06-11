@@ -12,20 +12,30 @@ public class HandOverDamage : NetworkBehaviour
         hitAnim = GetComponentInChildren<PlayerHitAnim>(true);
     }
 
-    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
-    public void Rpc_TakeRatHit(float damage)
+    public void TakeRatHitFromStateAuthority(float damage)
     {
+        if (!HasStateAuthority)
+            return;
+
         if (gas != null)
             gas.AddExposure(damage);
 
-        if (hitAnim != null)
-            hitAnim.PlayerHit();
+        Rpc_PlayHitAnim();
+    }
+
+    public void TakeWatcherHitFromStateAuthority(float damage)
+    {
+        if (!HasStateAuthority)
+            return;
+
+        if (gas != null)
+            gas.AddExposure(damage);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
-    public void Rpc_TakeWatcherHit(float damage)
+    private void Rpc_PlayHitAnim()
     {
-        if (gas != null)
-            gas.AddExposure(damage);
+        if (hitAnim != null)
+            hitAnim.PlayerHit();
     }
 }

@@ -38,13 +38,28 @@ public class PhotonPlayerUIState : NetworkBehaviour
 
     private int selectedItemIndex = -1;
 
-    public static PhotonPlayerUIState Local { get; private set; }
-
     private Coroutine watcherWarningRoutine;
     private int watcherWarningCount = 0;
 
     public override void Spawned()
     {
+        if (!HasInputAuthority)
+        {
+            if (storePanel != null) storePanel.SetActive(false);
+            if (aimDot != null) aimDot.SetActive(false);
+            if (clearGauge != null) clearGauge.SetActive(false);
+            if (pollutionGauge != null) pollutionGauge.SetActive(false);
+
+            if (watcherWarning != null)
+                watcherWarning.gameObject.SetActive(false);
+
+            if (completeBuy != null)
+                completeBuy.gameObject.SetActive(false);
+
+            enabled = false;
+            return;
+        }
+
         if (watcherWarning != null)
         {
             watcherWarning.gameObject.SetActive(false);
@@ -57,32 +72,29 @@ public class PhotonPlayerUIState : NetworkBehaviour
         if (storePanel != null)
             storePanel.SetActive(false);
 
-        if (!HasInputAuthority)
-            return;
-
-        Local = this;
+        ApplyMainUIVisible(true);
     }
 
     void Update()
     {
         if (!HasInputAuthority) return;
 
-        if(GameInputLock.IsLocked)
+        if (GameInputLock.IsLocked)
         {
-            aimDot.SetActive(false);
-            clearGauge.SetActive(false);
-            pollutionGauge.SetActive(false);
-            storePanel.SetActive(false);
-        }
+            if (uiOpen)
+                CloseStore();
 
-        if (!GameInputLock.IsLocked)
-        {
-            aimDot.SetActive(true);
-            clearGauge.SetActive(true);
-            pollutionGauge.SetActive(true);
+            ApplyMainUIVisible(false);
+            return;
         }
 
         CheckForStoreRadar();
+
+        if (uiOpen && Input.GetKeyDown(KeyCode.Escape))
+        {
+            CloseStore();
+            return;
+        }
 
         if (!inStoreZone) return;
 
@@ -98,10 +110,24 @@ public class PhotonPlayerUIState : NetworkBehaviour
             else OpenStore();
         }
 
+        ApplyMainUIVisible(!uiOpen);
+
         if (currentGoldText != null && WorldLoadManager.instance != null)
         {
             currentGoldText.text = $"₩ {WorldLoadManager.instance.SharedGold}";
         }
+    }
+
+    void ApplyMainUIVisible(bool visible)
+    {
+        if (aimDot != null)
+            aimDot.SetActive(visible);
+
+        if (clearGauge != null)
+            clearGauge.SetActive(visible);
+
+        if (pollutionGauge != null)
+            pollutionGauge.SetActive(visible);
     }
 
     void CheckForStoreRadar()
@@ -217,9 +243,9 @@ public class PhotonPlayerUIState : NetworkBehaviour
         isGlobalStoreOpen = true;  
 
         if (storePanel != null) storePanel.SetActive(true);
-        aimDot.SetActive(false);
-        if (clearGauge != null) clearGauge.SetActive(false);
-        if (pollutionGauge != null) pollutionGauge.SetActive(false);
+
+        ApplyMainUIVisible(false);
+
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         OnStoreOpened?.Invoke();
@@ -240,9 +266,9 @@ public class PhotonPlayerUIState : NetworkBehaviour
         selectedItemIndex = -1;
 
         if (storePanel != null) storePanel.SetActive(false);
-        aimDot.SetActive(true);
-        if (clearGauge != null) clearGauge.SetActive(true);
-        if (pollutionGauge != null) pollutionGauge.SetActive(true);
+
+        ApplyMainUIVisible(true);
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         OnStoreClosed?.Invoke();

@@ -5546,7 +5546,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 559106876997983348}
-  - {fileID: 504679222869034473}
   - {fileID: 3613280131210949043}
   - {fileID: 4990804044973358426}
   - {fileID: 236812660491309258}
@@ -5558,6 +5557,7 @@ RectTransform:
   - {fileID: 7005922456383049501}
   - {fileID: 2249903342972428019}
   - {fileID: 2125089588059904525}
+  - {fileID: 504679222869034473}
   m_Father: {fileID: 4300096115388253541}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -13983,6 +13983,7 @@ GameObject:
   - component: {fileID: 5053122888985684548}
   - component: {fileID: 4707303387003629452}
   - component: {fileID: 6939596719044220407}
+  - component: {fileID: 7442366406054154007}
   - component: {fileID: 8533715287199307269}
   - component: {fileID: 1139983391281621322}
   - component: {fileID: 1532325441129902764}
@@ -14281,6 +14282,18 @@ CapsuleCollider:
   m_Height: 1.9794608
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &7442366406054154007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8289719037013333509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93b347bfef33e0f4684dfadf34898a0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ColliderSyncDebugger
 --- !u!54 &8533715287199307269
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -14327,6 +14340,7 @@ MonoBehaviour:
   - {fileID: 5478184172720535453}
   - {fileID: 9149134165951278289}
   NetworkedBehaviours:
+  - {fileID: 7442366406054154007}
   - {fileID: 1532325441129902764}
   - {fileID: 3781888732311085437}
   - {fileID: -722687364432734024}

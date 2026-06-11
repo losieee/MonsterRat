@@ -4,7 +4,6 @@ using Fusion.Sockets;
 using System.Collections.Generic;
 using System;
 using UnityEngine.SceneManagement;
-using UnityEngine.Analytics;
 using System.Collections;
 
 public struct MyNetworkInput : INetworkInput
@@ -48,11 +47,13 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
     private Camera playerCamera;
 
     private Rigidbody rb;
+    private CapsuleCollider cc;
     private float pitch = 0f;
     private float yaw = 0f;
     private Animator animator;
     private float footstepTimer = 0f;
     private PlayerFootStepType footStepType;
+    private PhotonPlayerUIState playerUIState;
 
     private Vector2 currentMouseDelta;
 
@@ -77,9 +78,13 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
         isSpawned = true;
 
         rb = GetComponent<Rigidbody>();
+        rb.isKinematic = false;
+        cc = GetComponent<CapsuleCollider>();
+        cc.enabled = true;
         animator = GetComponentInChildren<Animator>();
         footstepAudioSource = GetComponent<AudioSource>();
         footStepType = GetComponent<PlayerFootStepType>();
+        playerUIState = GetComponent<PhotonPlayerUIState>();
 
         if (gameOverUI != null)
             gameOverUI.SetActive(false);
@@ -157,7 +162,7 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
         }
 
         bool isMenuRealOpen = SlimUI.ModernMenu.UISettingsManager.isMenuOpen && SlimUI.ModernMenu.UISettingsManager.Instance != null;
-        if (isMenuRealOpen || PhotonPlayerUIState.isGlobalStoreOpen)
+        if (isMenuRealOpen || (playerUIState != null && playerUIState.IsUIOpen))
         {
             return;
         }
@@ -232,6 +237,9 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
     [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
     private void RPC_OnDead()
     {
+        if (gameOverUI != null)
+            gameOverUI.SetActive(true);
+
         StartCoroutine(DeadSelfViewThenSpectateRoutine());
     }
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -240,6 +248,8 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
         if (animator != null)
         {
             animator.SetTrigger("IsDead");
+            cc.enabled = false;
+            rb.isKinematic = true;
         }
 
         if (rb != null)

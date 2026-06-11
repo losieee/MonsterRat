@@ -434,7 +434,7 @@ public class PhotonRatController : NetworkBehaviour
             HandOverDamage receiver = col.GetComponent<HandOverDamage>();
             if (receiver != null)
             {
-                receiver.Rpc_TakeRatHit(attackDamage);
+                receiver.TakeRatHitFromStateAuthority(attackDamage);
                 break;
             }
         }
@@ -460,7 +460,7 @@ public class PhotonRatController : NetworkBehaviour
         }
 
         float ratRadius = agent.radius;
-        float offset = playerRadius + ratRadius;
+        float offset = Mathf.Max(0.05f, playerRadius + ratRadius - 0.25f);
 
         Vector3 targetPos = targetPlayer.position - dir * offset;
 
