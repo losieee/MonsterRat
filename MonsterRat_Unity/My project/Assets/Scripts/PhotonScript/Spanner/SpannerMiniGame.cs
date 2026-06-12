@@ -196,7 +196,7 @@ public class SpannerMiniGame : MonoBehaviour
     private void EndMiniGame()
     {
         isPlaying = false;
-        aimDot.SetActive(true);
+        GetComponent<PhotonPlayerUIState>().ApplyMainUIVisible(true);
         targetValve = null;
         ownerSpanner = null;
         currentSuccessCount = 0;

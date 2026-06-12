@@ -4,7 +4,6 @@ using System;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections;
-using UnityEngine.Analytics;
 
 public class PhotonPlayerUIState : NetworkBehaviour
 {
@@ -118,7 +117,7 @@ public class PhotonPlayerUIState : NetworkBehaviour
         }
     }
 
-    void ApplyMainUIVisible(bool visible)
+    public void ApplyMainUIVisible(bool visible)
     {
         if (aimDot != null)
             aimDot.SetActive(visible);

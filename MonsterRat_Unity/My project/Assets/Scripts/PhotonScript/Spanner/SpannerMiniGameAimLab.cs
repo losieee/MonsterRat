@@ -145,6 +145,7 @@ public class SpannerMiniGameAimLab : MonoBehaviour
         isGameOver = true;
         IsPlaying = false;
 
+        GetComponent<PhotonPlayerUIState>().ApplyMainUIVisible(true);
         panel.SetActive(false);
 
         if (UISettingsManager.Instance != null)
