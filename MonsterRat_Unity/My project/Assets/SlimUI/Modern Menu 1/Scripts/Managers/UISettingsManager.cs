@@ -16,8 +16,8 @@ namespace SlimUI.ModernMenu
         public float ySensitivity = 1.0f;
         public float mouseSmoothing = 0.0f;
 
-        public int normalDifficulty = 1;
-        public int hardCoreDifficulty = 0;
+       //public int normalDifficulty = 1;
+       //public int hardCoreDifficulty = 0;
 
         public int showHUD = 1;
         public int toolTips = 1;
@@ -81,10 +81,10 @@ namespace SlimUI.ModernMenu
         [Header("GAME SETTINGS")]
         public GameObject showhudtext;
         public GameObject tooltipstext;
-        public GameObject difficultynormaltext;
-        public GameObject difficultynormaltextLINE;
-        public GameObject difficultyhardcoretext;
-        public GameObject difficultyhardcoretextLINE;
+       //public GameObject difficultynormaltext;
+       //public GameObject difficultynormaltextLINE;
+       //public GameObject difficultyhardcoretext;
+       //public GameObject difficultyhardcoretextLINE;
         public GameObject exitPanel;
 
         [Header("CONTROLS SETTINGS")]
@@ -271,16 +271,16 @@ namespace SlimUI.ModernMenu
 
         private void ApplySettingsToUIAndEngine()
         {
-            if (currentSettings.normalDifficulty == 1)
-            {
-                difficultynormaltextLINE.gameObject.SetActive(true);
-                difficultyhardcoretextLINE.gameObject.SetActive(false);
-            }
-            else
-            {
-                difficultyhardcoretextLINE.gameObject.SetActive(true);
-                difficultynormaltextLINE.gameObject.SetActive(false);
-            }
+           //if (currentSettings.normalDifficulty == 1)
+           //{
+           //    difficultynormaltextLINE.gameObject.SetActive(true);
+           //    difficultyhardcoretextLINE.gameObject.SetActive(false);
+           //}
+           //if
+           //{
+           //    difficultyhardcoretextLINE.gameObject.SetActive(true);
+           //    difficultynormaltextLINE.gameObject.SetActive(false);
+           //}
 
             if (musicSlider) musicSlider.SetValueWithoutNotify(currentSettings.musicVolume);
             if (effectSlider) effectSlider.SetValueWithoutNotify(currentSettings.effectVolume);
