@@ -18,6 +18,9 @@ public class GasGauge : MonoBehaviour
 
         if (player == null || fillImage == null) return;
 
+        if (!player.IsReadyForGauge)
+            return;
+
         fillImage.fillAmount = player.GetNormalized();
 
         UpdatePollutionEffect(fillImage.fillAmount);
@@ -45,15 +48,22 @@ public class GasGauge : MonoBehaviour
 
         foreach (var p in allPlayers)
         {
+            if (p == null) continue;
+
+            // 튜토리얼
+            if (!p.useNetworkAuthority)
+            {
+                player = p;
+                return;
+            }
+
+            // 인게임
             NetworkObject no = p.GetComponentInParent<NetworkObject>();
-            if (no != null && no.HasInputAuthority)
+            if (no != null && no.IsValid && no.HasInputAuthority)
             {
                 player = p;
                 return;
             }
         }
-
-        if (allPlayers.Length > 0)
-            player = allPlayers[0];
     }
 }

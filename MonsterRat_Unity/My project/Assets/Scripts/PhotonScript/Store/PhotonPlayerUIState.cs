@@ -9,12 +9,16 @@ public class PhotonPlayerUIState : NetworkBehaviour
 {
     [Header("UI 설정")]
     public GameObject storePanel;
-    public float storeDetectRadius = 2.5f;
     public GameObject aimDot;
     public GameObject clearGauge;
     public GameObject pollutionGauge;
     public TMP_Text watcherWarning;
     public TMP_Text completeBuy;
+
+    [Header("상점 Raycast")]
+    public Transform storeRayOrigin;
+    public float storeRayDistance = 3f;
+    public LayerMask storeRayMask = ~0;
 
     [Header("상점 Select")]
     public Sprite selectNormal;
@@ -24,8 +28,8 @@ public class PhotonPlayerUIState : NetworkBehaviour
     public TMP_Text selectInfo;
     public TMP_Text currentGoldText;
 
-    bool inStoreZone;
     bool uiOpen;
+    bool storeInputLocked = false;
     public bool IsUIOpen => uiOpen;
 
     public static bool isGlobalStoreOpen = false;
@@ -78,7 +82,7 @@ public class PhotonPlayerUIState : NetworkBehaviour
     {
         if (!HasInputAuthority) return;
 
-        if (GameInputLock.IsLocked)
+        if (GameInputLock.IsLocked && !storeInputLocked)
         {
             if (uiOpen)
                 CloseStore();
@@ -86,16 +90,6 @@ public class PhotonPlayerUIState : NetworkBehaviour
             ApplyMainUIVisible(false);
             return;
         }
-
-        CheckForStoreRadar();
-
-        if (uiOpen && Input.GetKeyDown(KeyCode.Escape))
-        {
-            CloseStore();
-            return;
-        }
-
-        if (!inStoreZone) return;
 
         if (uiOpen && Input.GetKeyDown(KeyCode.Escape))
         {
@@ -105,8 +99,20 @@ public class PhotonPlayerUIState : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if (uiOpen) CloseStore();
-            else OpenStore();
+            if (uiOpen)
+            {
+                CloseStore();
+            }
+            else
+            {
+                PhotonToolSpawner lookStore;
+
+                if (TryGetLookStore(out lookStore))
+                {
+                    currentStore = lookStore;
+                    OpenStore();
+                }
+            }
         }
 
         ApplyMainUIVisible(!uiOpen);
@@ -129,35 +135,51 @@ public class PhotonPlayerUIState : NetworkBehaviour
             pollutionGauge.SetActive(visible);
     }
 
-    void CheckForStoreRadar()
+    bool TryGetLookStore(out PhotonToolSpawner store)
     {
-        Collider[] hits = Physics.OverlapSphere(transform.position, storeDetectRadius);
-        bool isNearStore = false;
+        store = null;
 
-        foreach (var hit in hits)
+        Transform origin = storeRayOrigin;
+
+        if (origin == null && Camera.main != null)
+            origin = Camera.main.transform;
+
+        if (origin == null)
+            return false;
+
+        Ray ray = new Ray(origin.position, origin.forward);
+
+        RaycastHit[] hits = Physics.RaycastAll(
+            ray,
+            storeRayDistance,
+            storeRayMask,
+            QueryTriggerInteraction.Collide
+        );
+
+        if (hits == null || hits.Length == 0)
+            return false;
+
+        Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+
+        foreach (RaycastHit hit in hits)
         {
-            if (hit.CompareTag("Store"))
-            {
-                isNearStore = true;
-                if (currentStore == null)
-                {
-                    currentStore = hit.GetComponent<PhotonToolSpawner>();
-                }
-                break;
-            }
+            if (hit.collider == null)
+                continue;
+
+            // 내 몸 콜라이더를 맞은 경우 무시
+            if (hit.collider.transform.IsChildOf(transform))
+                continue;
+
+            PhotonToolSpawner spawner = hit.collider.GetComponentInParent<PhotonToolSpawner>();
+
+            if (spawner == null)
+                continue;
+
+            store = spawner;
+            return true;
         }
 
-        if (isNearStore && !inStoreZone)
-        {
-            inStoreZone = true;
-        }
-        else if (!isNearStore && inStoreZone)
-        {
-            inStoreZone = false;
-            currentStore = null;
-            selectedItemIndex = -1;
-            if (uiOpen) CloseStore();
-        }
+        return false;
     }
 
     public void OnClickBuyItem(int itemIndex)
@@ -247,6 +269,9 @@ public class PhotonPlayerUIState : NetworkBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        storeInputLocked = true;
+        GameInputLock.Lock();
         OnStoreOpened?.Invoke();
     }
 
@@ -263,6 +288,7 @@ public class PhotonPlayerUIState : NetworkBehaviour
         selectName.text = " ";
         selectPrice.text = " ";
         selectedItemIndex = -1;
+        currentStore = null;
 
         if (storePanel != null) storePanel.SetActive(false);
 
@@ -270,6 +296,13 @@ public class PhotonPlayerUIState : NetworkBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        if (storeInputLocked)
+        {
+            storeInputLocked = false;
+            GameInputLock.Unlock();
+        }
+
         OnStoreClosed?.Invoke();
     }
 

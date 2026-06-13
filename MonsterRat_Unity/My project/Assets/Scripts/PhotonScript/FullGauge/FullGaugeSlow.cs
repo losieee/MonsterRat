@@ -7,25 +7,39 @@ public class FullGaugeSlow : MonoBehaviour
     [Range(0f, 1f)]
     public float slowMultiplier = 0.8f;
 
-    PlayerController playerController;
+    private PlayerController playerController;
 
-    float originalMoveSpeed;
-    float originalRunSpeed;
+    private float originalMoveSpeed;
+    private float originalRunSpeed;
 
-    bool isSlowActive = false;
+    private bool isSlowActive = false;
 
     void Awake()
     {
+        FindController();
+    }
+
+    void FindController()
+    {
+        if (playerController != null)
+            return;
+
         playerController = GetComponentInParent<PlayerController>();
+
+        if (playerController == null)
+            playerController = GetComponentInChildren<PlayerController>();
+
+        if (playerController == null && transform.root != null)
+            playerController = transform.root.GetComponentInChildren<PlayerController>();
     }
 
     public void StartSlow(Action onFinished = null)
     {
-        if (isSlowActive)
-            return;
+        if (isSlowActive) return;
 
-        if (playerController == null)
-            return;
+        FindController();
+
+        if (playerController == null) return;
 
         isSlowActive = true;
 
@@ -41,8 +55,9 @@ public class FullGaugeSlow : MonoBehaviour
         if (!isSlowActive)
             return;
 
-        if (playerController == null)
-            return;
+        FindController();
+
+        if (playerController == null) return;
 
         isSlowActive = false;
 

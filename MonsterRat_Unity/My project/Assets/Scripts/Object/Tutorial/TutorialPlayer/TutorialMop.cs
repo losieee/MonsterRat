@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
 public class TutorialMop : TutorialInvenBase
@@ -9,6 +10,10 @@ public class TutorialMop : TutorialInvenBase
     public float coolTime;
     bool canClean = true;
 
+    public float cleanDistance = 5f;
+    public Transform rayOrigin;
+    public LayerMask ratLayer;
+
     public AudioSource source;
     public AudioClip mopSound;
 
@@ -17,7 +22,7 @@ public class TutorialMop : TutorialInvenBase
         if (!canClean) return;
         if (Input.GetMouseButtonDown(0))
         {
-            GameObject t = interactor != null ? interactor.LookTarget : null;
+            GameObject t = FindTargetIgnoringRat();
             if (t == null) return;
 
             if (t.layer == 6)
@@ -33,6 +38,46 @@ public class TutorialMop : TutorialInvenBase
             }
 
         }
+    }
+
+    GameObject FindTargetIgnoringRat()
+    {
+        Transform origin = rayOrigin;
+
+        if (origin == null && Camera.main != null)
+            origin = Camera.main.transform;
+
+        if (origin == null)
+            return null;
+
+        Ray ray = new Ray(origin.position, origin.forward);
+
+        RaycastHit[] hits = Physics.RaycastAll(
+            ray,
+            cleanDistance,
+            ~0,
+            QueryTriggerInteraction.Collide
+        );
+
+        if (hits == null || hits.Length == 0)
+            return null;
+
+        Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.collider == null) continue;
+
+            GameObject hitObj = hit.collider.gameObject;
+
+            // Rat 레이어면 무시하고 뒤에 있는 오브젝트 계속 검사
+            if (ratLayer != -1 && hitObj.layer == ratLayer)
+                continue;
+
+            return hitObj;
+        }
+
+        return null;
     }
 
     public void PlayMopSound()

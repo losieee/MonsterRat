@@ -28,6 +28,13 @@ public class RatController : MonoBehaviour
     public float runSpeed = 3.5f;       // 멀리 있을 때
     public float walkSpeed = 1.6f;      // 가까이 있을 때
 
+    [Header("Sound")]
+    public AudioSource source;
+    public AudioClip ratSound;
+    public float ratSoundInterval = 5f;
+
+    private float ratSoundTimer;
+
     NavMeshAgent agent;
     Animator animator;
     Transform player;
@@ -72,12 +79,24 @@ public class RatController : MonoBehaviour
 
     void Update()
     {
+        UpdateRatVolume();
+
         if (isDead) return;
 
         if (animator != null)
         {
             animator.SetFloat(moveSpeedParam, animMoveSpeed, 0.1f, Time.deltaTime);
             animator.SetFloat(turnParam, animTurn, 0.1f, Time.deltaTime);
+        }
+
+        if (source == null || ratSound == null) return;
+
+        ratSoundTimer -= Time.deltaTime;
+
+        if (ratSoundTimer <= 0f)
+        {
+            source.PlayOneShot(ratSound);
+            ratSoundTimer = ratSoundInterval;
         }
 
         if (player == null)
@@ -185,6 +204,18 @@ public class RatController : MonoBehaviour
         }
     }
 
+    private void UpdateRatVolume()
+    {
+        if (source == null) return;
+
+        float effectVolume = 1f;
+
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+            effectVolume = SlimUI.ModernMenu.UISettingsManager.Instance.EffectVolume;
+
+        source.volume = effectVolume;
+    }
+
     // 쥐 사망
     public void TakeDamage()
     {
@@ -206,6 +237,12 @@ public class RatController : MonoBehaviour
         if (animator != null)
         {
             animator.SetTrigger(deadTrigger);
+        }
+
+        if (source != null && ratSound != null)
+        {
+            UpdateRatVolume();
+            source.PlayOneShot(ratSound);
         }
 
         if (hitbox != null)

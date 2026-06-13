@@ -288,13 +288,10 @@ public class TutorialDialogueSystem : MonoBehaviour
             StartAuto();
 
         yield return StartCoroutine(FadeDialogueOnly(0f, 1f, 0.6f));
-
-        yield return new WaitForSeconds(1.5f);
-
         TutorialScreenFader.Instance.FadeIn(2f);
         PlayerMov.instance.canControl = true;
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2.5f);
 
         optionPanel.SetActive(true);
     }

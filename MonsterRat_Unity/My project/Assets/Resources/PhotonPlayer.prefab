@@ -13983,7 +13983,6 @@ GameObject:
   - component: {fileID: 5053122888985684548}
   - component: {fileID: 4707303387003629452}
   - component: {fileID: 6939596719044220407}
-  - component: {fileID: 7442366406054154007}
   - component: {fileID: 8533715287199307269}
   - component: {fileID: 1139983391281621322}
   - component: {fileID: 1532325441129902764}
@@ -14017,6 +14016,7 @@ GameObject:
   - component: {fileID: 6485104510951080755}
   - component: {fileID: 5174149936337874965}
   - component: {fileID: -1658591146180488875}
+  - component: {fileID: -3554753054120936642}
   m_Layer: 11
   m_Name: PhotonPlayer
   m_TagString: Player
@@ -14282,18 +14282,6 @@ CapsuleCollider:
   m_Height: 1.9794608
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
---- !u!114 &7442366406054154007
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8289719037013333509}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93b347bfef33e0f4684dfadf34898a0f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ColliderSyncDebugger
 --- !u!54 &8533715287199307269
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -14340,7 +14328,6 @@ MonoBehaviour:
   - {fileID: 5478184172720535453}
   - {fileID: 9149134165951278289}
   NetworkedBehaviours:
-  - {fileID: 7442366406054154007}
   - {fileID: 1532325441129902764}
   - {fileID: 3781888732311085437}
   - {fileID: -722687364432734024}
@@ -14364,6 +14351,7 @@ MonoBehaviour:
   - {fileID: -7700335762669202677}
   - {fileID: 1895867736823702318}
   - {fileID: -1658591146180488875}
+  - {fileID: -3554753054120936642}
   - {fileID: 4684515510207320333}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &1532325441129902764
@@ -14628,12 +14616,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PhotonPlayerUIState
   storePanel: {fileID: 9174109115525491394}
-  storeDetectRadius: 1.2
   aimDot: {fileID: 7820126729800601948}
   clearGauge: {fileID: 8620495648606292564}
   pollutionGauge: {fileID: 6609155304501735058}
   watcherWarning: {fileID: 782221409028368340}
   completeBuy: {fileID: 595994495273103760}
+  storeRayOrigin: {fileID: 599440580541166388}
+  storeRayDistance: 3
+  storeRayMask:
+    serializedVersion: 2
+    m_Bits: 134217728
   selectNormal: {fileID: 21300000, guid: 1b3a70786c1e95340ada08fa39822006, type: 3}
   selectIMG: {fileID: 8857912394780753157}
   selectName: {fileID: 701167782865946869}
@@ -15010,6 +15002,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AntidoteControl
   distance: 3
+--- !u!114 &-3554753054120936642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8289719037013333509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93b347bfef33e0f4684dfadf34898a0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ColliderSyncDebugger
 --- !u!1 &8342933584836251165
 GameObject:
   m_ObjectHideFlags: 0

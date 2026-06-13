@@ -54,6 +54,7 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
     private float footstepTimer = 0f;
     private PlayerFootStepType footStepType;
     private PhotonPlayerUIState playerUIState;
+    private PlayerGas playerGas;
 
     private Vector2 currentMouseDelta;
 
@@ -85,6 +86,7 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
         footstepAudioSource = GetComponent<AudioSource>();
         footStepType = GetComponent<PlayerFootStepType>();
         playerUIState = GetComponent<PhotonPlayerUIState>();
+        playerGas = GetComponent<PlayerGas>();
 
         if (gameOverUI != null)
             gameOverUI.SetActive(false);
@@ -431,6 +433,14 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
             }
 
             float currentSpeed = input.isRunning ? runSpeed : moveSpeed;
+
+            float speedMultiplier = 1f;
+
+            if (playerGas != null)
+                speedMultiplier = playerGas.GetMoveSpeedMultiplier();
+
+            currentSpeed *= speedMultiplier;
+
             Vector3 moveDir = (transform.right * input.moveInput.x + transform.forward * input.moveInput.y).normalized;
 
             if (moveDir != Vector3.zero)

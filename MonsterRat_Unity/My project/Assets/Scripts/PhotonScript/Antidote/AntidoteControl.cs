@@ -1,10 +1,14 @@
+using Fusion;
 using UnityEngine;
 
 public class AntidoteControl : InvenBase
 {
     public override ToolType Type => ToolType.Antidote;
 
-    public float distance = 3f;
+    [Header("Antidote")]
+    public float distance = 5f;
+    public float aimRadius = 0.45f;
+    public LayerMask targetMask = ~0;
 
     private PlayerGas gas;
     private PhotonInventory inventory;
@@ -19,34 +23,70 @@ public class AntidoteControl : InvenBase
 
             if (gas == null || inventory == null) return;
 
-            gas.AddExposure(-30);
-
+            gas.AddExposure(-30f);
             inventory.ConsumeSelectedItem();
         }
+
         // 상대한테 사용
         if (Input.GetMouseButtonDown(1))
         {
             inventory = GetComponentInParent<PhotonInventory>();
             if (inventory == null) return;
 
-            if (interactor == null || interactor.cam == null) return;
+            PlayerGas myGas = GetComponentInParent<PlayerGas>();
+            if (myGas == null) return;
 
-            Ray ray = new Ray(interactor.cam.position, interactor.cam.forward);
+            PlayerGas targetGas = FindTargetPlayerGas(myGas);
 
-            if (Physics.Raycast(ray, out RaycastHit hit, distance, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
-            {
-                PlayerGas targetGas = hit.collider.GetComponentInParent<PlayerGas>();
+            if (targetGas == null) return;
 
-                if (targetGas == null) return;
+            NetworkObject targetObj = targetGas.Object;
 
-                PlayerGas myGas = GetComponentInParent<PlayerGas>();
+            if (targetObj == null) return;
 
-                // 본인한테 우클릭 적용 방지
-                if (targetGas == myGas) return;
+            myGas.RequestApplyExposureToTarget(targetObj, -30f);
 
-                targetGas.RPC_AddExposure(-30);
-                inventory.ConsumeSelectedItem();
-            }
+            inventory.ConsumeSelectedItem();
         }
+    }
+
+    private PlayerGas FindTargetPlayerGas(PlayerGas myGas)
+    {
+        if (interactor == null || interactor.cam == null)
+            return null;
+
+        Vector3 origin = interactor.cam.position;
+        Vector3 direction = interactor.cam.forward;
+
+        Debug.DrawRay(origin, direction * distance, Color.red, 1f);
+
+        Ray ray = new Ray(origin, direction);
+
+        RaycastHit[] hits = Physics.SphereCastAll(
+            ray,
+            aimRadius,
+            distance,
+            targetMask,
+            QueryTriggerInteraction.Collide
+        );
+
+        if (hits == null || hits.Length == 0) return null;
+
+        System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.collider == null)
+                continue;
+
+            PlayerGas targetGas = hit.collider.GetComponentInParent<PlayerGas>();
+
+            if (targetGas == null) continue;
+            if (targetGas == myGas) continue;
+
+            return targetGas;
+        }
+
+        return null;
     }
 }
