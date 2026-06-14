@@ -84,15 +84,37 @@ public class PhotonRatController : NetworkBehaviour
     public override void Spawned()
     {
         FindPlayer();
+
+        if (HasStateAuthority)
+        {
+            StartCoroutine(PlaceAgentOnNavMeshRoutine());
+        }
+
         if (IsDead)
         {
             OnDeadStateChanged();
         }
     }
 
+    private IEnumerator PlaceAgentOnNavMeshRoutine()
+    {
+        yield return null;
+        yield return null;
+
+        EnsureAgentOnNavMesh();
+    }
+
     public override void FixedUpdateNetwork()
     {
         if (IsDead || !HasStateAuthority) return;
+
+        if (!EnsureAgentOnNavMesh())
+        {
+            NetMoveSpeed = 0f;
+            NetTurn = 0f;
+            IsWalking = false;
+            return;
+        }
 
         FindPlayer();
 
@@ -234,6 +256,29 @@ public class PhotonRatController : NetworkBehaviour
         }
     }
 
+    private bool EnsureAgentOnNavMesh()
+    {
+        if (agent == null)
+            return false;
+
+        if (!agent.enabled)
+            return false;
+
+        if (!agent.gameObject.activeInHierarchy)
+            return false;
+
+        if (agent.isOnNavMesh)
+            return true;
+
+        if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 10f, NavMesh.AllAreas))
+        {
+            agent.Warp(hit.position);
+            return agent.isOnNavMesh;
+        }
+
+        return false;
+    }
+
     private void UpdateRatVolume()
     {
         if (source == null) return;
@@ -296,8 +341,12 @@ public class PhotonRatController : NetworkBehaviour
 
             if (agent != null)
             {
-                agent.isStopped = true;
-                agent.ResetPath();
+                if (agent.enabled && agent.isOnNavMesh)
+                {
+                    agent.isStopped = true;
+                    agent.ResetPath();
+                }
+
                 agent.enabled = false;
             }
 
@@ -442,7 +491,11 @@ public class PhotonRatController : NetworkBehaviour
 
     void MoveToPlayerEdge()
     {
-        if (targetPlayer == null || !agent.enabled) return;
+        if (targetPlayer == null)
+            return;
+
+        if (!EnsureAgentOnNavMesh())
+            return;
 
         Vector3 toPlayer = targetPlayer.position - transform.position;
         toPlayer.y = 0f;
@@ -464,14 +517,9 @@ public class PhotonRatController : NetworkBehaviour
 
         Vector3 targetPos = targetPlayer.position - dir * offset;
 
-        NavMeshHit hit;
-        if (NavMesh.SamplePosition(targetPos, out hit, 1.0f, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(targetPos, out NavMeshHit hit, 3.0f, NavMesh.AllAreas))
         {
             agent.SetDestination(hit.position);
-        }
-        else
-        {
-            agent.SetDestination(targetPos);
         }
     }
 }

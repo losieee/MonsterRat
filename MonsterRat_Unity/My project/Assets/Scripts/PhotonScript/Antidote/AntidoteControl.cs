@@ -24,6 +24,9 @@ public class AntidoteControl : InvenBase
             if (gas == null || inventory == null) return;
 
             gas.AddExposure(-30f);
+
+            gas.PlayLocalAntidoteEffect();
+
             inventory.ConsumeSelectedItem();
         }
 

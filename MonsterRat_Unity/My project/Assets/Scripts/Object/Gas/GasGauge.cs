@@ -1,15 +1,52 @@
+using System.Collections;
 using Fusion;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GasGauge : MonoBehaviour
 {
+    public static GasGauge Instance;
+
     public Image fillImage;
     public Image pollutionEffect;
+    public Image antidoteEffect;
 
     private PlayerGas player;
 
+    [Header("Pollution Effect")]
     public float alphaSmoothSpeed = 5f;
+
+    [Header("Antidote Effect")]
+    public float antidoteTargetAlpha = 0.5f;
+    public float antidoteFadeInTime = 0.15f;
+    public float antidoteHoldTime = 0.4f;
+    public float antidoteFadeOutTime = 0.8f;
+
+    private Coroutine antidoteRoutine;
+
+    void Awake()
+    {
+        Instance = this;
+
+        SetImageAlpha(pollutionEffect, 0f);
+        SetImageAlpha(antidoteEffect, 0f);
+    }
+
+    void OnEnable()
+    {
+        PlayerGas.OnLocalAntidoteEffectRequested += PlayAntidoteEffect;
+    }
+
+    void OnDisable()
+    {
+        PlayerGas.OnLocalAntidoteEffectRequested -= PlayAntidoteEffect;
+    }
+
+    void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+    }
 
     void Update()
     {
@@ -34,12 +71,79 @@ public class GasGauge : MonoBehaviour
 
         float targetAlpha = 0f;
 
-        // 오염 효과 유지
         if (normalized >= 0.25f)
             targetAlpha = 0.5f;
 
         c.a = Mathf.Lerp(c.a, targetAlpha, Time.deltaTime * alphaSmoothSpeed);
         pollutionEffect.color = c;
+    }
+
+    public void PlayAntidoteEffect()
+    {
+        if (antidoteEffect == null)
+            return;
+
+        if (!gameObject.activeInHierarchy)
+            return;
+
+        if (!antidoteEffect.gameObject.activeSelf)
+            antidoteEffect.gameObject.SetActive(true);
+
+        if (antidoteRoutine != null)
+            StopCoroutine(antidoteRoutine);
+
+        antidoteRoutine = StartCoroutine(AntidoteEffectRoutine());
+    }
+
+    IEnumerator AntidoteEffectRoutine()
+    {
+        yield return StartCoroutine(FadeImageAlpha(antidoteEffect, antidoteTargetAlpha, antidoteFadeInTime));
+
+        yield return new WaitForSeconds(antidoteHoldTime);
+
+        yield return StartCoroutine(FadeImageAlpha(antidoteEffect, 0f, antidoteFadeOutTime));
+
+        antidoteRoutine = null;
+    }
+
+    IEnumerator FadeImageAlpha(Image img, float targetAlpha, float duration)
+    {
+        if (img == null)
+            yield break;
+
+        Color c = img.color;
+        float startAlpha = c.a;
+        float time = 0f;
+
+        if (duration <= 0f)
+        {
+            SetImageAlpha(img, targetAlpha);
+            yield break;
+        }
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+
+            float t = time / duration;
+            float alpha = Mathf.Lerp(startAlpha, targetAlpha, t);
+
+            SetImageAlpha(img, alpha);
+
+            yield return null;
+        }
+
+        SetImageAlpha(img, targetAlpha);
+    }
+
+    void SetImageAlpha(Image img, float alpha)
+    {
+        if (img == null)
+            return;
+
+        Color c = img.color;
+        c.a = alpha;
+        img.color = c;
     }
 
     void FindTargetPlayer()

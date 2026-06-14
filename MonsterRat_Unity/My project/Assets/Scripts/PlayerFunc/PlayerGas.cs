@@ -1,3 +1,4 @@
+using System;
 using Fusion;
 using UnityEngine;
 
@@ -394,11 +395,28 @@ public class PlayerGas : NetworkBehaviour
         if (targetGas.useNetworkAuthority)
         {
             targetGas.AddNetworkExposureFromServer(amount);
+
+            if (amount < 0f)
+            {
+                targetGas.RPC_PlayAntidoteEffectOnOwner();
+            }
         }
         else
         {
             targetGas.AddLocalExposureFromServer(amount);
+
+            if (amount < 0f)
+            {
+                targetGas.PlayLocalAntidoteEffect();
+            }
         }
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+    public void RPC_PlayAntidoteEffect()
+    {
+        if (GasGauge.Instance != null)
+            GasGauge.Instance.PlayAntidoteEffect();
     }
 
     private void AddNetworkExposureFromServer(float amount)
@@ -409,5 +427,18 @@ public class PlayerGas : NetworkBehaviour
     private void AddLocalExposureFromServer(float amount)
     {
         AddLocalExposure(amount);
+    }
+
+    public static event Action OnLocalAntidoteEffectRequested;
+
+    public void PlayLocalAntidoteEffect()
+    {
+        OnLocalAntidoteEffectRequested?.Invoke();
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+    public void RPC_PlayAntidoteEffectOnOwner()
+    {
+        OnLocalAntidoteEffectRequested?.Invoke();
     }
 }

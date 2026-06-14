@@ -227,7 +227,7 @@ public class PollutionSpawner : NetworkBehaviour
                 Quaternion rot = Quaternion.FromToRotation(Vector3.up, hit.normal);
                 Vector3 pos = hit.point + hit.normal * ((pollutionThickness * 0.5f) + surfaceGap);
 
-                if (!selectedArea.bounds.Contains(pos))
+                if (!IsInsideBoxCollider(selectedArea, pos))
                     continue;
 
                 float scaleMul = Random.Range(randomScaleRange.x, randomScaleRange.y);
@@ -594,8 +594,18 @@ public class PollutionSpawner : NetworkBehaviour
 
         for (int i = 0; i < spawnArea.Length; i++)
         {
-            if (spawnArea[i] != null)
-                return true;
+            BoxCollider area = spawnArea[i];
+
+            if (area == null)
+                continue;
+
+            if (!area.enabled)
+                continue;
+
+            if (!area.gameObject.activeInHierarchy)
+                continue;
+
+            return true;
         }
 
         return false;
@@ -606,22 +616,32 @@ public class PollutionSpawner : NetworkBehaviour
         if (spawnArea == null || spawnArea.Length == 0)
             return null;
 
-        int usableCount = spawnArea.Length;
+        List<BoxCollider> usableAreas = new List<BoxCollider>();
 
-        int safety = 20;
-        while (safety-- > 0)
+        for (int i = 0; i < spawnArea.Length; i++)
         {
-            int index = Random.Range(0, usableCount);
-            if (spawnArea[index] != null)
-                return spawnArea[index];
+            BoxCollider area = spawnArea[i];
+
+            if (area == null)
+                continue;
+
+            if (!area.enabled)
+                continue;
+
+            if (!area.gameObject.activeInHierarchy)
+                continue;
+
+            usableAreas.Add(area);
         }
 
-        return null;
+        if (usableAreas.Count == 0)
+            return null;
+
+        return usableAreas[Random.Range(0, usableAreas.Count)];
     }
 
     Vector3 GetRandomPointInBox(BoxCollider box, float marginX, float marginY, float marginZ)
     {
-        Vector3 center = box.transform.TransformPoint(box.center);
         Vector3 size = box.size;
 
         float halfX = Mathf.Max(0f, size.x * 0.5f - marginX);
@@ -632,7 +652,20 @@ public class PollutionSpawner : NetworkBehaviour
         float y = Random.Range(-halfY, halfY);
         float z = Random.Range(-halfZ, halfZ);
 
-        Vector3 localPos = new Vector3(x, y, z);
-        return center + box.transform.TransformDirection(localPos);
+        Vector3 localPos = box.center + new Vector3(x, y, z);
+
+        return box.transform.TransformPoint(localPos);
+    }
+
+    bool IsInsideBoxCollider(BoxCollider box, Vector3 worldPos)
+    {
+        Vector3 localPos = box.transform.InverseTransformPoint(worldPos);
+
+        Vector3 min = box.center - box.size * 0.5f;
+        Vector3 max = box.center + box.size * 0.5f;
+
+        return localPos.x >= min.x && localPos.x <= max.x &&
+               localPos.y >= min.y && localPos.y <= max.y &&
+               localPos.z >= min.z && localPos.z <= max.z;
     }
 }
