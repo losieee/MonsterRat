@@ -34,12 +34,16 @@ namespace SlimUI.ModernMenu
 
         // 해상도 및 안티앨리어싱
         public int resolutionIndex = -1;
-        public int antiAliasing = 0; // 0: off, 1: 2x, 2: 4x, 3: 8x
+        public int antiAliasing = 0;  
+
+        public int bugPhobiaMode = 0;
     }
 
     public class UISettingsManager : MonoBehaviour
     {
         public static UISettingsManager Instance;
+
+        public static event System.Action OnSettingsUpdated;
 
         [Header("UI PANEL REFERENCE")]
         public GameObject settingsPanel;
@@ -86,6 +90,10 @@ namespace SlimUI.ModernMenu
        //public GameObject difficultyhardcoretext;
        //public GameObject difficultyhardcoretextLINE;
         public GameObject exitPanel;
+
+        [Header("PHOBIA SETTINGS")]
+        public GameObject phobiaOffLine;
+        public GameObject phobiaOnLine;
 
         [Header("CONTROLS SETTINGS")]
         public GameObject invertmousetext;
@@ -264,6 +272,7 @@ namespace SlimUI.ModernMenu
                 string jsonString = JsonUtility.ToJson(currentSettings, true);
                 PlayerPrefs.SetString("MasterGameSettings", jsonString);
                 PlayerPrefs.Save();
+                OnSettingsUpdated?.Invoke();
             }
 
            // PlayerPrefs.Save();
@@ -271,17 +280,19 @@ namespace SlimUI.ModernMenu
 
         private void ApplySettingsToUIAndEngine()
         {
-           //if (currentSettings.normalDifficulty == 1)
-           //{
-           //    difficultynormaltextLINE.gameObject.SetActive(true);
-           //    difficultyhardcoretextLINE.gameObject.SetActive(false);
-           //}
-           //if
-           //{
-           //    difficultyhardcoretextLINE.gameObject.SetActive(true);
-           //    difficultynormaltextLINE.gameObject.SetActive(false);
-           //}
+            //if (currentSettings.normalDifficulty == 1)
+            //{
+            //    difficultynormaltextLINE.gameObject.SetActive(true);
+            //    difficultyhardcoretextLINE.gameObject.SetActive(false);
+            //}
+            //if
+            //{
+            //    difficultyhardcoretextLINE.gameObject.SetActive(true);
+            //    difficultynormaltextLINE.gameObject.SetActive(false);
+            //}
 
+            if (phobiaOffLine) phobiaOffLine.SetActive(currentSettings.bugPhobiaMode == 0);
+            if (phobiaOnLine) phobiaOnLine.SetActive(currentSettings.bugPhobiaMode == 1);
             if (musicSlider) musicSlider.SetValueWithoutNotify(currentSettings.musicVolume);
             if (effectSlider) effectSlider.SetValueWithoutNotify(currentSettings.effectVolume);
             if (bgmSource != null) bgmSource.volume = currentSettings.musicVolume;
@@ -335,6 +346,27 @@ namespace SlimUI.ModernMenu
             currentSettings.resolutionIndex = resolutionIndex;
             SaveSettings();
             Debug.Log($"적용된 해상도: {res.width} x {res.height}");
+        }
+        public void BugPhobiaModeOff()
+        {
+            // ★ 안전장치 추가: 데이터가 비어있으면 강제로 다시 불러옵니다.
+            if (currentSettings == null) LoadSettings();
+
+            currentSettings.bugPhobiaMode = 0;
+            if (phobiaOffLine) phobiaOffLine.SetActive(true);
+            if (phobiaOnLine) phobiaOnLine.SetActive(false);
+            SaveSettings();
+        }
+
+        public void BugPhobiaModeOn()
+        {
+            // ★ 안전장치 추가: 데이터가 비어있으면 강제로 다시 불러옵니다.
+            if (currentSettings == null) LoadSettings();
+
+            currentSettings.bugPhobiaMode = 1;
+            if (phobiaOffLine) phobiaOffLine.SetActive(false);
+            if (phobiaOnLine) phobiaOnLine.SetActive(true);
+            SaveSettings();
         }
 
         public void FullScreen()
@@ -465,5 +497,7 @@ namespace SlimUI.ModernMenu
         public float MouseSmoothing => currentSettings != null ? currentSettings.mouseSmoothing : 0f;
         public float EffectVolume => currentSettings != null ? currentSettings.effectVolume : 1f;
         public float MusicVolume => currentSettings != null ? currentSettings.musicVolume : 0.5f;
+
+        public int BugPhobiaMode => currentSettings != null ? currentSettings.bugPhobiaMode : 0;
     }
 }
