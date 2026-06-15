@@ -27,8 +27,13 @@ public class PlayerMov : MonoBehaviour
 
     CharacterController control;
     Vector3 vel;
+    Vector2 currentMouseDelta;
     float pitch;
     float footstepTimer;
+    float yaw = 0f;
+    float cachedXSens = 1f;
+    float cachedYSens = 1f;
+    float cachedSmoothing = 0f;
 
     PlayerUIState ui;
     PlayerFootStepType footStepType;
@@ -51,7 +56,21 @@ public class PlayerMov : MonoBehaviour
 
     void Start()
     {
-        
+        yaw = transform.eulerAngles.y;
+
+        LoadSettingsDataSafely();
+    }
+
+    private void LoadSettingsDataSafely()
+    {
+        string jsonString = PlayerPrefs.GetString("MasterGameSettings", "");
+        if (!string.IsNullOrEmpty(jsonString))
+        {
+            SlimUI.ModernMenu.GameSettingsData data = JsonUtility.FromJson<SlimUI.ModernMenu.GameSettingsData>(jsonString);
+            cachedXSens = data.xSensitivity;
+            cachedYSens = data.ySensitivity;
+            cachedSmoothing = data.mouseSmoothing;
+        }
     }
 
     void Update()
@@ -111,15 +130,52 @@ public class PlayerMov : MonoBehaviour
     {
         if (cam == null) return;
 
-        float mouseX = Input.GetAxis("Mouse X") * sensitiv;
-        float mouseY = Input.GetAxis("Mouse Y") * sensitiv;
+        float xSens = cachedXSens;
+        float ySens = cachedYSens;
+        float smoothing = cachedSmoothing;
 
-        transform.Rotate(Vector3.up * mouseX);
+        if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+        {
+            xSens = SlimUI.ModernMenu.UISettingsManager.Instance.XSensitivity;
+            ySens = SlimUI.ModernMenu.UISettingsManager.Instance.YSensitivity;
+            smoothing = SlimUI.ModernMenu.UISettingsManager.Instance.MouseSmoothing;
+        }
 
-        pitch -= mouseY;
+        xSens = Mathf.Max(0.1f, xSens);
+        ySens = Mathf.Max(0.1f, ySens);
+
+        Vector2 targetMouseDelta = new Vector2(
+            Input.GetAxis("Mouse X") * xSens,
+            Input.GetAxis("Mouse Y") * ySens
+        );
+
+        if (smoothing <= 0.01f)
+        {
+            currentMouseDelta = targetMouseDelta;
+        }
+        else
+        {
+            float lerpSpeed = Mathf.Lerp(40f, 5f, smoothing);
+            currentMouseDelta = Vector2.Lerp(
+                currentMouseDelta,
+                targetMouseDelta,
+                Time.deltaTime * lerpSpeed
+            );
+        }
+
+        yaw += currentMouseDelta.x * sensitiv * 0.1f;
+        pitch -= currentMouseDelta.y * sensitiv * 0.1f;
+
         pitch = Mathf.Clamp(pitch, -maxAngle, maxAngle);
+
+        transform.rotation = Quaternion.Euler(0f, yaw, 0f);
+
         cam.localRotation = Quaternion.Euler(pitch, 0f, 0f);
-        flash.transform.localRotation = Quaternion.Euler(pitch, 0f, 0f);
+
+        if (flash != null)
+        {
+            flash.transform.localRotation = Quaternion.Euler(pitch, 0f, 0f);
+        }
     }
 
     void HandleFootstep(float x, float z, float actualMoveDistance)
