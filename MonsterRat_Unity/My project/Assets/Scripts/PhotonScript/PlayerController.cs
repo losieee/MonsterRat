@@ -74,6 +74,23 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
     private Transform spectateTarget;
     private bool isSpawned = false;
 
+    [Header("3인칭 관전 설정")]
+    [SerializeField] private float spectateDistance = 3.5f;
+    [SerializeField] private float spectateHeight = 1.5f;
+    [SerializeField] private float spectateMouseSensitivity = 2.5f;
+    [SerializeField] private float spectateMinPitch = -20f;
+    [SerializeField] private float spectateMaxPitch = 55f;
+    [SerializeField] private float spectateCameraSmooth = 12f;
+    [SerializeField] private LayerMask spectateBlockMask;
+    [SerializeField] private float spectateCameraRadius = 0.25f;
+    [SerializeField] private float spectateMinDistance = 0.8f;
+    [SerializeField] private bool usePlayerWallLayerForSpectate = true;
+
+    private PlayerController spectatePlayer;
+    private bool isThirdPersonSpectating = false;
+    private float spectateYaw = 0f;
+    private float spectatePitch = 15f;
+
     public override void Spawned()
     {
         isSpawned = true;
@@ -154,10 +171,17 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
 
         if (isSpectating)
         {
-            if (spectateTarget != null && myCamObj != null)
+            if (isThirdPersonSpectating)
             {
-                myCamObj.transform.position = spectateTarget.position;
-                myCamObj.transform.rotation = spectateTarget.rotation;
+                UpdateThirdPersonSpectateCamera();
+            }
+            else
+            {
+                if (spectateTarget != null && myCamObj != null)
+                {
+                    myCamObj.transform.position = spectateTarget.position;
+                    myCamObj.transform.rotation = spectateTarget.rotation;
+                }
             }
 
             return;
@@ -212,6 +236,117 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
             {
                 playerCamera.fieldOfView = originalFov + cameraEffectFovOffset;
             }
+        }
+    }
+
+    void UpdateThirdPersonSpectateCamera()
+    {
+        if (myCamObj == null)
+            return;
+
+        if (spectatePlayer == null || spectatePlayer.IsDead)
+        {
+            StartSpectateOtherPlayer();
+            return;
+        }
+
+        bool isMenuRealOpen =
+            SlimUI.ModernMenu.UISettingsManager.isMenuOpen &&
+            SlimUI.ModernMenu.UISettingsManager.Instance != null;
+
+        if (!isMenuRealOpen)
+        {
+            float xSens = cachedXSens;
+            float ySens = cachedYSens;
+            float smoothing = cachedSmoothing;
+
+            if (SlimUI.ModernMenu.UISettingsManager.Instance != null)
+            {
+                xSens = SlimUI.ModernMenu.UISettingsManager.Instance.XSensitivity;
+                ySens = SlimUI.ModernMenu.UISettingsManager.Instance.YSensitivity;
+                smoothing = SlimUI.ModernMenu.UISettingsManager.Instance.MouseSmoothing;
+            }
+
+            xSens = Mathf.Max(0.1f, xSens);
+            ySens = Mathf.Max(0.1f, ySens);
+
+            Vector2 targetMouseDelta = new Vector2(
+                Input.GetAxis("Mouse X") * xSens,
+                Input.GetAxis("Mouse Y") * ySens
+            );
+
+            if (smoothing <= 0.01f)
+            {
+                currentMouseDelta = targetMouseDelta;
+            }
+            else
+            {
+                float lerpSpeed = Mathf.Lerp(40f, 5f, smoothing);
+                currentMouseDelta = Vector2.Lerp(
+                    currentMouseDelta,
+                    targetMouseDelta,
+                    Time.deltaTime * lerpSpeed
+                );
+            }
+
+            // 마우스 X = 관전 대상 기준 Y축 360도 회전
+            spectateYaw += currentMouseDelta.x * spectateMouseSensitivity * 0.1f;
+
+            // 마우스 Y = 위아래 각도
+            spectatePitch -= currentMouseDelta.y * spectateMouseSensitivity * 0.1f;
+            spectatePitch = Mathf.Clamp(spectatePitch, spectateMinPitch, spectateMaxPitch);
+        }
+
+        Vector3 focusPoint = spectatePlayer.transform.position + Vector3.up * spectateHeight;
+
+        Quaternion orbitRotation = Quaternion.Euler(spectatePitch, spectateYaw, 0f);
+
+        Vector3 desiredPosition =
+            focusPoint - orbitRotation * Vector3.forward * spectateDistance;
+
+        // 벽 뒤로 카메라가 들어가는 것 방지
+        Vector3 dir = desiredPosition - focusPoint;
+        float dist = dir.magnitude;
+
+        LayerMask blockMask = usePlayerWallLayerForSpectate ? wallLayer : spectateBlockMask;
+
+        if (dist > 0.01f && blockMask.value != 0)
+        {
+            Vector3 castDir = dir.normalized;
+
+            if (Physics.SphereCast(
+                focusPoint,
+                spectateCameraRadius,
+                castDir,
+                out RaycastHit hit,
+                dist,
+                blockMask,
+                QueryTriggerInteraction.Ignore))
+            {
+                // wallCheckDistance만큼 벽에서 떨어지게 카메라를 앞으로 당김
+                float safeDistance = Mathf.Max(hit.distance - wallCheckDistance, spectateMinDistance);
+
+                desiredPosition = focusPoint + castDir * safeDistance;
+            }
+        }
+
+        myCamObj.transform.position = Vector3.Lerp(
+            myCamObj.transform.position,
+            desiredPosition,
+            Time.deltaTime * spectateCameraSmooth
+        );
+
+        Vector3 lookDir = focusPoint - myCamObj.transform.position;
+
+        if (lookDir.sqrMagnitude > 0.001f)
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(lookDir.normalized, Vector3.up);
+
+            myCamObj.transform.rotation = Quaternion.Slerp(
+                myCamObj.transform.rotation,
+                lookRotation,
+                Time.deltaTime * spectateCameraSmooth
+            );
         }
     }
 
@@ -297,6 +432,8 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
         if (!HasInputAuthority) yield break;
 
         isSpectating = true;
+        isThirdPersonSpectating = false;
+
         GameInputLock.Lock();
 
         // 5초 동안 내 시체 쪽 spectatePoint 이동
@@ -329,7 +466,12 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
         if (!HasInputAuthority) return;
 
         isSpectating = true;
+        isThirdPersonSpectating = false;
+
         GameInputLock.Lock();
+
+        spectatePlayer = null;
+        spectateTarget = null;
 
         PlayerController[] players = FindObjectsOfType<PlayerController>();
 
@@ -338,18 +480,29 @@ public class PlayerController : NetworkBehaviour, INetworkRunnerCallbacks
             if (p == this) continue;
             if (p.IsDead) continue;
 
-            spectateTarget = p.flashPivot;
+            spectatePlayer = p;
+            spectateTarget = p.transform;
             break;
         }
 
-        if (spectateTarget == null)
+        if (spectatePlayer == null)
         {
             if (gameOverUI != null)
                 gameOverUI.SetActive(true);
 
             if (HasStateAuthority)
                 StartCoroutine(RestartCurrentSceneRoutine());
+
+            return;
         }
+
+        isThirdPersonSpectating = true;
+
+        // 처음 관전 시작할 때는 살아있는 플레이어 뒤쪽에서 시작
+        spectateYaw = spectatePlayer.transform.eulerAngles.y;
+        spectatePitch = 15f;
+
+        currentMouseDelta = Vector2.zero;
     }
 
     IEnumerator RestartCurrentSceneRoutine()
