@@ -52,10 +52,23 @@ public class RoachController : NetworkBehaviour
             source.playOnAwake = false;
         }
 
+        if (HasStateAuthority)
+        {
+            StartCoroutine(PlaceAgentOnNavMeshRoutine());
+        }
+
         PickNewDestination();
 
         if (Object != null && Object.HasStateAuthority)
             StartCoroutine(DespawnAfterTime());
+    }
+
+    private IEnumerator PlaceAgentOnNavMeshRoutine()
+    {
+        yield return null;
+        yield return null;
+
+        EnsureAgentOnNavMesh();
     }
 
     private void Update()
@@ -111,6 +124,29 @@ public class RoachController : NetworkBehaviour
             else
                 PickNewDestination();
         }
+    }
+
+    private bool EnsureAgentOnNavMesh()
+    {
+        if (agent == null)
+            return false;
+
+        if (!agent.enabled)
+            return false;
+
+        if (!agent.gameObject.activeInHierarchy)
+            return false;
+
+        if (agent.isOnNavMesh)
+            return true;
+
+        if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 10f, NavMesh.AllAreas))
+        {
+            agent.Warp(hit.position);
+            return agent.isOnNavMesh;
+        }
+
+        return false;
     }
 
     // ∏ÿ√Ë¥Ÿ∞° πÊ«‚ πŸ≤Ÿ±‚

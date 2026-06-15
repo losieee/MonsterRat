@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Fusion;
+using System.Collections;
 
 public interface IClearTarget
 {
@@ -506,6 +507,29 @@ public class ClearManager : NetworkBehaviour
         }
     }
 
+    // 무조건 스폰할때까지 도전
+    IEnumerator SpawnOneNearPlayerUntilSuccess(NetworkPrefabRef prefab)
+    {
+        if (!HasStateAuthority) yield break;
+        if (!prefab.IsValid) yield break;
+
+        while (true)
+        {
+            Transform player = FindAnyPlayerTransform();
+
+            if (player != null)
+            {
+                if (TryGetSpawnPositionNearTarget(player, out Vector3 spawnPos))
+                {
+                    Runner.Spawn(prefab, spawnPos, Quaternion.identity);
+                    yield break;
+                }
+            }
+
+            yield return null;
+        }
+    }
+
     // 스테이지 시작 전 초기화
     public void FinishStageSetup()
     {
@@ -632,7 +656,7 @@ public class ClearManager : NetworkBehaviour
     {
         if (!HasStateAuthority) return;
         Debug.Log("BoxHead");
-        SpawnOneNearPlayer(boxHead);
+        StartCoroutine(SpawnOneNearPlayerUntilSuccess(boxHead));
     }
 
     public void SpawnWatcher()
@@ -649,7 +673,7 @@ public class ClearManager : NetworkBehaviour
     {
         if (!HasStateAuthority) return;
         Debug.Log("Legless");
-        SpawnOneNearPlayer(legless);
+        StartCoroutine(SpawnOneNearPlayerUntilSuccess(legless));
     }
 
     /// <summary>
