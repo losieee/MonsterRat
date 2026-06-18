@@ -107,6 +107,10 @@ public class ClearManager : NetworkBehaviour
     [Networked] public int LastStep { get; set; }
     [Networked] public NetworkBool HasInitializedTargets { get; set; }
 
+    // 발표용 치트
+    private readonly List<NetworkObject> spawnedDangerObjects = new List<NetworkObject>();
+    private bool isStageCompleted = false;
+
     public float ClearRatio01
     {
         get
@@ -237,6 +241,7 @@ public class ClearManager : NetworkBehaviour
         isInitializingTargets = true;
 
         targets.Clear();
+        spawnedDangerObjects.Clear();
 
         BaselineTotal = 0f;
         RemainingTotal = 0f;
@@ -248,14 +253,26 @@ public class ClearManager : NetworkBehaviour
         clearedAllGas = false;
         isStageReady = false;
         ignoreFirstStepAfterSetup = true;
+
+        isStageCompleted = false;
     }
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.F11))
+        {
+            if (HasStateAuthority)
+                ForceCompleteStageByCheat();
+            else
+                RPC_RequestForceCompleteStageByCheat();
+
+            return;
+        }
+
         // 단계 이벤트는 권한 쪽에서만 처리
         if (!HasStateAuthority) return;
 
-        if (isStageReady && !isInitializingTargets)
+        if (isStageReady && !isInitializingTargets && !isStageCompleted)
         {
             if (ignoreFirstStepAfterSetup)
             {
@@ -277,15 +294,7 @@ public class ClearManager : NetworkBehaviour
 
             if (!clearedAllGas && ClearPercent >= 100)
             {
-                clearedAllGas = true;
-
-                if (PollutionSpawner.Instance != null)
-                    PollutionSpawner.Instance.DespawnAllGas();
-
-                PollutionSpawner.Instance.DespawnAllCleaningObjects();
-                Destroy(PollutionSpawner.Instance.cleaningTargets);
-
-                clearDoorAnim.TryOpenDoor();
+                CompleteStage();
             }
         }
 
@@ -295,6 +304,88 @@ public class ClearManager : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.F4)) PollutionSpawner.Instance.SpawnGas();
         if (Input.GetKeyDown(KeyCode.F4)) SpawnLegless();
         if (Input.GetKeyDown(KeyCode.L)) SpawnRoachOnly();
+    }
+
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority)]
+    public void RPC_RequestForceCompleteStageByCheat()
+    {
+        ForceCompleteStageByCheat();
+    }
+
+    public void ForceCompleteStageByCheat()
+    {
+        if (!HasStateAuthority) return;
+        if (isStageCompleted) return;
+
+        if (BaselineTotal <= 0f)
+            BaselineTotal = 1f;
+
+        HasInitializedTargets = true;
+        isInitializingTargets = false;
+        isStageReady = true;
+        ignoreFirstStepAfterSetup = false;
+
+        RemainingTotal = 0f;
+        LastStep = 100;
+
+        CompleteStage();
+    }
+
+    private void CompleteStage()
+    {
+        if (!HasStateAuthority) return;
+        if (clearedAllGas) return;
+
+        clearedAllGas = true;
+        isStageCompleted = true;
+
+        DespawnAllSpawnedDangerObjects();
+
+        // 오염물질 삭제
+        if (PollutionSpawner.Instance != null)
+        {
+            PollutionSpawner.Instance.DespawnAllCleaningObjects();
+
+            if (PollutionSpawner.Instance.cleaningTargets != null)
+                Destroy(PollutionSpawner.Instance.cleaningTargets);
+        }
+
+        if (clearDoorAnim != null)
+            clearDoorAnim.TryOpenDoor();
+    }
+
+    private void RegisterSpawnedDangerObject(NetworkObject obj)
+    {
+        if (obj == null) return;
+
+        if (!spawnedDangerObjects.Contains(obj))
+            spawnedDangerObjects.Add(obj);
+    }
+
+    private void RegisterSpawnedDangerObjects(List<NetworkObject> objs)
+    {
+        if (objs == null) return;
+
+        for (int i = 0; i < objs.Count; i++)
+        {
+            RegisterSpawnedDangerObject(objs[i]);
+        }
+    }
+
+    private void DespawnAllSpawnedDangerObjects()
+    {
+        if (!HasStateAuthority) return;
+
+        for (int i = spawnedDangerObjects.Count - 1; i >= 0; i--)
+        {
+            NetworkObject obj = spawnedDangerObjects[i];
+
+            if (obj != null)
+                Runner.Despawn(obj);
+        }
+
+        spawnedDangerObjects.Clear();
+        weakMonsterSpawnCount = 0;
     }
 
     public override void FixedUpdateNetwork()
@@ -483,19 +574,22 @@ public class ClearManager : NetworkBehaviour
     void SpawnFromActionPoint(RandomAction action)
     {
         if (!HasStateAuthority) return;
+        if (isStageCompleted) return;
         if (action == null) return;
         if (!action.prefab.IsValid) return;
 
         Transform point = action.spawnPoint != null ? action.spawnPoint : spawnRoot;
         if (point == null) point = transform;
 
-        Runner.Spawn(action.prefab, point.position, point.rotation);
+        NetworkObject obj = Runner.Spawn(action.prefab, point.position, point.rotation);
+        RegisterSpawnedDangerObject(obj);
     }
 
     // 플레이어 근처 소환
     public void SpawnOneNearPlayer(NetworkPrefabRef prefab)
     {
         if (!HasStateAuthority) return;
+        if (isStageCompleted) return;
         if (!prefab.IsValid) return;
 
         Transform player = FindAnyPlayerTransform();
@@ -503,7 +597,8 @@ public class ClearManager : NetworkBehaviour
 
         if (TryGetSpawnPositionNearTarget(player, out Vector3 spawnPos))
         {
-            Runner.Spawn(prefab, spawnPos, Quaternion.identity);
+            NetworkObject obj = Runner.Spawn(prefab, spawnPos, Quaternion.identity);
+            RegisterSpawnedDangerObject(obj);
         }
     }
 
@@ -513,7 +608,7 @@ public class ClearManager : NetworkBehaviour
         if (!HasStateAuthority) yield break;
         if (!prefab.IsValid) yield break;
 
-        while (true)
+        while (!isStageCompleted)
         {
             Transform player = FindAnyPlayerTransform();
 
@@ -521,7 +616,8 @@ public class ClearManager : NetworkBehaviour
             {
                 if (TryGetSpawnPositionNearTarget(player, out Vector3 spawnPos))
                 {
-                    Runner.Spawn(prefab, spawnPos, Quaternion.identity);
+                    NetworkObject obj = Runner.Spawn(prefab, spawnPos, Quaternion.identity);
+                    RegisterSpawnedDangerObject(obj);
                     yield break;
                 }
             }
@@ -614,6 +710,7 @@ public class ClearManager : NetworkBehaviour
     public void SpawnRoachOnly()
     {
         if (!HasStateAuthority) return;
+        if (isStageCompleted) return;
 
         List<RandomAction> spawnableRoachActions = GetSpawnableActions(ratSpawnActions);
         if (spawnableRoachActions.Count == 0) return;
@@ -629,7 +726,8 @@ public class ClearManager : NetworkBehaviour
         // 왜냐 - 랜덤 범위가 저기 있으니까
         if (PollutionSpawner.Instance != null)
         {
-            PollutionSpawner.Instance.SpawnRoachesInRandomAreas(roach, count);
+            List<NetworkObject> objs = PollutionSpawner.Instance.SpawnRoachesInRandomAreas(roach, count);
+            RegisterSpawnedDangerObjects(objs);
         }
     }
 
@@ -637,6 +735,8 @@ public class ClearManager : NetworkBehaviour
     public void SpawnMixed()
     {
         if (!HasStateAuthority) return;
+        if (isStageCompleted) return;
+
         List<RandomAction> spawnableRoachActions = GetSpawnableActions(ratSpawnActions);
         if (spawnableRoachActions.Count == 0) return;
 
@@ -647,33 +747,46 @@ public class ClearManager : NetworkBehaviour
         int roachCount = PickSpawnCount(baseAction, 1);
 
         Debug.Log("Mix");
+
         SpawnFixedRats(ratCount);
+
         if (PollutionSpawner.Instance != null)
-            PollutionSpawner.Instance.SpawnRoachesInRandomAreas(roach, roachCount);
+        {
+            List<NetworkObject> objs = PollutionSpawner.Instance.SpawnRoachesInRandomAreas(roach, roachCount);
+            RegisterSpawnedDangerObjects(objs);
+        }
     }
 
     public void SpawnBoxHead()
     {
         if (!HasStateAuthority) return;
+        if (isStageCompleted) return;
+
         Debug.Log("BoxHead");
         StartCoroutine(SpawnOneNearPlayerUntilSuccess(boxHead));
-    }
-
-    public void SpawnWatcher()
-    {
-        if (!HasStateAuthority) return;
-        Debug.Log("Watcher");
-        if (PollutionSpawner.Instance != null)
-        {
-            PollutionSpawner.Instance.SpawnRoachesInRandomAreas(watcher, 1);
-        }
     }
 
     public void SpawnLegless()
     {
         if (!HasStateAuthority) return;
+        if (isStageCompleted) return;
+
         Debug.Log("Legless");
         StartCoroutine(SpawnOneNearPlayerUntilSuccess(legless));
+    }
+
+    public void SpawnWatcher()
+    {
+        if (!HasStateAuthority) return;
+        if (isStageCompleted) return;
+
+        Debug.Log("Watcher");
+
+        if (PollutionSpawner.Instance != null)
+        {
+            List<NetworkObject> objs = PollutionSpawner.Instance.SpawnRoachesInRandomAreas(watcher, 1);
+            RegisterSpawnedDangerObjects(objs);
+        }
     }
 
     /// <summary>
