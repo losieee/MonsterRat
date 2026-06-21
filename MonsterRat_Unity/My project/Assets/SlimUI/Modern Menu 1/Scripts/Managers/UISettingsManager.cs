@@ -360,7 +360,7 @@ namespace SlimUI.ModernMenu
 
         public void BugPhobiaModeOn()
         {
-            // ★ 안전장치 추가: 데이터가 비어있으면 강제로 다시 불러옵니다.
+             
             if (currentSettings == null) LoadSettings();
 
             currentSettings.bugPhobiaMode = 1;
@@ -387,6 +387,10 @@ namespace SlimUI.ModernMenu
             if (isInitializing) return;
             SaveSettings();
         }
+
+        public void SensitivityXSlider() { if (!isInitializing) SaveSettings(); }
+        public void SensitivityYSlider() { if (!isInitializing) SaveSettings(); }
+        public void SensitivitySmoothing() { if (!isInitializing) SaveSettings(); }
 
         public async void LeaveRoom()
         {
