@@ -88,6 +88,7 @@ public class ClearManager : NetworkBehaviour
 
     [Header("현재 스테이지")]
     public int stageNum = 1;
+    public bool cheatScene;
 
     // 로컬 참조용 리스트(디버그/확장용)
     private readonly List<IClearTarget> targets = new List<IClearTarget>();
@@ -274,14 +275,14 @@ public class ClearManager : NetworkBehaviour
 
         if (isStageReady && !isInitializingTargets && !isStageCompleted)
         {
+            int interval = GetStepInterval();
+            int currentStep = Mathf.FloorToInt(ClearPercent / (float)interval) * interval;
+            currentStep = Mathf.Clamp(currentStep, 0, 100);
+
             if (ignoreFirstStepAfterSetup)
             {
                 ignoreFirstStepAfterSetup = false;
-
-                int interval = GetStepInterval();
-                int currentStep = Mathf.FloorToInt(ClearPercent / (float)interval) * interval;
-                LastStep = Mathf.Clamp(currentStep, 0, 100);
-
+                LastStep = currentStep;
                 return;
             }
 
@@ -290,7 +291,15 @@ public class ClearManager : NetworkBehaviour
                 LastStep = 0;
             }
 
-            CheckStep(ClearRatio01);
+            // cheatScene이면 퍼센트별 이벤트 실행 안 함
+            if (!cheatScene)
+            {
+                CheckStep(ClearRatio01);
+            }
+            else
+            {
+                LastStep = currentStep;
+            }
 
             if (!clearedAllGas && ClearPercent >= 100)
             {
@@ -300,9 +309,9 @@ public class ClearManager : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.F1)) SpawnWatcher();
         if (Input.GetKeyDown(KeyCode.F2)) SpawnBoxHead();
-        if (Input.GetKeyDown(KeyCode.F3)) SpawnRatOnly();
+        if (Input.GetKeyDown(KeyCode.F3)) SpawnLegless();
         if (Input.GetKeyDown(KeyCode.F4)) PollutionSpawner.Instance.SpawnGas();
-        if (Input.GetKeyDown(KeyCode.F4)) SpawnLegless();
+        if (Input.GetKeyDown(KeyCode.F5)) SpawnRatOnly();
         if (Input.GetKeyDown(KeyCode.L)) SpawnRoachOnly();
     }
 
