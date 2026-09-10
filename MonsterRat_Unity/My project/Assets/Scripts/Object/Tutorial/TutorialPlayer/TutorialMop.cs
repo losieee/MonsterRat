@@ -19,6 +19,11 @@ public class TutorialMop : TutorialInvenBase
 
     public override void Tick()
     {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            TryInteractDoor();
+        }
+
         if (!canClean) return;
         if (Input.GetMouseButtonDown(0))
         {
@@ -27,7 +32,7 @@ public class TutorialMop : TutorialInvenBase
 
             if (t.layer == 6)
             {
-                TutorialPollutionControl singlePol = t.GetComponentInParent<TutorialPollutionControl>();
+                TutorialPollutionControl singlePol = t.GetComponent<TutorialPollutionControl>();
                 if (singlePol != null)
                 {
                     singlePol.CleanOnce();
@@ -37,6 +42,32 @@ public class TutorialMop : TutorialInvenBase
 
             }
 
+        }
+    }
+
+    void TryInteractDoor()
+    {
+        if (interactor == null) return;
+
+        if (interactor.RaycastWorld(cleanDistance, out RaycastHit hit))
+        {
+            int layer = hit.collider.gameObject.layer;
+
+            if (layer == 10)
+            {
+                DeleteObject btn = hit.collider.GetComponent<DeleteObject>();
+                if (btn != null) btn.CanDelete();
+            }
+            else if (layer == 17)
+            {
+                SafeZone_Door btn = hit.collider.GetComponentInParent<SafeZone_Door>();
+                if (btn != null) btn.OpenDoor();
+            }
+            else if (layer == 18)
+            {
+                SafeZone_Door btn = hit.collider.GetComponentInParent<SafeZone_Door>();
+                if (btn != null) btn.OpenClearDoor();
+            }
         }
     }
 

@@ -293,7 +293,7 @@ public class TutorialDialogueSystem : MonoBehaviour
 
         yield return new WaitForSeconds(2.5f);
 
-        optionPanel.SetActive(true);
+        //optionPanel.SetActive(true);
     }
 
     private IEnumerator FadeDialogueOnly(float from, float to, float duration)
